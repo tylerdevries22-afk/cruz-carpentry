@@ -60,7 +60,7 @@ function ParallaxPhoto({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     offset: revealOffset as any,
   });
-  const reveal = useSpring(revealScroll, { stiffness: 65, damping: 20 });
+  const reveal = useSpring(revealScroll, { stiffness: 44, damping: 22 });
 
   // Clip-path: diagonal reveal from left
   const clipPath = useTransform(reveal, [0, 1], [
@@ -188,7 +188,7 @@ export function Gallery() {
   const accentOpacity = useTransform(sectionSmooth, [0, 0.1, 0.9, 1], [0, 0.07, 0.07, 0]);
 
   // Continuous container drift keeps photos moving throughout the section
-  const photosY = useTransform(sectionSmooth, [0, 1], ["5%", "-5%"]);
+  const photosY = useTransform(sectionSmooth, [0, 1], ["2.5%", "-2.5%"]);
 
   return (
     <section
@@ -223,7 +223,7 @@ export function Gallery() {
             label={photos[0].label}
             location={photos[0].location}
             className="h-[320px] sm:h-[460px] lg:h-[560px]"
-            revealOffset={["start 90%", "start 20%"]}
+            revealOffset={["start 95%", "start 10%"]}
             parallaxRange={["-12%", "12%"]}
           />
 
@@ -234,7 +234,7 @@ export function Gallery() {
               label={photos[1].label}
               location={photos[1].location}
               className="h-[280px] sm:h-[360px]"
-              revealOffset={["start 90%", "start 30%"]}
+              revealOffset={["start 95%", "start 18%"]}
               parallaxRange={["-10%", "10%"]}
             />
             <ParallaxPhoto
@@ -243,7 +243,7 @@ export function Gallery() {
               label={photos[2].label}
               location={photos[2].location}
               className="h-[280px] sm:h-[360px]"
-              revealOffset={["start 90%", "start 30%"]}
+              revealOffset={["start 95%", "start 18%"]}
               parallaxRange={["-10%", "10%"]}
             />
           </div>

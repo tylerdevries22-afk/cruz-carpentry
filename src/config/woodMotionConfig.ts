@@ -16,7 +16,7 @@ export interface Chapter {
   overlayOpacity: number;
 }
 
-export const SCROLL_HEIGHT = "700vh";
+export const SCROLL_HEIGHT = "900vh";
 
 export const chapters: Chapter[] = [
   {
@@ -105,4 +105,4 @@ export const chapters: Chapter[] = [
   },
 ];
 
-export const springConfig = { stiffness: 90, damping: 28 };
+export const springConfig = { stiffness: 65, damping: 26 };

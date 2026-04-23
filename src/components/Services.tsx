@@ -55,17 +55,17 @@ function ServiceCard({
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 92%", "start 45%"],
+    offset: ["start 96%", "start 38%"],
   });
 
-  const smooth = useSpring(scrollYProgress, { stiffness: 70, damping: 18 });
+  const smooth = useSpring(scrollYProgress, { stiffness: 48, damping: 20 });
 
-  const xDir = index % 2 === 0 ? -55 : 55;
+  const xDir = index % 2 === 0 ? -38 : 38;
   const x = useTransform(smooth, [0, 1], [xDir, 0]);
-  const y = useTransform(smooth, [0, 1], [60, 0]);
-  const opacity = useTransform(smooth, [0, 0.45], [0, 1]);
-  const scale = useTransform(smooth, [0, 1], [0.93, 1]);
-  const blurVal = useTransform(smooth, [0, 0.55], [6, 0]);
+  const y = useTransform(smooth, [0, 1], [42, 0]);
+  const opacity = useTransform(smooth, [0, 0.6], [0, 1]);
+  const scale = useTransform(smooth, [0, 1], [0.95, 1]);
+  const blurVal = useTransform(smooth, [0, 0.7], [4, 0]);
   const blurFilter = useTransform(blurVal, (b) => `blur(${b}px)`);
 
   // Gold number clips in left-to-right

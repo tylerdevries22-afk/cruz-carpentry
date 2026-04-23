@@ -36,9 +36,9 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
     [chapter.overlayOpacity + 0.15, chapter.overlayOpacity, chapter.overlayOpacity]
   );
 
-  const textY = useTransform(localProgress, [0, 0.25, 0.75, 1], [36, 0, 0, -18]);
-  const textOpacity = useTransform(localProgress, [0, 0.2, 0.72, 1], [0, 1, 1, 0]);
-  const labelOpacity = useTransform(localProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const textY = useTransform(localProgress, [0, 0.12, 0.88, 1], [36, 0, 0, -18]);
+  const textOpacity = useTransform(localProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
+  const labelOpacity = useTransform(localProgress, [0, 0.08, 0.92, 1], [0, 1, 1, 0]);
 
   return (
     <motion.div className="absolute inset-0 overflow-hidden" style={{ opacity: chapterOpacity }}>
