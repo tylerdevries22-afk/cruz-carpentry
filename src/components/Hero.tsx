@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { PHONE, PHONE_HREF, EASE } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
@@ -22,6 +22,13 @@ const fadein = {
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.play().catch(() => {/* autoplay blocked by browser — poster shown */});
+  }, []);
 
   // Track hero scrolling out of viewport
   const { scrollYProgress } = useScroll({
@@ -49,6 +56,7 @@ export function Hero() {
         style={{ scale: videoScale, willChange: "transform" }}
       >
         <video
+          ref={videoRef}
           className="w-full h-full object-cover"
           autoPlay
           muted
