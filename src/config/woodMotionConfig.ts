@@ -105,4 +105,4 @@ export const chapters: Chapter[] = [
   },
 ];
 
-export const springConfig = { stiffness: 60, damping: 20, mass: 1 };
+export const springConfig = { stiffness: 90, damping: 28 };

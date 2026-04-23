@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { PHONE, PHONE_HREF, EASE } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
@@ -20,23 +21,45 @@ const fadein = {
 };
 
 export function Hero() {
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  // Track hero scrolling out of viewport
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 25 });
+
+  // Content floats up and fades as user scrolls away
+  const contentY = useTransform(smooth, [0, 1], [0, -90]);
+  const contentOpacity = useTransform(smooth, [0, 0.65], [1, 0]);
+
+  // Video subtly zooms as hero exits (parallax depth)
+  const videoScale = useTransform(smooth, [0, 1], [1, 1.1]);
+
   return (
     <section
+      ref={heroRef}
       className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center"
       aria-label="Hero"
     >
-      {/* Video — preload=none prevents loading 27MB before user engages */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="none"
-        poster="/images/project-1.jpg"
+      {/* Video wrapper — scale drives parallax depth on scroll-out */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ scale: videoScale, willChange: "transform" }}
       >
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/images/project-1.jpg"
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
+      </motion.div>
 
       {/* Dual-layer gradient — radial centers darkness on text, linear darkens bottom */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_50%,rgba(0,0,0,0.52)_0%,rgba(0,0,0,0.18)_100%)]" />
@@ -48,6 +71,7 @@ export function Hero() {
         variants={container}
         initial="hidden"
         animate="show"
+        style={{ y: contentY, opacity: contentOpacity }}
       >
         {/* Star badge */}
         <motion.div

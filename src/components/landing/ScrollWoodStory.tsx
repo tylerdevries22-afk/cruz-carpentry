@@ -18,7 +18,7 @@ function ChapterLayer({
 }) {
   const chapterOpacity = useTransform(
     progress,
-    [chapter.start, chapter.start + 0.04, chapter.end - 0.04, chapter.end],
+    [chapter.start, chapter.start + 0.07, chapter.end - 0.07, chapter.end],
     [0, 1, 1, 0],
     { clamp: true }
   );

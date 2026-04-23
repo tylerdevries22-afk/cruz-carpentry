@@ -187,6 +187,9 @@ export function Gallery() {
   const accentY = useTransform(sectionSmooth, [0, 1], ["-18%", "18%"]);
   const accentOpacity = useTransform(sectionSmooth, [0, 0.1, 0.9, 1], [0, 0.07, 0.07, 0]);
 
+  // Continuous container drift keeps photos moving throughout the section
+  const photosY = useTransform(sectionSmooth, [0, 1], ["5%", "-5%"]);
+
   return (
     <section
       ref={sectionRef}
@@ -213,7 +216,7 @@ export function Gallery() {
         <GalleryHeader sectionSmooth={sectionSmooth} />
 
         {/* Layout: full-width banner + 2-column below */}
-        <div className="space-y-4">
+        <motion.div className="space-y-4" style={{ y: photosY }}>
           <ParallaxPhoto
             src={photos[0].src}
             alt={photos[0].alt}
@@ -244,7 +247,7 @@ export function Gallery() {
               parallaxRange={["-10%", "10%"]}
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

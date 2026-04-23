@@ -177,6 +177,9 @@ export function Services() {
   // Decorative large background number (parallaxes at different speed)
   const decoY = useTransform(sectionSmooth, [0, 1], ["-20%", "20%"]);
 
+  // Continuous drift — cards keep moving as you scroll through the section
+  const gridY = useTransform(sectionSmooth, [0, 1], ["4%", "-4%"]);
+
   return (
     <section ref={sectionRef} className="relative bg-[#FAF7F2] py-28 sm:py-36 px-6 overflow-hidden">
 
@@ -199,11 +202,13 @@ export function Services() {
       <div className="relative max-w-7xl mx-auto">
         <SectionHeader sectionProgress={sectionSmooth} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
-          {services.map((service, i) => (
-            <ServiceCard key={service.num} service={service} index={i} />
-          ))}
-        </div>
+        <motion.div style={{ y: gridY }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
+            {services.map((service, i) => (
+              <ServiceCard key={service.num} service={service} index={i} />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
