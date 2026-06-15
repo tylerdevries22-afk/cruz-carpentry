@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { PHONE, PHONE_HREF } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 export function CTA() {
   const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion() ?? false;
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -41,14 +42,15 @@ export function CTA() {
   return (
     <section
       ref={ref}
+      id="contact"
       className="relative bg-[#1C1917] py-28 sm:py-40 px-6 overflow-hidden"
     >
       {/* Parallax wood dark texture */}
       <motion.div
         className="absolute inset-x-0 inset-y-[-10%] h-[120%] pointer-events-none"
-        style={{ y: bgY, opacity: bgOpacity }}
+        style={{ y: reduced ? 0 : bgY, opacity: reduced ? 0.08 : bgOpacity }}
       >
-        <Image src="/wood/wood_dark.jpg" alt="" fill className="object-cover" />
+        <Image src="/wood/wood_dark.jpg" alt="" fill className="object-cover" sizes="100vw" />
       </motion.div>
 
       {/* Warm radial glow */}
@@ -56,12 +58,12 @@ export function CTA() {
 
       <motion.div
         className="relative z-10 max-w-3xl mx-auto text-center"
-        style={{ y, opacity }}
+        style={reduced ? undefined : { y, opacity }}
       >
         {/* Label */}
         <motion.p
           className="text-[#CA8A04] text-xs font-semibold tracking-[0.28em] uppercase mb-5"
-          style={{ clipPath: labelClip }}
+          style={reduced ? undefined : { clipPath: labelClip }}
         >
           Get Started
         </motion.p>
@@ -69,7 +71,7 @@ export function CTA() {
         {/* Gold line */}
         <motion.div
           className="w-12 h-px bg-[#CA8A04] mx-auto mb-8 origin-left"
-          style={{ scaleX: lineScaleX }}
+          style={reduced ? undefined : { scaleX: lineScaleX }}
         />
 
         <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-white leading-tight mb-6">
@@ -78,22 +80,23 @@ export function CTA() {
           <em className="italic text-[#FEF3C7]">Something Beautiful?</em>
         </h2>
 
-        <p className="text-white/50 text-lg font-light leading-relaxed mb-12 max-w-lg mx-auto">
+        <p className="text-white/60 text-lg font-light leading-relaxed mb-12 max-w-lg mx-auto">
           Every project starts with a conversation. Call us today for a free
           in-home consultation and estimate.
         </p>
 
         <a
           href={PHONE_HREF}
-          className="inline-flex items-center gap-3 bg-[#CA8A04] hover:bg-[#B45309]
+          className="inline-flex items-center gap-3 bg-[#B45309] hover:bg-[#92400E]
                      text-white px-10 py-5 rounded-full text-lg font-medium
-                     transition-colors duration-200 cursor-pointer shadow-2xl shadow-black/40"
+                     transition-colors duration-200 cursor-pointer shadow-2xl shadow-black/40
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1917]"
         >
           <PhoneIcon />
           {PHONE}
         </a>
 
-        <p className="text-white/30 text-sm mt-8 font-light tracking-wider">
+        <p className="text-white/60 text-sm mt-8 font-light tracking-wider">
           Serving the Colorado Front Range &middot; Free estimates
         </p>
       </motion.div>

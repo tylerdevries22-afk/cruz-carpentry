@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   submitEstimate,
   initialEstimateState,
@@ -12,7 +12,7 @@ import { PHONE, PHONE_HREF } from "@/lib/constants";
 const fieldBase =
   "w-full rounded-lg border bg-white px-4 py-3 text-[#1C1917] text-base " +
   "placeholder:text-[#A8A29E] outline-none transition-colors " +
-  "focus:border-[#CA8A04] focus:ring-2 focus:ring-[#CA8A04]/20";
+  "focus:border-[#B45309] focus:ring-2 focus:ring-[#CA8A04]/20";
 
 function fieldClass(hasError: boolean): string {
   return `${fieldBase} ${hasError ? "border-[#B91C1C]" : "border-[#D6CCBA]"}`;
@@ -33,18 +33,19 @@ export function EstimateForm() {
     initialEstimateState,
   );
   const errors = state.fieldErrors ?? {};
+  const reduced = useReducedMotion();
 
   return (
     <section id="estimate" className="relative bg-[#F5EEE2] py-24 sm:py-32 px-6">
       <motion.div
         className="max-w-2xl mx-auto"
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={reduced ? false : { opacity: 0, y: 40 }}
+        whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="text-center mb-12">
-          <p className="text-[#CA8A04] text-xs font-semibold tracking-[0.28em] uppercase mb-5">
+          <p className="text-[#B45309] text-xs font-semibold tracking-[0.28em] uppercase mb-5">
             Request a Quote
           </p>
           <div className="w-12 h-px bg-[#CA8A04] mx-auto mb-8" />
@@ -53,7 +54,7 @@ export function EstimateForm() {
             <br />
             <em className="italic">your project</em>
           </h2>
-          <p className="text-[#78716C] text-lg font-light leading-relaxed max-w-md mx-auto">
+          <p className="text-[#57534E] text-lg font-light leading-relaxed max-w-md mx-auto">
             Tell us a little about what you have in mind and we&apos;ll reach out
             to schedule a free, no-obligation estimate.
           </p>
@@ -68,14 +69,14 @@ export function EstimateForm() {
             <h3 className="font-serif text-2xl text-[#1C1917] mb-3">
               Request received
             </h3>
-            <p className="text-[#78716C] font-light leading-relaxed">
+            <p className="text-[#57534E] font-light leading-relaxed">
               {state.message}
             </p>
-            <p className="text-[#78716C] text-sm mt-6 font-light">
+            <p className="text-[#57534E] text-sm mt-6 font-light">
               Prefer to talk now?{" "}
               <a
                 href={PHONE_HREF}
-                className="text-[#CA8A04] font-medium hover:underline"
+                className="text-[#B45309] font-medium hover:underline"
               >
                 {PHONE}
               </a>
@@ -111,7 +112,7 @@ export function EstimateForm() {
                   htmlFor="name"
                   className="block text-sm font-medium text-[#44403C] mb-1.5"
                 >
-                  Name <span className="text-[#CA8A04]">*</span>
+                  Name <span className="text-[#B45309]">*</span>
                 </label>
                 <input
                   id="name"
@@ -132,7 +133,7 @@ export function EstimateForm() {
                   htmlFor="phone"
                   className="block text-sm font-medium text-[#44403C] mb-1.5"
                 >
-                  Phone <span className="text-[#CA8A04]">*</span>
+                  Phone <span className="text-[#B45309]">*</span>
                 </label>
                 <input
                   id="phone"
@@ -217,15 +218,16 @@ export function EstimateForm() {
               type="submit"
               disabled={pending}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2
-                         bg-[#CA8A04] hover:bg-[#B45309] disabled:opacity-60
+                         bg-[#B45309] hover:bg-[#92400E] disabled:opacity-60
                          disabled:cursor-not-allowed text-white px-10 py-4 rounded-full
                          text-lg font-medium transition-colors duration-200 cursor-pointer
-                         shadow-lg shadow-black/10"
+                         shadow-lg shadow-black/10 focus:outline-none focus-visible:ring-2
+                         focus-visible:ring-[#B45309] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5EEE2]"
             >
               {pending ? "Sending…" : "Request Free Estimate"}
             </button>
 
-            <p className="text-[#A8A29E] text-xs font-light pt-1">
+            <p className="text-[#6B6560] text-xs font-light pt-1">
               Serving the Colorado Front Range · We&apos;ll never share your
               information.
             </p>

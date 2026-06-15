@@ -9,6 +9,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import Image from "next/image";
+import { EASE } from "@/lib/constants";
 
 const services = [
   {
@@ -93,7 +94,9 @@ const services = [
   },
 ];
 
-// Scroll-driven card — every transform is tied live to scroll progress
+// One-shot in-view reveal (a single IntersectionObserver per card, not a live
+// scroll listener) — far cheaper than per-card useScroll, and disabled for
+// reduced-motion users.
 function ServiceCard({
   service,
   index,
@@ -101,55 +104,21 @@ function ServiceCard({
   service: (typeof services)[0];
   index: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 96%", "start 38%"],
-  });
-
-  const smooth = useSpring(scrollYProgress, { stiffness: 48, damping: 20 });
-
-  const xDir = index % 2 === 0 ? -38 : 38;
-  const x = useTransform(smooth, [0, 1], [xDir, 0]);
-  const y = useTransform(smooth, [0, 1], [42, 0]);
-  const opacity = useTransform(smooth, [0, 0.6], [0, 1]);
-  const scale = useTransform(smooth, [0, 1], [0.95, 1]);
-  const blurVal = useTransform(smooth, [0, 0.7], [4, 0]);
-  const blurFilter = useTransform(blurVal, (b) => `blur(${b}px)`);
-
-  // Divider line draws in
-  const lineScaleX = useTransform(smooth, [0.15, 0.85], [0, 1]);
-
-  // Content fades up slightly behind the card
-  const contentOpacity = useTransform(smooth, [0.3, 0.8], [0, 1]);
-  const contentY = useTransform(smooth, [0.3, 1], [16, 0]);
-
   const imageSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px";
 
-  if (reduced) {
-    return (
-      <div className="bg-white border border-[#E8DDD4] rounded-2xl overflow-hidden">
-        <div className="relative aspect-[16/10]">
-          <Image src={service.image} alt={service.title} fill sizes={imageSizes} className="object-cover" />
-          <span className="absolute top-3 left-3 bg-[#CA8A04] text-white text-[0.7rem] font-semibold tracking-wider px-2.5 py-1 rounded-full">
-            {service.num}
-          </span>
-        </div>
-        <div className="p-7 sm:p-8">
-          <div className="w-10 h-10 mb-4 text-[#CA8A04]"><service.Icon /></div>
-          <h3 className="font-serif text-xl text-[#1C1917] mb-3">{service.title}</h3>
-          <p className="text-[#78716C] text-sm leading-relaxed font-light">{service.description}</p>
-        </div>
-      </div>
-    );
-  }
+  const reveal = reduced
+    ? {}
+    : {
+        initial: { opacity: 0, y: 32, x: index % 2 === 0 ? -24 : 24 },
+        whileInView: { opacity: 1, y: 0, x: 0 },
+        viewport: { once: true, amount: 0.2 },
+        transition: { duration: 0.6, ease: EASE, delay: (index % 2) * 0.05 },
+      };
 
   return (
     <motion.div
-      ref={ref}
-      style={{ x, y, opacity, scale, filter: blurFilter }}
+      {...reveal}
       className="group relative bg-white border border-[#E8DDD4] rounded-2xl overflow-hidden
                  hover:shadow-2xl hover:border-[#CA8A04]/30 transition-[border-color,box-shadow]
                  duration-500"
@@ -164,33 +133,36 @@ function ServiceCard({
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        <span className="absolute top-3 left-3 bg-[#CA8A04] text-white text-[0.7rem] font-semibold tracking-wider px-2.5 py-1 rounded-full">
+        <span className="absolute top-3 left-3 bg-[#B45309] text-white text-[0.7rem] font-semibold tracking-wider px-2.5 py-1 rounded-full">
           {service.num}
         </span>
       </div>
 
       {/* Content */}
-      <motion.div className="p-7 sm:p-8" style={{ opacity: contentOpacity, y: contentY }}>
-        <motion.div
-          className="h-px bg-[#E8DDD4] mb-6 origin-left"
-          style={{ scaleX: lineScaleX }}
-        />
-        <div className="w-10 h-10 mb-5 text-[#CA8A04] group-hover:scale-110 transition-transform duration-300">
+      <div className="p-7 sm:p-8">
+        <div className="h-px bg-[#E8DDD4] mb-6" />
+        <div className="w-10 h-10 mb-5 text-[#B45309] group-hover:scale-110 transition-transform duration-300">
           <service.Icon />
         </div>
         <h3 className="font-serif text-[1.2rem] text-[#1C1917] mb-3 leading-snug">
           {service.title}
         </h3>
-        <p className="text-[#78716C] text-[0.9375rem] leading-relaxed font-light">
+        <p className="text-[#57534E] text-[0.9375rem] leading-relaxed font-light">
           {service.description}
         </p>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
-// Section header — scroll-driven
-function SectionHeader({ sectionProgress }: { sectionProgress: ReturnType<typeof useSpring> }) {
+// Section header — scroll-driven, static under reduced motion
+function SectionHeader({
+  sectionProgress,
+  reduced,
+}: {
+  sectionProgress: ReturnType<typeof useSpring>;
+  reduced: boolean;
+}) {
   const y = useTransform(sectionProgress, [0, 0.3], [50, 0]);
   const opacity = useTransform(sectionProgress, [0, 0.25], [0, 1]);
   const labelClip = useTransform(sectionProgress, [0, 0.2],
@@ -199,10 +171,10 @@ function SectionHeader({ sectionProgress }: { sectionProgress: ReturnType<typeof
   );
 
   return (
-    <motion.div className="max-w-2xl mb-20" style={{ y, opacity }}>
+    <motion.div className="max-w-2xl mb-20" style={reduced ? undefined : { y, opacity }}>
       <motion.p
-        className="text-[#CA8A04] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
-        style={{ clipPath: labelClip }}
+        className="text-[#B45309] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
+        style={reduced ? undefined : { clipPath: labelClip }}
       >
         What We Build
       </motion.p>
@@ -211,7 +183,7 @@ function SectionHeader({ sectionProgress }: { sectionProgress: ReturnType<typeof
         <br />
         <em className="italic">every detail</em>
       </h2>
-      <p className="text-[#78716C] text-lg font-light leading-relaxed mt-6">
+      <p className="text-[#57534E] text-lg font-light leading-relaxed mt-6">
         From a single fireplace mantel to a whole home of custom millwork — these
         are the things we shape in wood for homes across the Colorado Front Range.
       </p>
@@ -221,6 +193,7 @@ function SectionHeader({ sectionProgress }: { sectionProgress: ReturnType<typeof
 
 export function Services() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion() ?? false;
 
   // Background parallax + header drive
   const { scrollYProgress: sectionScroll } = useScroll({
@@ -239,28 +212,28 @@ export function Services() {
   const gridY = useTransform(sectionSmooth, [0, 1], ["4%", "-4%"]);
 
   return (
-    <section ref={sectionRef} className="relative bg-[#FAF7F2] py-28 sm:py-36 px-6 overflow-hidden">
+    <section id="services" ref={sectionRef} className="relative bg-[#FAF7F2] py-28 sm:py-36 px-6 overflow-hidden">
 
       {/* Parallax wood grain background */}
       <motion.div className="absolute inset-x-0 inset-y-[-10%] h-[120%] pointer-events-none"
-        style={{ y: bgY, opacity: bgOpacity }}
+        style={{ y: reduced ? 0 : bgY, opacity: reduced ? 0.04 : bgOpacity }}
       >
-        <Image src="/wood/wood_grain.jpg" alt="" fill className="object-cover" />
+        <Image src="/wood/wood_grain.jpg" alt="" fill className="object-cover" sizes="100vw" />
       </motion.div>
 
       {/* Decorative ghost text */}
       <motion.div
         className="absolute right-0 top-1/2 -translate-y-1/2 text-[18rem] font-serif italic
                    text-[#1C1917]/[0.025] leading-none select-none pointer-events-none"
-        style={{ y: decoY }}
+        style={{ y: reduced ? 0 : decoY }}
       >
         craft
       </motion.div>
 
       <div className="relative max-w-7xl mx-auto">
-        <SectionHeader sectionProgress={sectionSmooth} />
+        <SectionHeader sectionProgress={sectionSmooth} reduced={reduced} />
 
-        <motion.div style={{ y: gridY }}>
+        <motion.div style={{ y: reduced ? 0 : gridY }}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
             {services.map((service, i) => (
               <ServiceCard key={service.num} service={service} index={i} />

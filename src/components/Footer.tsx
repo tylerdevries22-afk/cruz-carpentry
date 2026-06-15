@@ -12,7 +12,7 @@ export function Footer() {
           <p className="font-serif text-3xl text-white mb-1">
             <em>Cruz</em> Carpentry
           </p>
-          <p className="text-white/35 text-xs tracking-[0.2em] uppercase font-light">
+          <p className="text-white/60 text-xs tracking-[0.2em] uppercase font-light">
             Custom Millwork · Colorado Front Range
           </p>
         </div>
@@ -32,10 +32,10 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/25 text-xs font-light">
+          <p className="text-white/55 text-xs font-light">
             &copy; {year} Cruz Carpentry. All rights reserved.
           </p>
-          <p className="text-white/20 text-xs font-light">
+          <p className="text-white/55 text-xs font-light">
             Licensed &amp; Insured · Colorado
           </p>
         </div>

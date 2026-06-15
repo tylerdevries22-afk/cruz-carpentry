@@ -16,7 +16,7 @@ export interface Chapter {
   overlayOpacity: number;
 }
 
-export const SCROLL_HEIGHT = "900vh";
+export const SCROLL_HEIGHT = "550vh";
 
 export const chapters: Chapter[] = [
   {

@@ -46,7 +46,7 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
       <motion.div className="absolute inset-0" style={{ scale, filter: filterStyle }}>
         <Image
           src={chapter.image}
-          alt={chapter.headline}
+          alt={chapter.label}
           fill
           className="object-cover"
           priority={chapter.id === "raw" || chapter.id === "grain"}
@@ -79,9 +79,12 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
         className="absolute bottom-20 sm:bottom-24 left-0 right-0 px-8 sm:px-16 text-center"
         style={{ y: textY, opacity: textOpacity }}
       >
-        <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-4 drop-shadow-2xl">
+        {/* Decorative cinematic headline — a <p>, not a heading, so it doesn't
+            pollute the document outline (the real section headings live in
+            Services/Gallery/etc.). */}
+        <p className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-4 drop-shadow-2xl">
           {chapter.headline}
-        </h2>
+        </p>
         <p className="text-white/60 text-base sm:text-lg font-light tracking-wide">
           {chapter.sub}
         </p>
@@ -193,7 +196,7 @@ function FinishCTA({ localProgress }: { localProgress: MotionValue<number> }) {
       >
         <a
           href="tel:+17202800812"
-          className="inline-flex items-center gap-3 bg-[#CA8A04] hover:bg-[#B45309] text-white px-10 py-4 rounded-full text-base font-medium transition-colors duration-200 cursor-pointer shadow-2xl"
+          className="inline-flex items-center gap-3 bg-[#B45309] hover:bg-[#92400E] text-white px-10 py-4 rounded-full text-base font-medium transition-colors duration-200 cursor-pointer shadow-2xl"
         >
           <PhoneIcon />
           Call for a Free Quote · (720) 280-0812

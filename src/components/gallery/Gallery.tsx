@@ -36,7 +36,7 @@ function GalleryHeader({
   return (
     <motion.div className="mb-14 sm:mb-16" style={reduced ? undefined : { y, opacity }}>
       <motion.p
-        className="text-[#CA8A04] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
+        className="text-[#B45309] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
         style={reduced ? undefined : { clipPath: labelClip }}
       >
         Our Work
@@ -52,7 +52,7 @@ function GalleryHeader({
             className="h-px w-24 bg-[#CA8A04] mb-3 origin-left sm:origin-right sm:ml-auto"
             style={reduced ? undefined : { scaleX: lineScaleX }}
           />
-          <p className="text-[#78716C] text-sm font-light">
+          <p className="text-[#57534E] text-sm font-light">
             Tap any photo to view it full size
           </p>
         </div>
@@ -95,6 +95,20 @@ function Lightbox({
       if (e.key === "Escape") onClose();
       else if (e.key === "ArrowLeft") onPrev();
       else if (e.key === "ArrowRight") onNext();
+      else if (e.key === "Tab") {
+        // Trap focus within the dialog's controls (WCAG 2.4.3 / modal pattern).
+        const focusables = dialogRef.current?.querySelectorAll("button");
+        if (!focusables || focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     document.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
@@ -126,7 +140,7 @@ function Lightbox({
         onClick={onClose}
         aria-label="Close"
         className="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center rounded-full
-                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="w-5 h-5">
           <line x1="18" y1="6" x2="6" y2="18" />
@@ -140,7 +154,7 @@ function Lightbox({
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
         aria-label="Previous photo"
         className="absolute left-2 sm:left-5 z-10 w-11 h-11 flex items-center justify-center rounded-full
-                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
           <polyline points="15 18 9 12 15 6" />
@@ -167,7 +181,7 @@ function Lightbox({
         />
         <figcaption className="mt-4 text-center">
           <p className="text-white/85 text-sm font-light">{photo.alt}</p>
-          <p className="text-white/40 text-xs mt-1 tracking-wider">
+          <p className="text-white/60 text-xs mt-1 tracking-wider">
             {index + 1} / {photos.length}
           </p>
         </figcaption>
@@ -179,7 +193,7 @@ function Lightbox({
         onClick={(e) => { e.stopPropagation(); onNext(); }}
         aria-label="Next photo"
         className="absolute right-2 sm:right-5 z-10 w-11 h-11 flex items-center justify-center rounded-full
-                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
           <polyline points="9 18 15 12 9 6" />
@@ -191,6 +205,7 @@ function Lightbox({
 
 export function Gallery() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const reduced = useReducedMotion() ?? false;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -204,7 +219,11 @@ export function Gallery() {
   const accentOpacity = useTransform(sectionSmooth, [0, 0.1, 0.9, 1], [0, 0.07, 0.07, 0]);
 
   const count = GALLERY_PHOTOS.length;
-  const close = useCallback(() => setOpenIndex(null), []);
+  const close = useCallback(() => {
+    setOpenIndex(null);
+    // Return focus to the tile that opened the lightbox (WCAG 2.4.3).
+    triggerRef.current?.focus();
+  }, []);
   const prev = useCallback(
     () => setOpenIndex((i) => (i === null ? i : (i - 1 + count) % count)),
     [count],
@@ -217,6 +236,7 @@ export function Gallery() {
   return (
     <section
       ref={sectionRef}
+      id="gallery"
       className="relative bg-[#F0E8DC] py-28 sm:py-36 px-6 overflow-hidden"
     >
       {/* Parallax dark wood accent */}
@@ -245,10 +265,13 @@ export function Gallery() {
             <motion.button
               key={photo.thumb}
               type="button"
-              onClick={() => setOpenIndex(i)}
+              onClick={(e) => {
+                triggerRef.current = e.currentTarget;
+                setOpenIndex(i);
+              }}
               aria-label={`View larger: ${photo.alt}`}
               className="group relative aspect-square overflow-hidden rounded-lg bg-[#E5D9C9] cursor-pointer
-                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CA8A04] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0E8DC]"
+                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1C1917] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0E8DC]"
               initial={reduced ? false : { opacity: 0 }}
               whileInView={reduced ? undefined : { opacity: 1 }}
               viewport={{ once: true, amount: 0.1 }}

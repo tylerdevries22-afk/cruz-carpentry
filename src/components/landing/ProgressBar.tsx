@@ -18,7 +18,7 @@ export function ProgressBar({ progress }: ProgressBarProps) {
   return (
     <div className="absolute bottom-0 left-0 right-0 z-20 pb-6 px-6 sm:px-12">
       {/* Label */}
-      <motion.p className="text-white/40 text-[10px] tracking-[0.2em] uppercase mb-2 font-light">
+      <motion.p className="text-white/65 text-[10px] tracking-[0.2em] uppercase mb-2 font-light">
         {activeLabel}
       </motion.p>
 

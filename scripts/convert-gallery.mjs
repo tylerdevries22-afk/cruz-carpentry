@@ -13,7 +13,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 const MAX_EDGE = 1920;
-const THUMB = 1000;
+const THUMB = 700;
 const QUALITY = 80;
 
 // Curated alt text, indexed by output number (cruz-01 = index 0). Derived from
