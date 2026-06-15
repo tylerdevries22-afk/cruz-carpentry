@@ -34,7 +34,15 @@ export function Hero() {
   useEffect(() => {
     const v = videoRef.current;
     if (!v || reduced) return; // honor reduced motion — leave the poster shown
-    v.play().catch(() => {/* autoplay blocked by browser — poster shown */});
+    // Defer video load/play until after the page loads so the video bytes don't
+    // compete with the LCP poster for bandwidth on first paint.
+    const start = () => v.play().catch(() => {/* blocked — poster shown */});
+    if (document.readyState === "complete") {
+      start();
+    } else {
+      window.addEventListener("load", start, { once: true });
+      return () => window.removeEventListener("load", start);
+    }
   }, [reduced]);
 
   // Track hero scrolling out of viewport
@@ -66,11 +74,10 @@ export function Hero() {
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
-          autoPlay={!reduced}
           muted
           loop
           playsInline
-          preload={reduced ? "none" : "metadata"}
+          preload="none"
           poster="/images/hero-poster.webp"
         >
           <source src="/videos/hero.webm" type="video/webm" />

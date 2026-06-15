@@ -65,7 +65,17 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${bodoni.variable} ${jost.variable}`}>
-      <body>{children}</body>
+      <body>
+        {/* Prioritize the hero poster (LCP) so it paints before the video loads. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-poster.webp"
+          type="image/webp"
+          fetchPriority="high"
+        />
+        {children}
+      </body>
     </html>
   );
 }
