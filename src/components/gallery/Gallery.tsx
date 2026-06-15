@@ -1,19 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import {
   motion,
+  AnimatePresence,
   useScroll,
   useTransform,
   useSpring,
   useReducedMotion,
 } from "framer-motion";
 import { EASE } from "@/lib/constants";
-import { GALLERY_PHOTOS } from "./photos";
+import { GALLERY_PHOTOS, type GalleryPhoto } from "./photos";
 
-// Section header — scroll-driven, matches the rest of the site. Falls back to a
-// static render when the visitor prefers reduced motion.
+// Section header — scroll-driven, with a static fallback for reduced motion.
 function GalleryHeader({
   sectionSmooth,
   reduced,
@@ -34,7 +34,7 @@ function GalleryHeader({
   const lineScaleX = useTransform(sectionSmooth, [0.05, 0.25], [0, 1]);
 
   return (
-    <motion.div className="mb-16 sm:mb-20" style={reduced ? undefined : { y, opacity }}>
+    <motion.div className="mb-14 sm:mb-16" style={reduced ? undefined : { y, opacity }}>
       <motion.p
         className="text-[#CA8A04] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
         style={reduced ? undefined : { clipPath: labelClip }}
@@ -53,9 +53,7 @@ function GalleryHeader({
             style={reduced ? undefined : { scaleX: lineScaleX }}
           />
           <p className="text-[#78716C] text-sm font-light">
-            Custom millwork
-            <br />
-            Colorado Front Range
+            Tap any photo to view it full size
           </p>
         </div>
       </div>
@@ -63,11 +61,138 @@ function GalleryHeader({
   );
 }
 
-const [featured, ...rest] = GALLERY_PHOTOS;
+function ExpandIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+      <polyline points="15 3 21 3 21 9" />
+      <polyline points="9 21 3 21 3 15" />
+      <line x1="21" y1="3" x2="14" y2="10" />
+      <line x1="3" y1="21" x2="10" y2="14" />
+    </svg>
+  );
+}
+
+function Lightbox({
+  photos,
+  index,
+  onClose,
+  onPrev,
+  onNext,
+  reduced,
+}: {
+  photos: GalleryPhoto[];
+  index: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+  reduced: boolean;
+}) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const photo = photos[index];
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") onPrev();
+      else if (e.key === "ArrowRight") onNext();
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialogRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose, onPrev, onNext]);
+
+  return (
+    <motion.div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={photo.alt}
+      tabIndex={-1}
+      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 sm:p-10 outline-none"
+      initial={reduced ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={reduced ? undefined : { opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      {/* Close */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close"
+        className="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center rounded-full
+                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="w-5 h-5">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      {/* Prev */}
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); onPrev(); }}
+        aria-label="Previous photo"
+        className="absolute left-2 sm:left-5 z-10 w-11 h-11 flex items-center justify-center rounded-full
+                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
+      {/* Image + caption */}
+      <motion.figure
+        key={photo.full}
+        onClick={(e) => e.stopPropagation()}
+        className="relative flex flex-col items-center max-w-[92vw]"
+        initial={reduced ? false : { opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, ease: EASE }}
+      >
+        <Image
+          src={photo.full}
+          alt={photo.alt}
+          width={photo.width}
+          height={photo.height}
+          className="max-h-[80vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+          sizes="92vw"
+          priority
+        />
+        <figcaption className="mt-4 text-center">
+          <p className="text-white/85 text-sm font-light">{photo.alt}</p>
+          <p className="text-white/40 text-xs mt-1 tracking-wider">
+            {index + 1} / {photos.length}
+          </p>
+        </figcaption>
+      </motion.figure>
+
+      {/* Next */}
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); onNext(); }}
+        aria-label="Next photo"
+        className="absolute right-2 sm:right-5 z-10 w-11 h-11 flex items-center justify-center rounded-full
+                   bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </motion.div>
+  );
+}
 
 export function Gallery() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion() ?? false;
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -75,25 +200,19 @@ export function Gallery() {
   });
   const sectionSmooth = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
 
-  // Parallax wood accent behind the section (single scroll tracker for the
-  // whole section — per-image parallax doesn't scale to a large gallery).
   const accentY = useTransform(sectionSmooth, [0, 1], ["-18%", "18%"]);
-  const accentOpacity = useTransform(
-    sectionSmooth,
-    [0, 0.1, 0.9, 1],
-    [0, 0.07, 0.07, 0],
-  );
+  const accentOpacity = useTransform(sectionSmooth, [0, 0.1, 0.9, 1], [0, 0.07, 0.07, 0]);
 
-  // One-shot reveal, disabled for reduced-motion users (framer's JS transforms
-  // aren't covered by the global prefers-reduced-motion CSS rule).
-  const featuredReveal = reduced
-    ? {}
-    : {
-        initial: { opacity: 0, y: 40 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, amount: 0.2 },
-        transition: { duration: 0.7, ease: EASE },
-      };
+  const count = GALLERY_PHOTOS.length;
+  const close = useCallback(() => setOpenIndex(null), []);
+  const prev = useCallback(
+    () => setOpenIndex((i) => (i === null ? i : (i - 1 + count) % count)),
+    [count],
+  );
+  const next = useCallback(
+    () => setOpenIndex((i) => (i === null ? i : (i + 1) % count)),
+    [count],
+  );
 
   return (
     <section
@@ -120,52 +239,55 @@ export function Gallery() {
       <div className="relative max-w-7xl mx-auto">
         <GalleryHeader sectionSmooth={sectionSmooth} reduced={reduced} />
 
-        {/* Featured image */}
-        {featured && (
-          <motion.div
-            className="relative overflow-hidden rounded-xl mb-4 aspect-[3/2]"
-            {...featuredReveal}
-          >
-            <Image
-              src={featured.src}
-              alt={featured.alt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 1152px"
-            />
-          </motion.div>
-        )}
-
-        {/* Masonry grid — lazy-loaded, lightweight one-shot reveal per photo. */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
-          {rest.map((photo, i) => {
-            const reveal = reduced
-              ? {}
-              : {
-                  initial: { opacity: 0, y: 24 },
-                  whileInView: { opacity: 1, y: 0 },
-                  viewport: { once: true, amount: 0.15 },
-                  transition: { duration: 0.55, ease: EASE, delay: (i % 3) * 0.05 },
-                };
-            return (
-              <motion.div
-                key={photo.src}
-                className="mb-4 break-inside-avoid overflow-hidden rounded-xl"
-                {...reveal}
+        {/* Uniform square grid — centered thumbnails, click to open full image. */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
+          {GALLERY_PHOTOS.map((photo, i) => (
+            <motion.button
+              key={photo.thumb}
+              type="button"
+              onClick={() => setOpenIndex(i)}
+              aria-label={`View larger: ${photo.alt}`}
+              className="group relative aspect-square overflow-hidden rounded-lg bg-[#E5D9C9] cursor-pointer
+                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CA8A04] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0E8DC]"
+              initial={reduced ? false : { opacity: 0 }}
+              whileInView={reduced ? undefined : { opacity: 1 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.5, ease: EASE, delay: (i % 4) * 0.04 }}
+            >
+              <Image
+                src={photo.thumb}
+                alt={photo.alt}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+              />
+              {/* Hover veil + expand affordance */}
+              <div className="absolute inset-0 bg-[#1C1917]/0 group-hover:bg-[#1C1917]/25 transition-colors duration-300" />
+              <span
+                className="absolute inset-0 flex items-center justify-center text-white
+                           opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  width={photo.width}
-                  height={photo.height}
-                  className="w-full h-auto"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </motion.div>
-            );
-          })}
+                <span className="w-10 h-10 rounded-full bg-[#CA8A04]/90 flex items-center justify-center">
+                  <ExpandIcon />
+                </span>
+              </span>
+            </motion.button>
+          ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {openIndex !== null && (
+          <Lightbox
+            photos={GALLERY_PHOTOS}
+            index={openIndex}
+            onClose={close}
+            onPrev={prev}
+            onNext={next}
+            reduced={reduced}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

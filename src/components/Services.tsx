@@ -16,6 +16,7 @@ const services = [
     title: "Custom Cabinetry — Kitchen & Bath",
     description:
       "Kitchen, bath, and pantry cabinetry built to endure — islands, vanities, and custom storage finished with the precision of a true craftsman.",
+    image: "/gallery/cruz-34.webp",
     Icon: CabinetIcon,
   },
   {
@@ -23,6 +24,7 @@ const services = [
     title: "Built-In Shelving & Entertainment Centers",
     description:
       "Floor-to-ceiling built-ins, floating shelves, and media walls designed around your room, your TV, and your home office.",
+    image: "/gallery/cruz-10.webp",
     Icon: BookshelfIcon,
   },
   {
@@ -30,6 +32,7 @@ const services = [
     title: "Staircases & Railings",
     description:
       "Custom stairs, newel posts, and railings — from hand-set iron balusters to modern cable rail and reclaimed-wood treads.",
+    image: "/gallery/cruz-30.webp",
     Icon: StairsIcon,
   },
   {
@@ -37,6 +40,7 @@ const services = [
     title: "Trim, Molding & Wainscoting",
     description:
       "Crown molding, baseboards, casings, wall paneling, and wainscoting that give a room its finished, architectural soul.",
+    image: "/gallery/cruz-37.webp",
     Icon: MoldingIcon,
   },
   {
@@ -44,6 +48,7 @@ const services = [
     title: "Custom Closets & Wardrobes",
     description:
       "Walk-in suites and reach-in systems with drawers, shelving, and hanging tailored to every inch of your space.",
+    image: "/gallery/cruz-29.webp",
     Icon: ClosetIcon,
   },
   {
@@ -51,6 +56,7 @@ const services = [
     title: "Mudrooms, Lockers & Benches",
     description:
       "Hardworking entryways — built-in lockers, cubbies, hooks, and storage benches that keep daily life in order.",
+    image: "/gallery/cruz-17.webp",
     Icon: LockerIcon,
   },
   {
@@ -58,6 +64,7 @@ const services = [
     title: "Exposed Beams & Wood Ceilings",
     description:
       "Beam wraps, coffered and plank ceilings, and range-hood surrounds that bring warmth and character overhead.",
+    image: "/gallery/cruz-35.webp",
     Icon: BeamIcon,
   },
   {
@@ -65,6 +72,7 @@ const services = [
     title: "Fireplace Mantels & Surrounds",
     description:
       "Timber mantels and custom surrounds that turn the fireplace into the natural heart of the room.",
+    image: "/gallery/cruz-40.webp",
     Icon: MantelIcon,
   },
   {
@@ -72,6 +80,7 @@ const services = [
     title: "Interior & Barn Doors",
     description:
       "Door hanging, crisp cased openings, and sliding barn doors that shape how your home flows together.",
+    image: "/gallery/cruz-20.webp",
     Icon: DoorIcon,
   },
   {
@@ -79,6 +88,7 @@ const services = [
     title: "Custom Woodwork & Specialty Builds",
     description:
       "Built-in bunk beds, window seats, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
+    image: "/gallery/cruz-25.webp",
     Icon: SquareIcon,
   },
 ];
@@ -109,26 +119,29 @@ function ServiceCard({
   const blurVal = useTransform(smooth, [0, 0.7], [4, 0]);
   const blurFilter = useTransform(blurVal, (b) => `blur(${b}px)`);
 
-  // Gold number clips in left-to-right
-  const numClip = useTransform(smooth, [0, 0.75], [
-    "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
-    "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-  ]);
-
   // Divider line draws in
   const lineScaleX = useTransform(smooth, [0.15, 0.85], [0, 1]);
 
-  // Icon + content fade slightly behind card
+  // Content fades up slightly behind the card
   const contentOpacity = useTransform(smooth, [0.3, 0.8], [0, 1]);
   const contentY = useTransform(smooth, [0.3, 1], [16, 0]);
 
+  const imageSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px";
+
   if (reduced) {
     return (
-      <div className="bg-white border border-[#E8DDD4] rounded-2xl p-8">
-        <p className="text-[#CA8A04] font-serif italic text-4xl mb-4">{service.num}</p>
-        <div className="w-10 h-10 mb-4 text-[#CA8A04]"><service.Icon /></div>
-        <h3 className="font-serif text-xl text-[#1C1917] mb-3">{service.title}</h3>
-        <p className="text-[#78716C] text-sm leading-relaxed font-light">{service.description}</p>
+      <div className="bg-white border border-[#E8DDD4] rounded-2xl overflow-hidden">
+        <div className="relative aspect-[16/10]">
+          <Image src={service.image} alt={service.title} fill sizes={imageSizes} className="object-cover" />
+          <span className="absolute top-3 left-3 bg-[#CA8A04] text-white text-[0.7rem] font-semibold tracking-wider px-2.5 py-1 rounded-full">
+            {service.num}
+          </span>
+        </div>
+        <div className="p-7 sm:p-8">
+          <div className="w-10 h-10 mb-4 text-[#CA8A04]"><service.Icon /></div>
+          <h3 className="font-serif text-xl text-[#1C1917] mb-3">{service.title}</h3>
+          <p className="text-[#78716C] text-sm leading-relaxed font-light">{service.description}</p>
+        </div>
       </div>
     );
   }
@@ -137,31 +150,31 @@ function ServiceCard({
     <motion.div
       ref={ref}
       style={{ x, y, opacity, scale, filter: blurFilter }}
-      className="group relative bg-white border border-[#E8DDD4] rounded-2xl p-8
+      className="group relative bg-white border border-[#E8DDD4] rounded-2xl overflow-hidden
                  hover:shadow-2xl hover:border-[#CA8A04]/30 transition-[border-color,box-shadow]
-                 duration-500 cursor-default overflow-hidden"
+                 duration-500"
     >
-      {/* Subtle wood texture on hover */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.04] transition-opacity duration-700 pointer-events-none">
-        <Image src="/wood/wood_texture.jpg" alt="" fill className="object-cover" />
+      {/* Representative project photo */}
+      <div className="relative aspect-[16/10] overflow-hidden">
+        <Image
+          src={service.image}
+          alt={service.title}
+          fill
+          sizes={imageSizes}
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        <span className="absolute top-3 left-3 bg-[#CA8A04] text-white text-[0.7rem] font-semibold tracking-wider px-2.5 py-1 rounded-full">
+          {service.num}
+        </span>
       </div>
 
-      {/* Number — clips in scroll-driven */}
-      <motion.p
-        className="font-serif italic text-[4rem] leading-none text-[#CA8A04] mb-2 select-none"
-        style={{ clipPath: numClip }}
-      >
-        {service.num}
-      </motion.p>
-
-      {/* Divider line — draws in scroll-driven */}
-      <motion.div
-        className="h-px bg-[#E8DDD4] mb-6 origin-left"
-        style={{ scaleX: lineScaleX }}
-      />
-
-      {/* Icon + content */}
-      <motion.div style={{ opacity: contentOpacity, y: contentY }}>
+      {/* Content */}
+      <motion.div className="p-7 sm:p-8" style={{ opacity: contentOpacity, y: contentY }}>
+        <motion.div
+          className="h-px bg-[#E8DDD4] mb-6 origin-left"
+          style={{ scaleX: lineScaleX }}
+        />
         <div className="w-10 h-10 mb-5 text-[#CA8A04] group-hover:scale-110 transition-transform duration-300">
           <service.Icon />
         </div>
