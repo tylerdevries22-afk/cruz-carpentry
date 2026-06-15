@@ -7,10 +7,6 @@ import { EstimateForm } from "@/components/EstimateForm";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 
-// Revalidate the page (and its Supabase-backed gallery) at most once a minute,
-// so the marketing site is served as cached HTML between refreshes.
-export const revalidate = 60;
-
 export default function Home() {
   return (
     <>

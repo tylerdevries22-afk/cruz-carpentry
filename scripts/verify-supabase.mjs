@@ -42,16 +42,6 @@ await check("service role → leads table", async () => {
   return `exists (${data.length} row(s) visible)`;
 });
 
-await check("public anon → published gallery", async () => {
-  const { data, error } = await publicClient
-    .from("gallery_projects")
-    .select("id, title")
-    .eq("published", true)
-    .order("sort_order");
-  if (error) throw error;
-  return `${data.length} published project(s)`;
-});
-
 await check("RLS guard → anon cannot read leads", async () => {
   const { data, error } = await publicClient.from("leads").select("id").limit(1);
   // We WANT this to be blocked: either an RLS error or zero rows returned.
