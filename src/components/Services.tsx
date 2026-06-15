@@ -9,7 +9,6 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import Image from "next/image";
-import { EASE } from "@/lib/constants";
 
 const services = [
   {

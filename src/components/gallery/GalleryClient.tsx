@@ -9,34 +9,15 @@ import {
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { EASE } from "@/lib/constants";
 
-const photos = [
-  {
-    src: "/images/project-1.jpg",
-    alt: "Custom floor-to-ceiling bookcase with cabinet base",
-    label: "Built-In Bookshelves",
-    location: "Residential — Denver, CO",
-  },
-  {
-    src: "/images/project-2.jpg",
-    alt: "Custom walk-in closet shelving system spanning full room",
-    label: "Walk-In Closet System",
-    location: "Residential — Aurora, CO",
-  },
-  {
-    src: "/images/project-3.jpg",
-    alt: "Built-in home office desk with surrounding shelving",
-    label: "Home Office Built-In",
-    location: "Residential — Lakewood, CO",
-  },
-];
-
-interface ParallaxPhotoProps {
+export interface GalleryPhoto {
   src: string;
   alt: string;
   label: string;
   location: string;
+}
+
+interface ParallaxPhotoProps extends GalleryPhoto {
   className?: string;
   revealOffset?: [string, string];
   parallaxRange?: [string, string];
@@ -174,7 +155,7 @@ function GalleryHeader({
   );
 }
 
-export function Gallery() {
+export function GalleryClient({ photos }: { photos: GalleryPhoto[] }) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress: sectionScroll } = useScroll({
@@ -189,6 +170,10 @@ export function Gallery() {
 
   // Continuous container drift keeps photos moving throughout the section
   const photosY = useTransform(sectionSmooth, [0, 1], ["2.5%", "-2.5%"]);
+
+  if (photos.length === 0) return null;
+
+  const [banner, ...rest] = photos;
 
   return (
     <section
@@ -215,38 +200,34 @@ export function Gallery() {
       <div className="relative max-w-7xl mx-auto">
         <GalleryHeader sectionSmooth={sectionSmooth} />
 
-        {/* Layout: full-width banner + 2-column below */}
+        {/* Layout: full-width banner + 2-column grid below */}
         <motion.div className="space-y-4" style={{ y: photosY }}>
           <ParallaxPhoto
-            src={photos[0].src}
-            alt={photos[0].alt}
-            label={photos[0].label}
-            location={photos[0].location}
+            src={banner.src}
+            alt={banner.alt}
+            label={banner.label}
+            location={banner.location}
             className="h-[320px] sm:h-[460px] lg:h-[560px]"
             revealOffset={["start 95%", "start 10%"]}
             parallaxRange={["-12%", "12%"]}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <ParallaxPhoto
-              src={photos[1].src}
-              alt={photos[1].alt}
-              label={photos[1].label}
-              location={photos[1].location}
-              className="h-[280px] sm:h-[360px]"
-              revealOffset={["start 95%", "start 18%"]}
-              parallaxRange={["-10%", "10%"]}
-            />
-            <ParallaxPhoto
-              src={photos[2].src}
-              alt={photos[2].alt}
-              label={photos[2].label}
-              location={photos[2].location}
-              className="h-[280px] sm:h-[360px]"
-              revealOffset={["start 95%", "start 18%"]}
-              parallaxRange={["-10%", "10%"]}
-            />
-          </div>
+          {rest.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {rest.map((photo, i) => (
+                <ParallaxPhoto
+                  key={`${photo.src}-${i}`}
+                  src={photo.src}
+                  alt={photo.alt}
+                  label={photo.label}
+                  location={photo.location}
+                  className="h-[280px] sm:h-[360px]"
+                  revealOffset={["start 95%", "start 18%"]}
+                  parallaxRange={["-10%", "10%"]}
+                />
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

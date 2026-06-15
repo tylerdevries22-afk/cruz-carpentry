@@ -1,0 +1,5 @@
+# Never upload local secrets — Vercel injects env vars from project settings.
+# (Patterns are unanchored like .gitignore, so do NOT use bare dir names like
+# "supabase/" — that would also match src/lib/supabase/.)
+.env
+.env.*

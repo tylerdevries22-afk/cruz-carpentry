@@ -1,0 +1,237 @@
+"use client";
+
+import { useActionState } from "react";
+import { motion } from "framer-motion";
+import {
+  submitEstimate,
+  initialEstimateState,
+} from "@/app/actions/estimate";
+import { PROJECT_TYPES } from "@/lib/estimate-schema";
+import { PHONE, PHONE_HREF } from "@/lib/constants";
+
+const fieldBase =
+  "w-full rounded-lg border bg-white px-4 py-3 text-[#1C1917] text-base " +
+  "placeholder:text-[#A8A29E] outline-none transition-colors " +
+  "focus:border-[#CA8A04] focus:ring-2 focus:ring-[#CA8A04]/20";
+
+function fieldClass(hasError: boolean): string {
+  return `${fieldBase} ${hasError ? "border-[#B91C1C]" : "border-[#D6CCBA]"}`;
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="mt-1.5 text-sm text-[#B91C1C]">
+      {message}
+    </p>
+  );
+}
+
+export function EstimateForm() {
+  const [state, formAction, pending] = useActionState(
+    submitEstimate,
+    initialEstimateState,
+  );
+  const errors = state.fieldErrors ?? {};
+
+  return (
+    <section id="estimate" className="relative bg-[#F5EEE2] py-24 sm:py-32 px-6">
+      <motion.div
+        className="max-w-2xl mx-auto"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="text-center mb-12">
+          <p className="text-[#CA8A04] text-xs font-semibold tracking-[0.28em] uppercase mb-5">
+            Request a Quote
+          </p>
+          <div className="w-12 h-px bg-[#CA8A04] mx-auto mb-8" />
+          <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1917] leading-tight mb-5">
+            Let&apos;s talk about
+            <br />
+            <em className="italic">your project</em>
+          </h2>
+          <p className="text-[#78716C] text-lg font-light leading-relaxed max-w-md mx-auto">
+            Tell us a little about what you have in mind and we&apos;ll reach out
+            to schedule a free, no-obligation estimate.
+          </p>
+        </div>
+
+        {state.status === "success" ? (
+          <div
+            role="status"
+            aria-live="polite"
+            className="rounded-2xl border border-[#CA8A04]/30 bg-white p-10 text-center shadow-sm"
+          >
+            <h3 className="font-serif text-2xl text-[#1C1917] mb-3">
+              Request received
+            </h3>
+            <p className="text-[#78716C] font-light leading-relaxed">
+              {state.message}
+            </p>
+            <p className="text-[#78716C] text-sm mt-6 font-light">
+              Prefer to talk now?{" "}
+              <a
+                href={PHONE_HREF}
+                className="text-[#CA8A04] font-medium hover:underline"
+              >
+                {PHONE}
+              </a>
+            </p>
+          </div>
+        ) : (
+          <form action={formAction} noValidate className="space-y-5">
+            {/* Honeypot — hidden from real users. */}
+            <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+              <label htmlFor="company">Company</label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
+            {state.status === "error" && state.message ? (
+              <p
+                role="alert"
+                aria-live="assertive"
+                className="rounded-lg border border-[#B91C1C]/30 bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]"
+              >
+                {state.message}
+              </p>
+            ) : null}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-[#44403C] mb-1.5"
+                >
+                  Name <span className="text-[#CA8A04]">*</span>
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  autoComplete="name"
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? "name-error" : undefined}
+                  className={fieldClass(Boolean(errors.name))}
+                  placeholder="Your name"
+                />
+                <FieldError id="name-error" message={errors.name} />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-[#44403C] mb-1.5"
+                >
+                  Phone <span className="text-[#CA8A04]">*</span>
+                </label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  autoComplete="tel"
+                  aria-invalid={Boolean(errors.phone)}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                  className={fieldClass(Boolean(errors.phone))}
+                  placeholder="(720) 280-0812"
+                />
+                <FieldError id="phone-error" message={errors.phone} />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-[#44403C] mb-1.5"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? "email-error" : undefined}
+                  className={fieldClass(Boolean(errors.email))}
+                  placeholder="you@example.com"
+                />
+                <FieldError id="email-error" message={errors.email} />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="projectType"
+                  className="block text-sm font-medium text-[#44403C] mb-1.5"
+                >
+                  Project type
+                </label>
+                <select
+                  id="projectType"
+                  name="projectType"
+                  defaultValue=""
+                  className={fieldClass(Boolean(errors.projectType))}
+                >
+                  <option value="" disabled>
+                    Select one…
+                  </option>
+                  {PROJECT_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+                <FieldError id="projectType-error" message={errors.projectType} />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-[#44403C] mb-1.5"
+              >
+                Project details
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={5}
+                aria-invalid={Boolean(errors.message)}
+                aria-describedby={errors.message ? "message-error" : undefined}
+                className={`${fieldClass(Boolean(errors.message))} resize-y`}
+                placeholder="Tell us about your space, timeline, and what you'd like built."
+              />
+              <FieldError id="message-error" message={errors.message} />
+            </div>
+
+            <button
+              type="submit"
+              disabled={pending}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2
+                         bg-[#CA8A04] hover:bg-[#B45309] disabled:opacity-60
+                         disabled:cursor-not-allowed text-white px-10 py-4 rounded-full
+                         text-lg font-medium transition-colors duration-200 cursor-pointer
+                         shadow-lg shadow-black/10"
+            >
+              {pending ? "Sending…" : "Request Free Estimate"}
+            </button>
+
+            <p className="text-[#A8A29E] text-xs font-light pt-1">
+              Serving the Colorado Front Range · We&apos;ll never share your
+              information.
+            </p>
+          </form>
+        )}
+      </motion.div>
+    </section>
+  );
+}

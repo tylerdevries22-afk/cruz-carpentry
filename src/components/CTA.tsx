@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Image from "next/image";
-import { PHONE, PHONE_HREF, EASE } from "@/lib/constants";
+import { PHONE, PHONE_HREF } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 export function CTA() {
