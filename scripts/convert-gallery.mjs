@@ -94,6 +94,9 @@ for (const file of sources) {
   const full = await sharp(input)
     .rotate()
     .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
+    // Warm & golden grade — applied identically to every photo for a cohesive look.
+    .modulate({ saturation: 1.14 })
+    .linear([1.14, 1.04, 0.9], [-10, -8, -4])
     .webp({ quality: QUALITY })
     .toFile(path.join(outDir, name));
 
@@ -102,6 +105,8 @@ for (const file of sources) {
     .rotate()
     .resize(THUMB, THUMB, { fit: "cover", position: "centre" })
     .sharpen({ sigma: 0.6 })
+    .modulate({ saturation: 1.14 })
+    .linear([1.14, 1.04, 0.9], [-10, -8, -4])
     .webp({ quality: QUALITY })
     .toFile(path.join(thumbDir, name));
 
