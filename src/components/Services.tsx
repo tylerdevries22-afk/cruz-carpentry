@@ -13,31 +13,73 @@ import Image from "next/image";
 const services = [
   {
     num: "01",
-    title: "Built-In Bookshelves & Entertainment Centers",
+    title: "Custom Cabinetry — Kitchen & Bath",
     description:
-      "Floor-to-ceiling custom built-ins that transform any room into a showpiece — designed to your exact dimensions and lifestyle.",
-    Icon: BookshelfIcon,
+      "Kitchen, bath, and pantry cabinetry built to endure — islands, vanities, and custom storage finished with the precision of a true craftsman.",
+    Icon: CabinetIcon,
   },
   {
     num: "02",
-    title: "Custom Closet Systems & Storage",
+    title: "Built-In Shelving & Entertainment Centers",
     description:
-      "Maximize every inch with bespoke closet solutions, from walk-in wardrobe suites to functional mudroom systems.",
-    Icon: ClosetIcon,
+      "Floor-to-ceiling built-ins, floating shelves, and media walls designed around your room, your TV, and your home office.",
+    Icon: BookshelfIcon,
   },
   {
     num: "03",
-    title: "Home Office & Desk Built-Ins",
+    title: "Staircases & Railings",
     description:
-      "Dedicated workspaces crafted to fit your room perfectly. Integrated shelving, desk surfaces, and hidden cable management.",
-    Icon: DeskIcon,
+      "Custom stairs, newel posts, and railings — from hand-set iron balusters to modern cable rail and reclaimed-wood treads.",
+    Icon: StairsIcon,
   },
   {
     num: "04",
-    title: "Kitchen & Bath Cabinetry",
+    title: "Trim, Molding & Wainscoting",
     description:
-      "Custom cabinetry built to endure. Every door, drawer, and detail finished with the precision of a true craftsman.",
-    Icon: CabinetIcon,
+      "Crown molding, baseboards, casings, wall paneling, and wainscoting that give a room its finished, architectural soul.",
+    Icon: MoldingIcon,
+  },
+  {
+    num: "05",
+    title: "Custom Closets & Wardrobes",
+    description:
+      "Walk-in suites and reach-in systems with drawers, shelving, and hanging tailored to every inch of your space.",
+    Icon: ClosetIcon,
+  },
+  {
+    num: "06",
+    title: "Mudrooms, Lockers & Benches",
+    description:
+      "Hardworking entryways — built-in lockers, cubbies, hooks, and storage benches that keep daily life in order.",
+    Icon: LockerIcon,
+  },
+  {
+    num: "07",
+    title: "Exposed Beams & Wood Ceilings",
+    description:
+      "Beam wraps, coffered and plank ceilings, and range-hood surrounds that bring warmth and character overhead.",
+    Icon: BeamIcon,
+  },
+  {
+    num: "08",
+    title: "Fireplace Mantels & Surrounds",
+    description:
+      "Timber mantels and custom surrounds that turn the fireplace into the natural heart of the room.",
+    Icon: MantelIcon,
+  },
+  {
+    num: "09",
+    title: "Interior & Barn Doors",
+    description:
+      "Door hanging, crisp cased openings, and sliding barn doors that shape how your home flows together.",
+    Icon: DoorIcon,
+  },
+  {
+    num: "10",
+    title: "Custom Woodwork & Specialty Builds",
+    description:
+      "Built-in bunk beds, window seats, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
+    Icon: SquareIcon,
   },
 ];
 
@@ -156,6 +198,10 @@ function SectionHeader({ sectionProgress }: { sectionProgress: ReturnType<typeof
         <br />
         <em className="italic">every detail</em>
       </h2>
+      <p className="text-[#78716C] text-lg font-light leading-relaxed mt-6">
+        From a single fireplace mantel to a whole home of custom millwork — these
+        are the things we shape in wood for homes across the Colorado Front Range.
+      </p>
     </motion.div>
   );
 }
@@ -244,23 +290,6 @@ function ClosetIcon() {
     </svg>
   );
 }
-function DeskIcon() {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="4" width="14" height="26" rx="2" />
-      <rect x="30" y="4" width="14" height="26" rx="2" />
-      <rect x="4" y="28" width="40" height="7" rx="2" />
-      <line x1="12" y1="35" x2="12" y2="44" />
-      <line x1="36" y1="35" x2="36" y2="44" />
-      <line x1="8" y1="11" x2="14" y2="11" />
-      <line x1="8" y1="17" x2="14" y2="17" />
-      <line x1="8" y1="23" x2="14" y2="23" />
-      <line x1="34" y1="11" x2="40" y2="11" />
-      <line x1="34" y1="17" x2="40" y2="17" />
-      <line x1="34" y1="23" x2="40" y2="23" />
-    </svg>
-  );
-}
 function CabinetIcon() {
   return (
     <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
@@ -272,6 +301,79 @@ function CabinetIcon() {
       <circle cx="29" cy="13" r="1.5" fill="currentColor" stroke="none" />
       <circle cx="19" cy="35" r="1.5" fill="currentColor" stroke="none" />
       <circle cx="29" cy="35" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+function StairsIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="5,43 5,35 16,35 16,27 27,27 27,19 38,19 38,11 44,11" />
+      <line x1="9" y1="40" x2="44" y2="7" />
+      <line x1="18" y1="35" x2="22" y2="30" />
+      <line x1="29" y1="27" x2="33" y2="22" />
+    </svg>
+  );
+}
+function MoldingIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 12 H42 V42" />
+      <path d="M6 20 H35 V42" />
+      <path d="M6 28 H28 V42" />
+    </svg>
+  );
+}
+function LockerIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="6" y="6" width="15" height="27" rx="1.5" />
+      <rect x="27" y="6" width="15" height="27" rx="1.5" />
+      <line x1="11" y1="13" x2="16" y2="13" />
+      <line x1="32" y1="13" x2="37" y2="13" />
+      <line x1="6" y1="40" x2="42" y2="40" />
+      <line x1="10" y1="40" x2="10" y2="44" />
+      <line x1="38" y1="40" x2="38" y2="44" />
+    </svg>
+  );
+}
+function BeamIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="7" width="38" height="34" rx="1.5" />
+      <line x1="16" y1="7" x2="16" y2="41" />
+      <line x1="24" y1="7" x2="24" y2="41" />
+      <line x1="32" y1="7" x2="32" y2="41" />
+    </svg>
+  );
+}
+function MantelIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <line x1="4" y1="15" x2="44" y2="15" />
+      <path d="M9 15 V42 H39 V15" />
+      <rect x="16" y="24" width="16" height="18" rx="1" />
+    </svg>
+  );
+}
+function DoorIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <line x1="5" y1="9" x2="43" y2="9" />
+      <rect x="11" y="11" width="26" height="33" rx="1" />
+      <line x1="24" y1="11" x2="24" y2="44" />
+      <line x1="11" y1="22" x2="37" y2="22" />
+      <circle cx="31" cy="30" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+function SquareIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 6 V42 H44" />
+      <path d="M11 6 V13 H37" />
+      <line x1="18" y1="42" x2="18" y2="37" />
+      <line x1="25" y1="42" x2="25" y2="37" />
+      <line x1="32" y1="42" x2="32" y2="37" />
     </svg>
   );
 }
