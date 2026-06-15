@@ -108,15 +108,15 @@ export function Hero() {
           </span>
         </motion.div>
 
-        {/* Business name — the hero */}
-        <motion.h1
-          variants={riseUp}
-          className="font-serif leading-[0.9] tracking-[-0.02em] mb-5"
+        {/* Business name (LCP) — a plain <h1> that paints immediately with a
+            paint-time CSS rise, so LCP isn't gated by JS hydration. */}
+        <h1
+          className="font-serif leading-[0.9] tracking-[-0.02em] mb-5 hero-rise"
           style={{ fontSize: "clamp(3.25rem, 9.5vw, 9rem)" }}
         >
           <em className="italic text-white">Cruz</em>
           <span className="text-white"> Carpentry</span>
-        </motion.h1>
+        </h1>
 
         {/* Gold divider */}
         <motion.div
