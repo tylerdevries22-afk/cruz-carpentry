@@ -97,7 +97,7 @@ const services = [
     title: "Custom Cedar Saunas",
     description:
       "Cedar saunas built for your space — tiered benches, tight tongue-and-groove paneling, and heater surrounds crafted to take the heat and last for years.",
-    image: "/wood/wood_finish.jpg",
+    image: "/images/sauna.webp",
     Icon: SaunaIcon,
   },
 ];
