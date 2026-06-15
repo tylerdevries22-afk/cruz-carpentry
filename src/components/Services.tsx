@@ -92,6 +92,14 @@ const services = [
     image: "/gallery/cruz-25.webp",
     Icon: SquareIcon,
   },
+  {
+    num: "11",
+    title: "Custom Cedar Saunas",
+    description:
+      "Cedar saunas built for your space — tiered benches, tight tongue-and-groove paneling, and heater surrounds crafted to take the heat and last for years.",
+    image: "/wood/wood_finish.jpg",
+    Icon: SaunaIcon,
+  },
 ];
 
 // One-shot in-view reveal (a single IntersectionObserver per card, not a live
@@ -360,6 +368,23 @@ function SquareIcon() {
       <line x1="18" y1="42" x2="18" y2="37" />
       <line x1="25" y1="42" x2="25" y2="37" />
       <line x1="32" y1="42" x2="32" y2="37" />
+    </svg>
+  );
+}
+function SaunaIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      {/* steam */}
+      <path d="M17 6c2 2.5 2 4.5 0 7s-2 4.5 0 7" />
+      <path d="M24 5c2 2.5 2 4.5 0 7s-2 4.5 0 7" />
+      <path d="M31 6c2 2.5 2 4.5 0 7s-2 4.5 0 7" />
+      {/* tiered bench */}
+      <path d="M8 30 H40" />
+      <line x1="12" y1="30" x2="12" y2="36" />
+      <line x1="36" y1="30" x2="36" y2="36" />
+      <path d="M8 38 H30" />
+      <line x1="12" y1="38" x2="12" y2="42" />
+      <line x1="26" y1="38" x2="26" y2="42" />
     </svg>
   );
 }

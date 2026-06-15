@@ -19,6 +19,7 @@ const SERVICE_NAMES = [
   "Fireplace Mantels & Surrounds",
   "Interior & Barn Doors",
   "Custom Woodwork & Specialty Builds",
+  "Custom Cedar Saunas",
 ];
 
 // LocalBusiness structured data for local SEO / rich results. Address, geo, and
