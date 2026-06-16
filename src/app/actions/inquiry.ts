@@ -5,6 +5,7 @@ import { inquirySubmitSchema } from "@/lib/wizard-schema";
 import { priceProject } from "@/lib/pricing";
 import type { EstimateInput, EstimateResult } from "@/lib/pricing";
 import { scoreLead } from "@/lib/lead-score";
+import { hashPassword } from "@/lib/customer-auth";
 import { getClientIp } from "@/lib/request-ip";
 import { withRetry, isPermanentDbError } from "@/lib/retry";
 import { recordHitAndCheckLimit, isOverSupabaseRateLimit } from "@/lib/rate-limit";
@@ -80,7 +81,46 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
     estimate,
   );
 
+  // Auto-create (or match) a customer account, linked to this inquiry. A
+  // password (optional, set in the wizard) enables portal login at /login.
+  let customerId: string | null = null;
+  if (data.email) {
+    const email = data.email.toLowerCase();
+    try {
+      const { data: existing } = await supabase
+        .from("customers")
+        .select("id, password_hash")
+        .eq("email", email)
+        .maybeSingle();
+      if (existing) {
+        customerId = (existing as { id: string }).id;
+        if (data.password && !(existing as { password_hash?: string }).password_hash) {
+          await supabase
+            .from("customers")
+            .update({ password_hash: hashPassword(data.password), updated_at: new Date().toISOString() })
+            .eq("id", customerId);
+        }
+      } else {
+        const { data: created } = await supabase
+          .from("customers")
+          .insert({
+            email,
+            full_name: `${data.firstName} ${data.lastName}`.trim(),
+            phone: data.phone,
+            password_hash: data.password ? hashPassword(data.password) : null,
+          })
+          .select("id")
+          .single();
+        if (created) customerId = (created as { id: string }).id;
+      }
+    } catch (error) {
+      // Non-fatal: still record the inquiry even if account upsert fails.
+      console.error(`[inquiry] customer upsert failed: ${(error as { message?: string })?.message ?? "?"}`);
+    }
+  }
+
   const row = {
+    customer_id: customerId,
     first_name: data.firstName,
     last_name: data.lastName,
     email: data.email ?? null,

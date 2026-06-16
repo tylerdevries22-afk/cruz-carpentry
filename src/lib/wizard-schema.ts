@@ -233,6 +233,15 @@ export const inquirySubmitSchema = estimateInputSchema.extend({
   preferredContact: z.enum(PREFERRED_CONTACT).optional(),
   permissionToText: z.boolean().optional(),
   photos: z.array(photoSchema).max(12).optional(),
+  /** Optional account password (set in the wizard to enable portal login). */
+  password: z
+    .string()
+    .max(100)
+    .optional()
+    .transform((v) => (v && v.length > 0 ? v : undefined))
+    .refine((v) => v === undefined || v.length >= 8, {
+      message: "Password must be at least 8 characters.",
+    }),
   /** Honeypot — must be empty. */
   company: z.string().max(0).optional(),
 });

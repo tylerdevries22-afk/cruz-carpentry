@@ -247,6 +247,7 @@ interface WizardData {
   contactRole: string;
   preferredContact: string;
   permissionToText: boolean;
+  password: string;
   photos: PhotoItem[];
   company: string;
 }
@@ -297,6 +298,7 @@ export function EstimateWizard() {
     contactRole: "",
     preferredContact: "",
     permissionToText: false,
+    password: "",
     photos: [],
     company: "",
   });
@@ -441,6 +443,7 @@ export function EstimateWizard() {
       contactRole: data.contactRole || undefined,
       preferredContact: data.preferredContact || undefined,
       permissionToText: data.permissionToText,
+      password: data.password || undefined,
       photos: data.photos.flatMap((p) =>
         p.status === "done" && p.path ? [{ path: p.path, label: p.label || undefined }] : [],
       ),
@@ -741,6 +744,18 @@ export function EstimateWizard() {
               <input type="checkbox" checked={data.permissionToText} onChange={(e) => set("permissionToText", e.target.checked)} className="h-4 w-4 rounded border-[#C9BCA8] text-[#B45309]" />
               You can text me about my project.
             </label>
+            <div className="rounded-lg bg-[#FAF7F2] p-4">
+              <Field
+                label="Create a password to track your project (optional)"
+                value={data.password}
+                onChange={(v) => set("password", v)}
+                type="password"
+                error={errors.password}
+              />
+              <p className="mt-1 text-xs text-[#78716C]">
+                Optional — set one to log in later and follow your estimate &amp; status. Min 8 characters.
+              </p>
+            </div>
             {/* honeypot */}
             <input
               type="text"

@@ -16,6 +16,7 @@ const NAV_LINKS: NavLinkItem[] = [
   { label: "About", href: "/about" },
   { label: "Estimate", href: "/estimate" },
   { label: "Contact", href: "/contact" },
+  { label: "Log in", href: "/login" },
 ];
 
 export function Nav() {
