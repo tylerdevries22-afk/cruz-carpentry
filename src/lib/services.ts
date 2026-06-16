@@ -551,6 +551,7 @@ export const SERVICES: Service[] = [
       "Weather-suited species and six-sided sealing built for the Colorado climate",
       "Precision-hung and shimmed dead-plumb to swing and latch true",
       "Custom cased openings, jambs, sidelights, and transoms",
+      "Hidden bookcase doors, flush jib doors, and concealed passages with seamless reveals",
       "Hardware to match — hand-forged iron, unlacquered brass, or modern stainless",
     ],
     details: [
@@ -585,10 +586,13 @@ export const SERVICES: Service[] = [
     projectType: "Interior & Exterior Doors",
     showcase: [
       { image: "/cards/door-exterior-pivot.webp", caption: "Modern walnut pivot entry" },
+      { image: "/cards/door-secret-bookcase.webp", caption: "Bookcase door to a hidden room" },
       { image: "/cards/door-interior-fluted.webp", caption: "Fluted white-oak interior door" },
       { image: "/cards/door-exterior-double.webp", caption: "Mahogany double entry with transom" },
+      { image: "/cards/door-secret-jib.webp", caption: "Hidden jib door in wall paneling" },
       { image: "/cards/door-interior-paneled.webp", caption: "Raised-panel interior doors" },
       { image: "/cards/door-exterior-arched.webp", caption: "Arched alder entry, forged iron" },
+      { image: "/cards/door-secret-feature.webp", caption: "Concealed door in an oak feature wall" },
       { image: "/cards/door-interior-plank.webp", caption: "Reclaimed-oak plank door" },
     ],
     seo: {
