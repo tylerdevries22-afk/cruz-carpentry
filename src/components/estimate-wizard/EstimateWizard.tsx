@@ -9,10 +9,12 @@ import {
   COMPLEXITIES,
   CONTACT_ROLES,
   DESIGN_STYLES,
+  EXISTING_CONDITIONS,
   FINISHES,
   PHOTO_LABELS,
   PREFERRED_CONTACT,
   PRIORITIES,
+  PROJECT_GOALS,
   PROJECT_TYPES,
   TIERS,
   TIMELINES,
@@ -148,6 +150,36 @@ const LABELS: Record<string, string> = {
   obstruction: "Obstruction",
   inspiration: "Inspiration",
   sketch: "Sketch",
+  // goals
+  add_storage: "Add storage",
+  improve_appearance: "Improve appearance",
+  increase_home_value: "Increase home value",
+  replace_damaged_old: "Replace old / damaged",
+  luxury_focal_point: "Luxury focal point",
+  prepare_for_sale: "Prepare for sale",
+  improve_organization: "Get organized",
+  match_existing_style: "Match existing style",
+  solve_functional_problem: "Solve a problem",
+  // existing conditions
+  demolition_removal_needed: "Demolition / removal needed",
+  existing_built_ins_to_remove: "Existing built-ins to remove",
+  wall_flat_level_unknown: "Walls may be uneven",
+  outlets_switches_in_area: "Outlets / switches in area",
+  vents_pipes_in_area: "Vents / pipes in area",
+  baseboards_trim_in_area: "Baseboards / trim in area",
+  windows_doors_in_area: "Windows / doors in area",
+  radiators_hvac_in_area: "Radiators / HVAC in area",
+  electrical_work_needed: "Electrical work needed",
+  drywall_repair_needed: "Drywall repair needed",
+  painting_staining_needed: "Painting / staining needed",
+  match_existing_wood_trim: "Match existing wood / trim",
+  home_occupied: "Home occupied during work",
+  pets_or_children: "Pets or children present",
+  parking_loading_restrictions: "Parking / loading limits",
+  stairs_elevator_access: "Stairs / elevator access",
+  condo_hoa_commercial_rules: "Condo / HOA / commercial rules",
+  dust_control_required: "Dust control required",
+  floor_furniture_protection: "Protect floors / furniture",
 };
 
 const TIER_INFO: Record<Tier, { name: string; blurb: string; recommended?: boolean }> = {
@@ -205,6 +237,8 @@ interface WizardData {
   timeline: string;
   priority: Priority;
   budgetBand: string;
+  goals: string[];
+  conditions: string[];
   firstName: string;
   lastName: string;
   email: string;
@@ -219,9 +253,11 @@ interface WizardData {
 
 const STEPS = [
   { key: "project", title: "What are we building?" },
+  { key: "goal", title: "What's the goal?" },
   { key: "tier", title: "Choose a quality level" },
   { key: "measure", title: "Rough measurements" },
   { key: "photos", title: "Add photos" },
+  { key: "conditions", title: "Site conditions" },
   { key: "finish", title: "Finish & style" },
   { key: "priority", title: "What matters most?" },
   { key: "contact", title: "Your details" },
@@ -251,6 +287,8 @@ export function EstimateWizard() {
     timeline: "",
     priority: "balanced",
     budgetBand: "",
+    goals: [],
+    conditions: [],
     firstName: "",
     lastName: "",
     email: "",
@@ -276,6 +314,11 @@ export function EstimateWizard() {
     setData((d) => ({ ...d, [k]: v }));
   const setArea = (i: number, k: keyof AreaInput, v: string) =>
     setData((d) => ({ ...d, areas: d.areas.map((a, j) => (j === i ? { ...a, [k]: v } : a)) }));
+  const toggle = (field: "goals" | "conditions", v: string) =>
+    setData((d) => ({
+      ...d,
+      [field]: d[field].includes(v) ? d[field].filter((x) => x !== v) : [...d[field], v],
+    }));
 
   async function handleFiles(fileList: FileList | null) {
     if (!fileList) return;
@@ -331,6 +374,14 @@ export function EstimateWizard() {
       timeline: data.timeline || undefined,
       priority: data.priority,
       budgetBand: data.budgetBand || undefined,
+      goals: data.goals,
+      conditions: data.conditions,
+      demolition: data.conditions.includes("demolition_removal_needed"),
+      risk: {
+        matchExisting: data.conditions.includes("match_existing_wood_trim"),
+        unknownWallCondition: data.conditions.includes("wall_flat_level_unknown"),
+        lowPhotoQuality: data.photos.filter((p) => p.status === "done").length === 0,
+      },
     };
   }
 
@@ -453,6 +504,55 @@ export function EstimateWizard() {
             onChange={(v) => set("projectType", v)}
             error={errors.projectType}
           />
+        )}
+
+        {current === "goal" && (
+          <div>
+            <p className="mb-4 text-sm font-light text-[#57534E]">What are you hoping to accomplish? Pick any that apply.</p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {PROJECT_GOALS.filter((g) => g !== "other").map((g) => {
+                const active = data.goals.includes(g);
+                return (
+                  <button
+                    key={g}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => toggle("goals", g)}
+                    className={`rounded-xl border px-4 py-3.5 text-left text-sm transition ${active ? "border-[#B45309] bg-[#FBF4EC] font-medium ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
+                  >
+                    {LABELS[g] ?? g}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {current === "conditions" && (
+          <div>
+            <p className="mb-4 text-sm font-light text-[#57534E]">
+              Check anything that applies at the site — it helps us scope accurately. All optional.
+            </p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {EXISTING_CONDITIONS.map((c) => {
+                const active = data.conditions.includes(c);
+                return (
+                  <label
+                    key={c}
+                    className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition ${active ? "border-[#B45309] bg-[#FBF4EC]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={() => toggle("conditions", c)}
+                      className="h-4 w-4 rounded border-[#C9BCA8] text-[#B45309]"
+                    />
+                    <span className="text-[#57534E]">{LABELS[c] ?? c}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
         )}
 
         {current === "tier" && (

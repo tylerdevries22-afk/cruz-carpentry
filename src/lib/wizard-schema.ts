@@ -105,6 +105,41 @@ export const photoSchema = z.object({
   height: z.number().int().nonnegative().max(20000).optional(),
 });
 
+export const PROJECT_GOALS = [
+  "add_storage",
+  "improve_appearance",
+  "increase_home_value",
+  "replace_damaged_old",
+  "luxury_focal_point",
+  "prepare_for_sale",
+  "improve_organization",
+  "match_existing_style",
+  "solve_functional_problem",
+  "other",
+] as const;
+
+export const EXISTING_CONDITIONS = [
+  "demolition_removal_needed",
+  "existing_built_ins_to_remove",
+  "wall_flat_level_unknown",
+  "outlets_switches_in_area",
+  "vents_pipes_in_area",
+  "baseboards_trim_in_area",
+  "windows_doors_in_area",
+  "radiators_hvac_in_area",
+  "electrical_work_needed",
+  "drywall_repair_needed",
+  "painting_staining_needed",
+  "match_existing_wood_trim",
+  "home_occupied",
+  "pets_or_children",
+  "parking_loading_restrictions",
+  "stairs_elevator_access",
+  "condo_hoa_commercial_rules",
+  "dust_control_required",
+  "floor_furniture_protection",
+] as const;
+
 export const PRIORITIES = ["balanced", "price_quality", "fast_quality", "price_fast"] as const;
 export const COMPLEXITIES = ["simple", "moderate", "complex", "very_complex"] as const;
 export const ACCESS_LEVELS = ["easy", "moderate", "hard"] as const;
@@ -152,6 +187,19 @@ export const estimateInputSchema = z.object({
   timeline: z.enum(TIMELINES).optional(),
   priority: z.enum(PRIORITIES).optional(),
   budgetBand: z.enum(BUDGET_BANDS).optional(),
+  goals: z.array(z.enum(PROJECT_GOALS)).max(12).optional(),
+  conditions: z.array(z.enum(EXISTING_CONDITIONS)).max(30).optional(),
+  risk: z
+    .object({
+      oldHome: z.boolean().optional(),
+      unknownWallCondition: z.boolean().optional(),
+      lowPhotoQuality: z.boolean().optional(),
+      unverifiedMeasurements: z.boolean().optional(),
+      complexInstall: z.boolean().optional(),
+      matchExisting: z.boolean().optional(),
+      tightTimeline: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 export type EstimateInputDTO = z.infer<typeof estimateInputSchema>;
