@@ -17,7 +17,7 @@ const services = [
     title: "Custom Cabinetry — Kitchen & Bath",
     description:
       "Kitchen, bath, and pantry cabinetry built to endure — islands, vanities, and custom storage finished with the precision of a true craftsman.",
-    image: "/gallery/cruz-34.webp",
+    image: "/cards/01.webp",
     Icon: CabinetIcon,
   },
   {
@@ -25,7 +25,7 @@ const services = [
     title: "Built-In Shelving & Entertainment Centers",
     description:
       "Floor-to-ceiling built-ins, floating shelves, and media walls designed around your room, your TV, and your home office.",
-    image: "/gallery/cruz-10.webp",
+    image: "/cards/02.webp",
     Icon: BookshelfIcon,
   },
   {
@@ -33,7 +33,7 @@ const services = [
     title: "Staircases & Railings",
     description:
       "Custom stairs, newel posts, and railings — from hand-set iron balusters to modern cable rail and reclaimed-wood treads.",
-    image: "/gallery/cruz-30.webp",
+    image: "/cards/03.webp",
     Icon: StairsIcon,
   },
   {
@@ -41,7 +41,7 @@ const services = [
     title: "Trim, Molding & Wainscoting",
     description:
       "Crown molding, baseboards, casings, wall paneling, and wainscoting that give a room its finished, architectural soul.",
-    image: "/gallery/cruz-37.webp",
+    image: "/cards/04.webp",
     Icon: MoldingIcon,
   },
   {
@@ -49,7 +49,7 @@ const services = [
     title: "Custom Closets & Wardrobes",
     description:
       "Walk-in suites and reach-in systems with drawers, shelving, and hanging tailored to every inch of your space.",
-    image: "/gallery/cruz-29.webp",
+    image: "/cards/05.webp",
     Icon: ClosetIcon,
   },
   {
@@ -57,7 +57,7 @@ const services = [
     title: "Mudrooms, Lockers & Benches",
     description:
       "Hardworking entryways — built-in lockers, cubbies, hooks, and storage benches that keep daily life in order.",
-    image: "/gallery/cruz-17.webp",
+    image: "/cards/06.webp",
     Icon: LockerIcon,
   },
   {
@@ -65,7 +65,7 @@ const services = [
     title: "Exposed Beams & Wood Ceilings",
     description:
       "Beam wraps, coffered and plank ceilings, and range-hood surrounds that bring warmth and character overhead.",
-    image: "/gallery/cruz-35.webp",
+    image: "/cards/07.webp",
     Icon: BeamIcon,
   },
   {
@@ -73,7 +73,7 @@ const services = [
     title: "Fireplace Mantels & Surrounds",
     description:
       "Timber mantels and custom surrounds that turn the fireplace into the natural heart of the room.",
-    image: "/gallery/cruz-40.webp",
+    image: "/cards/08.webp",
     Icon: MantelIcon,
   },
   {
@@ -81,7 +81,7 @@ const services = [
     title: "Interior & Barn Doors",
     description:
       "Door hanging, crisp cased openings, and sliding barn doors that shape how your home flows together.",
-    image: "/gallery/cruz-20.webp",
+    image: "/cards/09.webp",
     Icon: DoorIcon,
   },
   {
@@ -89,7 +89,7 @@ const services = [
     title: "Custom Woodwork & Specialty Builds",
     description:
       "Built-in bunk beds, window seats, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
-    image: "/gallery/cruz-25.webp",
+    image: "/cards/10.webp",
     Icon: SquareIcon,
   },
   {
