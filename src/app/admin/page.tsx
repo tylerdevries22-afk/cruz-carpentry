@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin-auth";
-import { adminLogout } from "@/app/actions/admin";
+import { adminLogout, updateLeadStatus } from "@/app/actions/admin";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { StatusSelect } from "@/components/admin/StatusSelect";
 
@@ -40,6 +40,16 @@ interface Inquiry {
   status: string;
   photos: Photo[] | null;
 }
+interface Lead {
+  id: string;
+  created_at: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  project_type: string | null;
+  message: string | null;
+  status: string;
+}
 
 const money = (n: number | null) =>
   n == null ? "—" : `$${Number(n).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
@@ -59,12 +69,12 @@ export default async function AdminPage() {
     return <main className="p-10 text-[#57534E]">Admin is not configured on this environment.</main>;
   }
 
-  const { data } = await supabase
-    .from("inquiries")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(100);
+  const [{ data }, { data: leadData }] = await Promise.all([
+    supabase.from("inquiries").select("*").order("created_at", { ascending: false }).limit(100),
+    supabase.from("leads").select("*").order("created_at", { ascending: false }).limit(100),
+  ]);
   const inquiries = (data ?? []) as Inquiry[];
+  const leads = (leadData ?? []) as Lead[];
 
   // Mint short-TTL signed URLs for every photo (private bucket).
   const paths = inquiries.flatMap((i) => (i.photos ?? []).map((p) => p.path));
@@ -81,10 +91,24 @@ export default async function AdminPage() {
       <div className="mx-auto max-w-5xl">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="font-serif text-3xl text-[#1C1917]">Inquiries</h1>
-            <p className="text-sm text-[#78716C]">{inquiries.length} most recent</p>
+            <h1 className="font-serif text-3xl text-[#1C1917]">Leads</h1>
+            <p className="text-sm text-[#78716C]">
+              <a href="#inquiries" className="hover:text-[#B45309] hover:underline">
+                {inquiries.length} estimate{inquiries.length === 1 ? "" : "s"}
+              </a>{" "}
+              ·{" "}
+              <a href="#quick-requests" className="hover:text-[#B45309] hover:underline">
+                {leads.length} quick request{leads.length === 1 ? "" : "s"}
+              </a>
+            </p>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href="/admin/applications"
+              className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white"
+            >
+              Applications
+            </Link>
             <Link
               href="/admin/rates"
               className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white"
@@ -98,6 +122,10 @@ export default async function AdminPage() {
             </form>
           </div>
         </div>
+
+        <h2 id="inquiries" className="mb-3 scroll-mt-6 font-serif text-xl text-[#1C1917]">
+          Estimates <span className="text-sm font-sans font-normal text-[#A8A29E]">(guided wizard)</span>
+        </h2>
 
         {inquiries.length === 0 ? (
           <p className="rounded-xl border border-[#E7DFD3] bg-white p-8 text-center text-[#78716C]">
@@ -170,6 +198,46 @@ export default async function AdminPage() {
                 </li>
               );
             })}
+          </ul>
+        )}
+
+        <h2 id="quick-requests" className="mb-3 mt-12 scroll-mt-6 font-serif text-xl text-[#1C1917]">
+          Quick requests <span className="text-sm font-sans font-normal text-[#A8A29E]">(short contact form)</span>
+        </h2>
+        {leads.length === 0 ? (
+          <p className="rounded-xl border border-[#E7DFD3] bg-white p-8 text-center text-[#78716C]">
+            No quick requests yet.
+          </p>
+        ) : (
+          <ul className="space-y-4">
+            {leads.map((l) => (
+              <li key={l.id} className="rounded-xl border border-[#E7DFD3] bg-white p-5 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-xs text-[#A8A29E]">
+                      {new Date(l.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}
+                    </span>
+                    <p className="mt-1 font-serif text-lg text-[#1C1917]">
+                      {l.project_type || "General inquiry"}
+                    </p>
+                    {l.message && (
+                      <p className="mt-1 max-w-prose whitespace-pre-line text-sm font-light text-[#57534E]">
+                        {l.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right text-sm">
+                    <p className="font-medium text-[#1C1917]">{l.name}</p>
+                    <p className="text-[#57534E]">{l.phone}</p>
+                    {l.email && <p className="text-[#57534E]">{l.email}</p>}
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center gap-2 border-t border-[#F0E8DC] pt-3">
+                  <span className="text-xs text-[#78716C]">Status:</span>
+                  <StatusSelect id={l.id} current={l.status} action={updateLeadStatus} label="Lead status" />
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </div>

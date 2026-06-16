@@ -66,6 +66,22 @@ export async function updateInquiryStatus(
   return { ok: !error };
 }
 
+/** Triage status for a quick "Request a Quote" lead (public.leads). */
+export async function updateLeadStatus(
+  id: string,
+  status: string,
+): Promise<{ ok: boolean }> {
+  if (!(await isAdmin())) return { ok: false };
+  if (!(STATUSES as readonly string[]).includes(status)) return { ok: false };
+  const supabase = getServiceSupabase();
+  if (!supabase) return { ok: false };
+  const { error } = await supabase
+    .from("leads")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  return { ok: !error };
+}
+
 /**
  * Save a new active pricing_config override (a partial RateSnapshot merged over
  * the in-code seed). Append-only: deactivates the current active row and
