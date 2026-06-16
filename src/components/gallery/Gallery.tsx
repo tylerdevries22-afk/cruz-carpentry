@@ -130,7 +130,7 @@ function Lightbox({
       ref={dialogRef}
       role="dialog"
       aria-modal="true"
-      aria-label={photo.alt}
+      aria-labelledby="lightbox-caption"
       tabIndex={-1}
       onClick={onClose}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 sm:p-10 outline-none"
@@ -177,7 +177,7 @@ function Lightbox({
       >
         <Image
           src={photo.full}
-          alt={photo.alt}
+          alt=""
           width={photo.width}
           height={photo.height}
           className="max-h-[80vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
@@ -185,7 +185,7 @@ function Lightbox({
           priority
         />
         <figcaption className="mt-4 text-center">
-          <p className="text-white/85 text-sm font-light">{photo.alt}</p>
+          <p id="lightbox-caption" className="text-white/85 text-sm font-light">{photo.alt}</p>
           <p className="text-white/60 text-xs mt-1 tracking-wider">
             {index + 1} / {photos.length}
           </p>
@@ -220,7 +220,7 @@ export function Gallery({
   photos = GALLERY_PHOTOS,
   eyebrow = "Our Work",
   heading = defaultHeading,
-  subheading = "Tap any photo to view it full size",
+  subheading = "Open any photo to view it full size",
   id = "gallery",
 }: {
   /** Defaults to the full gallery; pass a subset for a filtered grid. */

@@ -297,7 +297,7 @@ export const SERVICES: Service[] = [
       "Walk-in suites and reach-in systems with drawers, shelving, and hanging tailored to every inch of your space.",
     Icon: ClosetIcon,
     cardImage: "/cards/05.webp",
-    heroImage: "/cards/05.webp",
+    heroImage: "/gallery/cruz-29.webp",
     tagline: "A room you greet yourself in every morning.",
     intro:
       "The right closet turns getting dressed from a scramble into a calm, ordered ritual. We design around what you actually own — the hanging lengths, the drawer counts, the shoe and bag storage — and build it to use every inch from floor to ceiling. The result is bright, organized, and built to last far longer than a clip-together kit.",
@@ -307,7 +307,7 @@ export const SERVICES: Service[] = [
       "Adjustable shelving and hang rods on hand-drilled, reconfigurable pin holes",
       "Solid metal or hardwood hang rods sized to your wardrobe, not a standard length",
       "Integrated LED lighting under shelves and in drawers",
-      "Optional glass-front fronts, valet rods, hampers, and jewelry inserts",
+      "Optional glass-front doors, valet rods, hampers, and jewelry inserts",
     ],
     details: [
       {
@@ -354,7 +354,7 @@ export const SERVICES: Service[] = [
       "Hardworking entryways — built-in lockers, cubbies, hooks, and storage benches that keep daily life in order.",
     Icon: LockerIcon,
     cardImage: "/cards/06.webp",
-    heroImage: "/cards/06.webp",
+    heroImage: "/gallery/cruz-26.webp",
     tagline: "Where the chaos of the day gets put in its place.",
     intro:
       "The mudroom is the busiest three feet in the house — boots, backpacks, coats, leashes, all landing at once. We build entry systems that take the abuse of real family life and still look sharp: a bench you can stand on, lockers sized for each person, and hooks and cubbies that actually get used.",
@@ -582,7 +582,7 @@ export const SERVICES: Service[] = [
       "Built-in bunk beds, window seats, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
     Icon: SquareIcon,
     cardImage: "/cards/10.webp",
-    heroImage: "/cards/10.webp",
+    heroImage: "/gallery/cruz-25.webp",
     tagline: "The builds no catalog has a page for.",
     intro:
       "Some of the best projects don't fit a category — a loft bed with stairs and drawers built into a tricky corner, a window seat sized to a bay, a feature wall, a one-off piece a room was designed around. This is where we love to start from a sketch, solve the problem in wood, and build something that exists nowhere else.",

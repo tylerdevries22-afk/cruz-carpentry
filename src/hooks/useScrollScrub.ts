@@ -6,7 +6,6 @@ import { springConfig } from "@/config/woodMotionConfig";
 
 export interface ScrollScrub {
   containerRef: React.RefObject<HTMLDivElement | null>;
-  rawProgress: MotionValue<number>;
   progress: MotionValue<number>;
 }
 
@@ -20,5 +19,5 @@ export function useScrollScrub(): ScrollScrub {
 
   const progress = useSpring(scrollYProgress, springConfig);
 
-  return { containerRef, rawProgress: scrollYProgress, progress };
+  return { containerRef, progress };
 }

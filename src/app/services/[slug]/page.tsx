@@ -12,7 +12,9 @@ import { ServiceMaterials } from "@/components/service/ServiceMaterials";
 import { ServiceDetails } from "@/components/service/ServiceDetails";
 import { ServiceFAQ } from "@/components/service/ServiceFAQ";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
+import { JsonLd } from "@/components/JsonLd";
 import { SERVICES, getServiceBySlug } from "@/lib/services";
+import { buildBusinessNode, BUSINESS_ID } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/constants";
 
 // Prerender all 12 service pages at build time; 404 anything else.
@@ -59,16 +61,20 @@ export default async function ServicePage({
     .map((n) => GALLERY_PHOTOS[n - 1])
     .filter(Boolean);
 
+  const url = `${SITE_URL}/services/${service.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
+      // Inline the business node so the Service `provider` @id resolves on this
+      // page (Google parses each document's graph in isolation).
+      buildBusinessNode(),
       {
         "@type": "Service",
         name: service.title,
         serviceType: service.shortTitle,
         description: service.seo.description,
-        url: `${SITE_URL}${`/services/${service.slug}`}`,
-        provider: { "@id": `${SITE_URL}/#business` },
+        url,
+        provider: { "@id": BUSINESS_ID },
         areaServed: {
           "@type": "AdministrativeArea",
           name: "Colorado Front Range",
@@ -84,27 +90,25 @@ export default async function ServicePage({
             name: "What We Build",
             item: `${SITE_URL}/services`,
           },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: service.shortTitle,
-            item: `${SITE_URL}/services/${service.slug}`,
-          },
+          { "@type": "ListItem", position: 3, name: service.shortTitle, item: url },
         ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: service.faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
       },
     ],
   };
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
+      <JsonLd data={jsonLd} />
       <Nav />
-      <main>
+      <main id="main" tabIndex={-1}>
         <ServiceHero service={service} />
         <ServiceIntro service={service} />
         <ServiceProcess />
@@ -121,7 +125,7 @@ export default async function ServicePage({
                 <em className="italic">up close</em>
               </>
             }
-            subheading="Real projects across the Front Range · tap to enlarge"
+            subheading="Real projects across the Front Range · select to enlarge"
             id="work"
           />
         )}

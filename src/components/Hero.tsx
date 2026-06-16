@@ -63,7 +63,7 @@ export function Hero() {
     <section
       id="top"
       ref={heroRef}
-      className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center"
+      className="relative h-[100svh] w-full overflow-hidden flex flex-col items-center justify-center"
       aria-label="Hero"
     >
       {/* Video wrapper — scale drives parallax depth on scroll-out */}
@@ -132,13 +132,14 @@ export function Hero() {
           Built by Hand. Built to Last.
         </motion.p>
 
-        {/* Specialty line */}
-        <motion.p
+        {/* Specialty line — an h2 so the keyword/geo line is a real heading for
+            SEO (the h1 is the brand name); font-sans keeps the small-caps look. */}
+        <motion.h2
           variants={fadein}
-          className="text-[11px] tracking-[0.28em] uppercase text-white/70 mb-10 font-light"
+          className="font-sans text-[11px] tracking-[0.28em] uppercase text-white/70 mb-10 font-light"
         >
           Custom Carpentry &amp; Fine Millwork &nbsp;·&nbsp; Colorado
-        </motion.p>
+        </motion.h2>
 
         {/* CTA */}
         <motion.a

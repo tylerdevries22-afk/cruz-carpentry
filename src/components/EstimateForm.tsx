@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   submitEstimate,
@@ -39,6 +39,19 @@ export function EstimateForm({
   );
   const errors = state.fieldErrors ?? {};
   const reduced = useReducedMotion();
+  const successRef = useRef<HTMLDivElement>(null);
+
+  // Move focus after a server round-trip: to the confirmation on success, or to
+  // the first invalid field on error — so keyboard/SR users aren't stranded on
+  // the (now off-screen or stale) submit button.
+  useEffect(() => {
+    if (state.status === "success") {
+      successRef.current?.focus();
+    } else if (state.status === "error" && state.fieldErrors) {
+      const firstField = Object.keys(state.fieldErrors)[0];
+      if (firstField) document.getElementById(firstField)?.focus();
+    }
+  }, [state]);
 
   return (
     <section id="estimate" className="relative bg-[#F5EEE2] py-24 sm:py-32 px-6">
@@ -67,9 +80,11 @@ export function EstimateForm({
 
         {state.status === "success" ? (
           <div
+            ref={successRef}
+            tabIndex={-1}
             role="status"
             aria-live="polite"
-            className="rounded-2xl border border-[#CA8A04]/30 bg-white p-10 text-center shadow-sm"
+            className="rounded-2xl border border-[#CA8A04]/30 bg-white p-10 text-center shadow-sm focus:outline-none"
           >
             <h3 className="font-serif text-2xl text-[#1C1917] mb-3">
               Request received
@@ -185,6 +200,8 @@ export function EstimateForm({
                   id="projectType"
                   name="projectType"
                   defaultValue={defaultProjectType}
+                  aria-invalid={Boolean(errors.projectType)}
+                  aria-describedby={errors.projectType ? "projectType-error" : undefined}
                   className={fieldClass(Boolean(errors.projectType))}
                 >
                   <option value="" disabled>
@@ -223,7 +240,7 @@ export function EstimateForm({
               type="submit"
               disabled={pending}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2
-                         bg-[#B45309] hover:bg-[#92400E] disabled:opacity-60
+                         bg-[#B45309] hover:bg-[#92400E] active:bg-[#92400E] disabled:opacity-60
                          disabled:cursor-not-allowed text-white px-10 py-4 rounded-full
                          text-lg font-medium transition-colors duration-200 cursor-pointer
                          shadow-lg shadow-black/10 focus:outline-none focus-visible:ring-2

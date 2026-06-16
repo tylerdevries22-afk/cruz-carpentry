@@ -43,6 +43,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Disable the global smooth-scroll for anchor jumps too — smooth scrolling is
+     a vestibular trigger, and the rule below only covers animation/transition. */
+  html {
+    scroll-behavior: auto !important;
+  }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

@@ -69,9 +69,9 @@ export function ScrollWoodStory() {
   }
 
   return (
-    <div ref={containerRef} style={{ height: SCROLL_HEIGHT }} className="relative">
+    <div id="process" ref={containerRef} style={{ height: SCROLL_HEIGHT }} className="relative">
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen overflow-hidden bg-black">
+      <div className="sticky top-0 h-[100svh] overflow-hidden bg-black">
 
         {/* Cinematic chapter layers */}
         {chapters.map((chapter) => (
@@ -81,8 +81,9 @@ export function ScrollWoodStory() {
         {/* Progress bar — bottom left */}
         <ProgressBar progress={progress} />
 
-        {/* Chapter navigation dots — right edge */}
-        <div className="absolute right-5 sm:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-20">
+        {/* Chapter progress dots — decorative status only (hidden from AT; the
+            title-on-div was unreliable and the headline text conveys the stage). */}
+        <div aria-hidden="true" className="absolute right-5 sm:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-20">
           {chapters.map((chapter) => (
             <ChapterDot key={chapter.id} chapter={chapter} progress={progress} />
           ))}
@@ -94,7 +95,7 @@ export function ScrollWoodStory() {
 
 function ReducedMotionFallback() {
   return (
-    <section className="bg-[#1C1917] py-32 px-6">
+    <section id="process" className="bg-[#1C1917] py-32 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <p className="text-[#CA8A04] text-xs font-semibold tracking-[0.25em] uppercase mb-6">
           The Process

@@ -6,29 +6,18 @@ import { Gallery } from "@/components/gallery/Gallery";
 import { EstimateForm } from "@/components/EstimateForm";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
-import { PHONE_HREF, SITE_URL } from "@/lib/constants";
 import { SERVICES } from "@/lib/services";
+import { buildBusinessNode } from "@/lib/jsonld";
+import { JsonLd } from "@/components/JsonLd";
 
 const SERVICE_NAMES = SERVICES.map((service) => service.title);
 
-// LocalBusiness structured data for local SEO / rich results. Address, geo, and
-// aggregateRating are intentionally omitted until the owner supplies real data
-// (fabricating a review count or address risks Google penalties).
+// LocalBusiness structured data for local SEO / rich results, extended with the
+// full service catalog. (Address geo + aggregateRating intentionally omitted in
+// buildBusinessNode until the owner supplies real data.)
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "GeneralContractor",
-  "@id": `${SITE_URL}/#business`,
-  name: "Cruz Carpentry",
-  description:
-    "Custom carpentry and fine millwork serving the Colorado Front Range.",
-  url: SITE_URL,
-  telephone: PHONE_HREF.replace("tel:", ""),
-  image: `${SITE_URL}/opengraph-image`,
-  logo: `${SITE_URL}/icon.png`,
-  slogan: "Built by Hand. Built to Last.",
-  priceRange: "$$",
-  areaServed: { "@type": "AdministrativeArea", name: "Colorado Front Range" },
-  address: { "@type": "PostalAddress", addressRegion: "CO", addressCountry: "US" },
+  ...buildBusinessNode(),
   knowsAbout: SERVICE_NAMES,
   hasOfferCatalog: {
     "@type": "OfferCatalog",
@@ -43,14 +32,9 @@ const jsonLd = {
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
+      <JsonLd data={jsonLd} />
       <Nav />
-      <main>
+      <main id="main" tabIndex={-1}>
         <Hero />
         <LandingPage />
         <Services />

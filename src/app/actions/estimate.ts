@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { PHONE } from "@/lib/constants";
 import { parseEstimate, type EstimateField } from "@/lib/estimate-schema";
 import { withRetry, isPermanentDbError } from "@/lib/retry";
+import { recordHitAndCheckLimit, isOverSupabaseRateLimit } from "@/lib/rate-limit";
 import { getServiceSupabase, isServiceConfigured } from "@/lib/supabase/server";
 import type { LeadInsert } from "@/lib/supabase/types";
 
@@ -19,34 +20,6 @@ export const initialEstimateState: EstimateState = {
 };
 
 const CONTACT_FALLBACK = `Please call us at ${PHONE}.`;
-
-// Best-effort in-memory rate limit. It resets on cold start and is per-instance,
-// so treat it as a first line of defense, not a guarantee. Back it with a shared
-// store (Upstash, Supabase) if abuse becomes a problem.
-const RATE_LIMIT = { max: 5, windowMs: 10 * 60_000 };
-const MAX_TRACKED_IPS = 10_000;
-const recentHits = new Map<string, number[]>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (recentHits.get(ip) ?? []).filter(
-    (t) => now - t < RATE_LIMIT.windowMs,
-  );
-  recent.push(now);
-  recentHits.set(ip, recent);
-
-  // Bound memory: if the map grows large (e.g. spoofed IPs), drop entries whose
-  // timestamps have all aged out of the window.
-  if (recentHits.size > MAX_TRACKED_IPS) {
-    for (const [key, hits] of recentHits) {
-      if (hits.every((t) => now - t >= RATE_LIMIT.windowMs)) {
-        recentHits.delete(key);
-      }
-    }
-  }
-
-  return recent.length > RATE_LIMIT.max;
-}
 
 async function getClientIp(): Promise<string> {
   const h = await headers();
@@ -80,11 +53,18 @@ export async function submitEstimate(
   }
 
   const ip = await getClientIp();
-  if (isRateLimited(ip)) {
-    return {
-      status: "error",
-      message: `Too many requests — please try again in a few minutes, or call us at ${PHONE}.`,
-    };
+  const tooManyRequests: EstimateState = {
+    status: "error",
+    message: `Too many requests — please try again in a few minutes, or call us at ${PHONE}.`,
+  };
+
+  // Spam defense, cheapest first: per-instance L1, then the shared Supabase L2
+  // limiter that holds across serverless instances.
+  if (recordHitAndCheckLimit(ip)) return tooManyRequests;
+
+  const supabase = isServiceConfigured() ? getServiceSupabase() : null;
+  if (supabase && (await isOverSupabaseRateLimit(supabase, ip))) {
+    return tooManyRequests;
   }
 
   const parsed = parseEstimate({
@@ -103,7 +83,6 @@ export async function submitEstimate(
     };
   }
 
-  const supabase = isServiceConfigured() ? getServiceSupabase() : null;
   if (!supabase) {
     console.error("[estimate] Supabase service client is not configured.");
     return {

@@ -11,7 +11,7 @@ import type { Service } from "@/lib/services";
 export function ServiceHero({ service }: { service: Service }) {
   return (
     <section
-      className="relative flex min-h-[78vh] flex-col justify-end overflow-hidden"
+      className="relative flex min-h-[78svh] flex-col justify-end overflow-hidden"
       aria-label={`${service.shortTitle} — overview`}
     >
       <Image
@@ -46,7 +46,7 @@ export function ServiceHero({ service }: { service: Service }) {
           </li>
           <li>
             <Link
-              href="/#services"
+              href="/services"
               className="rounded-sm transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               What We Build
@@ -79,14 +79,14 @@ export function ServiceHero({ service }: { service: Service }) {
         <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <a
             href={PHONE_HREF}
-            className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#B45309] px-7 py-3.5 text-sm font-medium text-white shadow-lg shadow-black/30 transition-colors duration-200 hover:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
+            className="inline-flex min-h-[44px] items-center justify-center gap-2.5 rounded-full bg-[#B45309] px-7 py-3.5 text-sm font-medium text-white shadow-lg shadow-black/30 transition-colors duration-200 hover:bg-[#92400E] active:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
           >
             <PhoneIcon className="h-4 w-4" />
             Call for a Free Quote · {PHONE}
           </a>
           <a
             href="#estimate"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
+            className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-white/30 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/15 active:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
           >
             Request an Estimate
           </a>

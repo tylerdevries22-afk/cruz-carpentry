@@ -118,7 +118,7 @@ function SectionHeader({
       <p className="text-[#57534E] text-lg font-light leading-relaxed mt-6">
         From a single fireplace mantel to a whole home of custom millwork — these
         are the things we shape in wood for homes across the Colorado Front Range.
-        Tap any one to see how we build it.
+        Select any one to see how we build it.
       </p>
     </motion.div>
   );
@@ -140,9 +140,6 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
 
   // Decorative large background number (parallaxes at different speed)
   const decoY = useTransform(sectionSmooth, [0, 1], ["-20%", "20%"]);
-
-  // Continuous drift — cards keep moving as you scroll through the section
-  const gridY = useTransform(sectionSmooth, [0, 1], ["4%", "-4%"]);
 
   return (
     <section id="services" ref={sectionRef} className="relative bg-[#FAF7F2] py-28 sm:py-36 px-6 overflow-hidden">
@@ -166,13 +163,11 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
       <div className="relative max-w-7xl mx-auto">
         {showHeader && <SectionHeader sectionProgress={sectionSmooth} reduced={reduced} />}
 
-        <motion.div style={{ y: reduced ? 0 : gridY }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
-            {SERVICES.map((service, i) => (
-              <ServiceCard key={service.slug} service={service} index={i} />
-            ))}
-          </div>
-        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
+          {SERVICES.map((service, i) => (
+            <ServiceCard key={service.slug} service={service} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );

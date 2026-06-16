@@ -13,7 +13,7 @@ export function ServiceMaterials({ service }: { service: Service }) {
             Built from the <em className="italic">right stuff</em>
           </h2>
           <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-[#A8A29E]">
-            The materials and methods we reach for on a typical {service.shortTitle.toLowerCase()} project.
+            The materials and methods we reach for on a project like this.
           </p>
         </Reveal>
 

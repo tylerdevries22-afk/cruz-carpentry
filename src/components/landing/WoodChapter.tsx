@@ -3,6 +3,8 @@
 import { motion, MotionValue, useTransform } from "framer-motion";
 import Image from "next/image";
 import { Chapter } from "@/config/woodMotionConfig";
+import { PHONE, PHONE_HREF } from "@/lib/constants";
+import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 interface WoodChapterProps {
   chapter: Chapter;
@@ -20,15 +22,11 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
 
   const scale = useTransform(localProgress, [0, 1], chapter.scale);
 
-  const brightness = useTransform(
-    localProgress,
-    [0, 0.5, 1],
-    [chapter.filters.brightness * 0.82, chapter.filters.brightness, chapter.filters.brightness]
-  );
-
-  const filterStyle = useTransform(brightness, (b) =>
-    `brightness(${b}) contrast(${chapter.filters.contrast}) saturate(${chapter.filters.saturate}) sepia(${chapter.filters.sepia})`
-  );
+  // Static per-chapter grade — applied once, NOT as a per-frame MotionValue, so
+  // the browser never re-rasters a full-viewport CSS filter while scrolling
+  // (animated `filter` is not GPU-compositable; this was the heaviest scroll
+  // cost). Only transform (scale) + opacity remain animated.
+  const filter = `brightness(${chapter.filters.brightness}) contrast(${chapter.filters.contrast}) saturate(${chapter.filters.saturate}) sepia(${chapter.filters.sepia})`;
 
   const overlayOpacity = useTransform(
     localProgress,
@@ -42,11 +40,11 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
 
   return (
     <motion.div className="absolute inset-0 overflow-hidden" style={{ opacity: chapterOpacity }}>
-      {/* Photo with scale + CSS filter */}
-      <motion.div className="absolute inset-0" style={{ scale, filter: filterStyle }}>
+      {/* Photo with scale (animated) + static CSS filter */}
+      <motion.div className="absolute inset-0" style={{ scale, filter }}>
         <Image
           src={chapter.image}
-          alt={chapter.label}
+          alt=""
           fill
           className="object-cover"
           priority={chapter.id === "raw" || chapter.id === "grain"}
@@ -195,21 +193,13 @@ function FinishCTA({ localProgress }: { localProgress: MotionValue<number> }) {
         style={{ opacity, y }}
       >
         <a
-          href="tel:+17202800812"
-          className="inline-flex items-center gap-3 bg-[#B45309] hover:bg-[#92400E] text-white px-10 py-4 rounded-full text-base font-medium transition-colors duration-200 cursor-pointer shadow-2xl"
+          href={PHONE_HREF}
+          className="inline-flex items-center gap-3 bg-[#B45309] hover:bg-[#92400E] active:bg-[#92400E] text-white px-10 py-4 rounded-full text-base font-medium transition-colors duration-200 cursor-pointer shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
         >
-          <PhoneIcon />
-          Call for a Free Quote · (720) 280-0812
+          <PhoneIcon className="w-4 h-4" />
+          Call for a Free Quote · {PHONE}
         </a>
       </motion.div>
     </>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6.08 6.08l1.91-1.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
   );
 }
