@@ -8,6 +8,7 @@ import {
   squareFeet,
   squareInches,
 } from "./engine";
+import { SEED_SNAPSHOT } from "./rates";
 import type { EstimateInput } from "./types";
 
 describe("geometry primitives", () => {
@@ -63,6 +64,19 @@ describe("estimate()", () => {
 
   it("is deterministic", () => {
     expect(estimate(premiumBuiltIn, 1.05)).toEqual(estimate(premiumBuiltIn, 1.05));
+  });
+
+  it("uses the seed snapshot by default and honors a DB-style override", () => {
+    const base = estimate(premiumBuiltIn, 1);
+    const baseAgain = estimate(premiumBuiltIn, 1, SEED_SNAPSHOT);
+    expect(baseAgain.point).toBe(base.point); // default param === seed snapshot
+
+    const bumped = structuredClone(SEED_SNAPSHOT);
+    bumped.labor.shop.premium *= 1.5;
+    bumped.labor.install.premium *= 1.5;
+    const withOverride = estimate(premiumBuiltIn, 1, bumped);
+    expect(withOverride.breakdown.labor).toBeGreaterThan(base.breakdown.labor);
+    expect(withOverride.point).toBeGreaterThan(base.point);
   });
 
   it("raises wood material + point when the market factor rises", () => {

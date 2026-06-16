@@ -10,6 +10,7 @@
  */
 
 import type { Tier } from "./types";
+import { LABOR_RATE } from "./multipliers";
 
 export interface RateRow {
   key: string;
@@ -86,3 +87,20 @@ export function sellCost(row: RateRow): number {
 export function oldestVerified(): string {
   return VERIFIED;
 }
+
+/**
+ * The full rate set the engine consumes. Loaded from the DB (pricing_config,
+ * merged over this seed) at runtime; this in-code seed is the default and the
+ * graceful fallback. See rate-source.ts.
+ */
+export interface RateSnapshot {
+  materials: Record<Tier, TierMaterials>;
+  hardware: Record<Tier, TierHardware>;
+  labor: Record<"shop" | "install" | "finish" | "design", Record<Tier, number>>;
+}
+
+export const SEED_SNAPSHOT: RateSnapshot = {
+  materials: MATERIALS,
+  hardware: HARDWARE,
+  labor: LABOR_RATE,
+};

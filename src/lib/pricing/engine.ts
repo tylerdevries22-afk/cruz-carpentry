@@ -28,7 +28,6 @@ import {
   DESIGN_FEE_FRACTION,
   ENGINE_VERSION,
   FINISH_MULTIPLIER,
-  LABOR_RATE,
   MIN_PROJECT_FEE,
   PRIORITY_FACTOR,
   PROJECT_TYPE_MULTIPLIER,
@@ -39,7 +38,7 @@ import {
   SHEET_SQFT,
   TIER_MARGIN,
 } from "./multipliers";
-import { getTierHardware, getTierMaterials, sellCost } from "./rates";
+import { SEED_SNAPSHOT, sellCost, type RateSnapshot } from "./rates";
 
 // ---- Geometry primitives (exact, unit-tested) -----------------------------
 
@@ -164,10 +163,14 @@ function takeoff(areas: AreaBlock[], type: ProjectType): Takeoff {
 
 // ---- Core estimate ---------------------------------------------------------
 
-export function estimate(input: EstimateInput, marketFactor: number): EstimateResult {
+export function estimate(
+  input: EstimateInput,
+  marketFactor: number,
+  snapshot: RateSnapshot = SEED_SNAPSHOT,
+): EstimateResult {
   const { tier, projectType, finish } = input;
-  const mats = getTierMaterials(tier);
-  const hw = getTierHardware(tier);
+  const mats = snapshot.materials[tier];
+  const hw = snapshot.hardware[tier];
   const t = takeoff(input.areas ?? [], projectType);
   const wood = (linked: boolean) => (linked ? marketFactor : 1);
 
@@ -197,7 +200,7 @@ export function estimate(input: EstimateInput, marketFactor: number): EstimateRe
     ACCESS_MULTIPLIER[input.access ?? "easy"] *
     (input.demolition ? DEMOLITION_MULTIPLIER : 1);
   const labor =
-    hours * 0.6 * LABOR_RATE.shop[tier] + hours * 0.4 * LABOR_RATE.install[tier];
+    hours * 0.6 * snapshot.labor.shop[tier] + hours * 0.4 * snapshot.labor.install[tier];
 
   // --- Hardware -------------------------------------------------------------
   const hardware =
@@ -211,7 +214,7 @@ export function estimate(input: EstimateInput, marketFactor: number): EstimateRe
   const finishSf = t.carcassSf * 0.8 + t.doors * 8 + t.drawers * 3 + t.runLf * 0.7;
   const coats = finishCoats(finish);
   const finishingBase =
-    finishSf * mats.finishPerSf + (finishSf / 100) * coats * LABOR_RATE.finish[tier];
+    finishSf * mats.finishPerSf + (finishSf / 100) * coats * snapshot.labor.finish[tier];
   const finishing = finishingBase * FINISH_MULTIPLIER[finish];
 
   // --- Travel ---------------------------------------------------------------
