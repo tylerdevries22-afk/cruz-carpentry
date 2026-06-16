@@ -51,23 +51,28 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       <Link
         href={`/services/${service.slug}`}
         aria-label={`${service.title} — view details`}
-        className="flex flex-1 flex-col rounded-b-2xl p-7 sm:p-8
+        className="flex flex-1 flex-col rounded-b-2xl p-5 sm:p-6
                    focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#B45309]"
       >
-        <div className="h-px bg-[#E8DDD4] mb-6" />
-        <div className="w-10 h-10 mb-5 text-[#B45309] transition-transform duration-300 group-hover:scale-110">
-          <service.Icon />
+        {/* Icon + title on one row */}
+        <div className="flex items-center gap-3.5">
+          <span className="h-9 w-9 shrink-0 text-[#B45309] transition-transform duration-300 group-hover:scale-110">
+            <service.Icon />
+          </span>
+          <h3 className="font-serif text-[1.35rem] sm:text-[1.45rem] leading-snug text-[#1C1917]">
+            {service.title}
+          </h3>
         </div>
-        <h3 className="font-serif text-[1.2rem] text-[#1C1917] mb-3 leading-snug">
-          {service.title}
-        </h3>
-        <p className="text-[#57534E] text-[0.9375rem] leading-relaxed font-light">
+
+        <p className="mt-3.5 text-[0.975rem] sm:text-base font-light leading-relaxed text-[#57534E]">
           {service.cardDescription}
         </p>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-medium text-[#B45309] transition-colors group-hover:text-[#92400E]">
+
+        {/* View details — pinned to the bottom-right */}
+        <span className="mt-auto flex items-center justify-end gap-1.5 pt-5 text-sm font-medium text-[#B45309] transition-colors group-hover:text-[#92400E]">
           View details
           <svg
-            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -153,10 +158,11 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
         craft
       </motion.div>
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative mx-auto max-w-7xl 2xl:max-w-[90rem]">
         {showHeader && <SectionHeader sectionProgress={sectionSmooth} reduced={reduced} />}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
+        {/* 1 col (phone) → 2 (md) → 3 (lg) → 4 (2xl ultra-wide ≥1536px) */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 2xl:grid-cols-4">
           {SERVICES_ORDERED.map((service, i) => (
             <ServiceCard key={service.slug} service={service} index={i} />
           ))}
