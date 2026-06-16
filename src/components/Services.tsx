@@ -146,7 +146,7 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
       <motion.div className="absolute inset-x-0 inset-y-[-10%] h-[120%] pointer-events-none"
         style={{ y: reduced ? 0 : bgY, opacity: reduced ? 0.04 : bgOpacity }}
       >
-        <Image src="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/wood_grain.jpg" alt="" fill className="object-cover" sizes="100vw" />
+        <Image src="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/wood_grain_g2.jpg" alt="" fill className="object-cover" sizes="100vw" />
       </motion.div>
 
       {/* Decorative ghost text */}
