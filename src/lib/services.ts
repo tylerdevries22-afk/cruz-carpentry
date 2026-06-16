@@ -79,8 +79,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Full custom kitchens and statement islands, plus bath and pantry cabinetry — built to endure and finished with the precision of a true craftsman.",
     Icon: CabinetIcon,
-    cardImage: "/cards/01.webp",
-    heroImage: "/gallery/cruz-34.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/ai-generated/01.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-34.webp",
     tagline: "The hardest-working room in the house, built to outlast the mortgage.",
     intro:
       "A kitchen isn't decoration — it's where your family actually lives. We build cabinetry around the way you cook, store, and gather, then fit every box to the millimeter so doors fall shut with a quiet, solid thump. Nothing here is pulled off a shelf; it's drawn for your room and built by hand on the Front Range.",
@@ -140,8 +140,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Floor-to-ceiling built-ins, floating shelves, and media walls designed around your room, your TV, and your home office.",
     Icon: BookshelfIcon,
-    cardImage: "/cards/02.webp",
-    heroImage: "/cards/02.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/ai-generated/02.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/ai-generated/02.webp",
     tagline: "Storage that becomes architecture.",
     intro:
       "A wall of built-ins anchors a room — it frames your books, hides the cable box, and makes a space feel finished and intentional. We engineer each unit for real load and clean lines, with the bracing tucked out of sight so the shelves look like they grew from the wall.",
@@ -197,8 +197,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Custom stairs, newel posts, and railings — from hand-set iron balusters to modern cable rail and reclaimed-wood treads.",
     Icon: StairsIcon,
-    cardImage: "/cards/03.webp",
-    heroImage: "/gallery/cruz-30.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/ai-generated/03.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-30.webp",
     tagline: "The spine of the house — structural, and always in view.",
     intro:
       "A staircase is the one built element you touch every day and see from across the room. We build stairs that are dead-solid underfoot and sculptural to look at, whether that's hand-set iron balusters, warm reclaimed treads, or a clean modern cable rail. Every connection is load-tested and every handrail is shaped to sit right in the hand.",
@@ -254,8 +254,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Crown molding, baseboards, casings, wall paneling, and wainscoting that give a room its finished, architectural soul.",
     Icon: MoldingIcon,
-    cardImage: "/cards/trim-card.webp",
-    heroImage: "/cards/trim-hero.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/ai-generated/trim-card.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/ai-generated/trim-hero.webp",
     tagline: "The details that turn a builder-grade box into a home.",
     intro:
       "Trim is the quiet architecture of a room — crown, casing, base, and paneling that frame every wall and doorway. It's also where shortcuts show fastest. We mill to the right proportions, fit each corner tight, and finish so the woodwork reads as one continuous, intentional line around the room.",
@@ -297,8 +297,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/trim-molding-wainscoting-a.webp", caption: "Raised-panel wainscoting with crown molding" },
-      { image: "/cards/trim-molding-wainscoting-b.webp", caption: "Board-and-batten with cased doorway" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/ai-generated/trim-molding-wainscoting-a.webp", caption: "Raised-panel wainscoting with crown molding" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/ai-generated/trim-molding-wainscoting-b.webp", caption: "Board-and-batten with cased doorway" },
     ],
     projectType: "Trim & Millwork",
     seo: {
@@ -315,8 +315,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Walk-in suites and reach-in systems with drawers, shelving, and hanging tailored to every inch of your space.",
     Icon: ClosetIcon,
-    cardImage: "/cards/05.webp",
-    heroImage: "/gallery/cruz-29.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/ai-generated/05.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/cruz-29.webp",
     tagline: "A room you greet yourself in every morning.",
     intro:
       "The right closet turns getting dressed from a scramble into a calm, ordered ritual. We design around what you actually own — the hanging lengths, the drawer counts, the shoe and bag storage — and build it to use every inch from floor to ceiling. The result is bright, organized, and built to last far longer than a clip-together kit.",
@@ -372,8 +372,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Hardworking entryways — built-in lockers, cubbies, hooks, and storage benches that keep daily life in order.",
     Icon: LockerIcon,
-    cardImage: "/cards/06.webp",
-    heroImage: "/gallery/cruz-26.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/ai-generated/06.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/real-photos/cruz-26.webp",
     tagline: "Where the chaos of the day gets put in its place.",
     intro:
       "The mudroom is the busiest three feet in the house — boots, backpacks, coats, leashes, all landing at once. We build entry systems that take the abuse of real family life and still look sharp: a bench you can stand on, lockers sized for each person, and hooks and cubbies that actually get used.",
@@ -429,8 +429,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Beam wraps, coffered and plank ceilings, and range-hood surrounds that bring warmth and character overhead.",
     Icon: BeamIcon,
-    cardImage: "/cards/07.webp",
-    heroImage: "/gallery/cruz-35.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/ai-generated/07.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/cruz-35.webp",
     tagline: "Look up — the fifth wall, finished in wood.",
     intro:
       "A ceiling in wood changes the whole feel of a room: warmer, taller, more grounded. We build box beams and full beam wraps, coffered grids, plank and tongue-and-groove ceilings, and the timber surrounds that frame a range hood. Whether it's reclaimed timber or new wood finished to look aged, the goal is character that feels original to the house.",
@@ -486,8 +486,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Timber mantels and custom surrounds that turn the fireplace into the natural heart of the room.",
     Icon: MantelIcon,
-    cardImage: "/cards/08.webp",
-    heroImage: "/gallery/cruz-40.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/fireplace-mantels/ai-generated/08.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/fireplace-mantels/real-photos/cruz-40.webp",
     tagline: "The piece the whole room gathers around.",
     intro:
       "The fireplace is where a living room finds its center, and the mantel is its frame. We build everything from a single rugged timber beam to a full paneled surround with corbels and trim, scaled and detailed to suit your hearth. Each one is shaped, fit, and finished to look like it has always belonged.",
@@ -543,8 +543,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Custom interior doors and grand exterior entries — from fluted and raised-panel passage doors to statement pivot and double front doors.",
     Icon: DoorIcon,
-    cardImage: "/cards/door-exterior-pivot.webp",
-    heroImage: "/cards/door-exterior-arched.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-exterior-pivot.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-exterior-arched.webp",
     tagline: "A well-made door announces itself every time you touch it.",
     intro:
       "Doors do quiet, constant work — they shape how rooms connect inside and they make the first impression at the curb. We build and hang custom interior passage doors and grand exterior entries alike: solid slabs set dead-plumb so they swing true and latch with a satisfying, solid sound, and weather-sealed front doors built to face Colorado sun, wind, and snow for decades.",
@@ -588,15 +588,15 @@ export const SERVICES: Service[] = [
     galleryIndices: [20],
     projectType: "Interior & Exterior Doors",
     showcase: [
-      { image: "/cards/door-exterior-pivot.webp", caption: "Modern walnut pivot entry" },
-      { image: "/cards/door-secret-bookcase.webp", caption: "Bookcase door to a hidden room" },
-      { image: "/cards/door-interior-fluted.webp", caption: "Fluted white-oak interior door" },
-      { image: "/cards/door-exterior-double.webp", caption: "Mahogany double entry with transom" },
-      { image: "/cards/door-secret-jib.webp", caption: "Hidden jib door in wall paneling" },
-      { image: "/cards/door-interior-paneled.webp", caption: "Raised-panel interior doors" },
-      { image: "/cards/door-exterior-arched.webp", caption: "Arched alder entry, forged iron" },
-      { image: "/cards/door-secret-feature.webp", caption: "Concealed door in an oak feature wall" },
-      { image: "/cards/door-interior-plank.webp", caption: "Reclaimed-oak plank door" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-exterior-pivot.webp", caption: "Modern walnut pivot entry" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-secret-bookcase.webp", caption: "Bookcase door to a hidden room" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-interior-fluted.webp", caption: "Fluted white-oak interior door" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-exterior-double.webp", caption: "Mahogany double entry with transom" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-secret-jib.webp", caption: "Hidden jib door in wall paneling" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-interior-paneled.webp", caption: "Raised-panel interior doors" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-exterior-arched.webp", caption: "Arched alder entry, forged iron" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-secret-feature.webp", caption: "Concealed door in an oak feature wall" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/ai-generated/door-interior-plank.webp", caption: "Reclaimed-oak plank door" },
     ],
     seo: {
       title: "Interior & Exterior Doors",
@@ -612,8 +612,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Window seats, banquettes, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
     Icon: SquareIcon,
-    cardImage: "/cards/woodwork-card.webp",
-    heroImage: "/cards/woodwork-hero.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/woodwork-card.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/woodwork-hero.webp",
     tagline: "The builds no catalog has a page for.",
     intro:
       "Some of the best projects don't fit a category — a window seat sized to a bay, a breakfast banquette with hidden storage, a feature wall, a one-off piece a room was designed around. This is where we love to start from a sketch, solve the problem in wood, and build something that exists nowhere else.",
@@ -655,8 +655,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/custom-woodwork-a.webp", caption: "Backlit white-oak slatted feature wall" },
-      { image: "/cards/custom-woodwork-b.webp", caption: "Bespoke walnut display built-in" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/custom-woodwork-a.webp", caption: "Backlit white-oak slatted feature wall" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/custom-woodwork-b.webp", caption: "Bespoke walnut display built-in" },
     ],
     projectType: "Custom Woodwork",
     seo: {
@@ -673,8 +673,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Climate-ready wine rooms with hand-built racking, glass enclosures, and tasting spaces designed around your collection.",
     Icon: WineIcon,
-    cardImage: "/cards/12.webp",
-    heroImage: "/cards/12.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/wine-cellars/ai-generated/12.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/wine-cellars/ai-generated/12.webp",
     tagline: "A room that honors what it holds.",
     intro:
       "A wine room is part cellar, part showpiece — a place to store a collection properly and to show it off. We build the woodwork that makes it sing: hand-built racking cradling every bottle, warm display lighting, and glass-framed enclosures, all designed to work with the climate control that keeps your wine at its best.",
@@ -716,8 +716,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/wine-cellars-a.webp", caption: "Glass-enclosed cellar, custom wood racking" },
-      { image: "/cards/wine-cellars-b.webp", caption: "Backlit tasting room behind glass" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/wine-cellars/ai-generated/wine-cellars-a.webp", caption: "Glass-enclosed cellar, custom wood racking" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/wine-cellars/ai-generated/wine-cellars-b.webp", caption: "Backlit tasting room behind glass" },
     ],
     projectType: "Wine Cellar",
     seo: {
@@ -734,8 +734,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Fitted home offices, built-in desks, and floor-to-ceiling library walls — a study or workspace built around how you work and what you collect.",
     Icon: DeskIcon,
-    cardImage: "/cards/13.webp",
-    heroImage: "/cards/18.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/13.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/18.webp",
     tagline: "A room that works as hard as you do.",
     intro:
       "Whether it's a fitted office with dual workstations and real file storage, or a floor-to-ceiling library with a rolling ladder, a built-in study turns a spare room into the best room in the house. We design around your work, your books, and your space — then build it in solid wood to last a whole career.",
@@ -781,8 +781,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/desks-libraries-a.webp", caption: "Floor-to-ceiling library with rolling ladder" },
-      { image: "/cards/desks-libraries-b.webp", caption: "White-oak built-ins with hardwood desk" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/desks-libraries-a.webp", caption: "Floor-to-ceiling library with rolling ladder" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/desks-libraries-b.webp", caption: "White-oak built-ins with hardwood desk" },
     ],
     projectType: "Desks & Libraries",
     seo: {
@@ -799,8 +799,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Handcrafted cedar soaking tubs and the custom decking, steps, and surrounds that frame them — a backyard wellness retreat in naturally rot-resistant cedar.",
     Icon: HotTubIcon,
-    cardImage: "/cards/14.webp",
-    heroImage: "/cards/14.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/cedar-hot-tubs/ai-generated/14.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/cedar-hot-tubs/ai-generated/14.webp",
     tagline: "Soak under the Front Range sky.",
     intro:
       "A cedar hot tub is wellness you can feel and smell — naturally rot-resistant wood, tight cooperage, and a surround built right into your deck or patio. We craft the tub, the steps, the screening, and the decking around it as one cohesive cedar retreat, engineered to take the Colorado weather and the heat.",
@@ -842,8 +842,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/cedar-hot-tubs-a.webp", caption: "Round cedar tub on a mountain deck" },
-      { image: "/cards/cedar-hot-tubs-b.webp", caption: "Cedar tub with multi-level decking" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/cedar-hot-tubs/ai-generated/cedar-hot-tubs-a.webp", caption: "Round cedar tub on a mountain deck" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/cedar-hot-tubs/ai-generated/cedar-hot-tubs-b.webp", caption: "Cedar tub with multi-level decking" },
     ],
     projectType: "Cedar Hot Tub",
     seo: {
@@ -860,8 +860,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Wet bars, beverage stations, and butler's pantries with glass-front display, backlit shelving, and integrated wine and beverage fridges — built for entertaining.",
     Icon: BarIcon,
-    cardImage: "/cards/16.webp",
-    heroImage: "/cards/16.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/home-bars/ai-generated/16.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/home-bars/ai-generated/16.webp",
     tagline: "Where the party finds its center.",
     intro:
       "A home bar or butler's pantry is the entertaining hub — and a chance to show off real cabinetry. We build wet bars, beverage stations, and sculleries with glass-front uppers, backlit floating shelves, and integrated fridges, finished to match your kitchen and made to handle a crowd.",
@@ -903,8 +903,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/home-bars-a.webp", caption: "Walnut bar with backlit shelving" },
-      { image: "/cards/home-bars-b.webp", caption: "White-oak butler's pantry, marble counter" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/home-bars/ai-generated/home-bars-a.webp", caption: "Walnut bar with backlit shelving" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/home-bars/ai-generated/home-bars-b.webp", caption: "White-oak butler's pantry, marble counter" },
     ],
     projectType: "Home Bar",
     seo: {
@@ -921,8 +921,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Custom garage cabinetry, workbenches, and whole-home storage systems — built-in organization that turns the garage and utility spaces into the tidiest rooms in the house.",
     Icon: GarageIcon,
-    cardImage: "/cards/20.webp",
-    heroImage: "/cards/20.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/20.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/20.webp",
     tagline: "Order, built in.",
     intro:
       "The garage doesn't have to be the room where everything gets dumped. We build custom garage cabinetry, workbenches, slat-wall organization, and overhead storage — durable, dialed-in systems that make the garage and every utility space genuinely usable.",
@@ -964,8 +964,8 @@ export const SERVICES: Service[] = [
     ],
     galleryIndices: [],
     showcase: [
-      { image: "/cards/garage-storage-a.webp", caption: "Custom garage cabinetry with workbench" },
-      { image: "/cards/garage-storage-b.webp", caption: "Floor-to-ceiling garage storage system" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/garage-storage-a.webp", caption: "Custom garage cabinetry with workbench" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/garage-storage-b.webp", caption: "Floor-to-ceiling garage storage system" },
     ],
     projectType: "Garage & Storage",
     seo: {
@@ -982,8 +982,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Custom bed frames, headboards, and matching nightstands — from chunky solid-timber frames to refined platform beds, plus built-in bunk and loft beds.",
     Icon: BedFrameIcon,
-    cardImage: "/cards/beds-timber.webp",
-    heroImage: "/cards/beds-modern.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-timber.webp",
+    heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-modern.webp",
     tagline: "The centerpiece of the room you rest in.",
     intro:
       "A bed is the one piece of furniture you spend a third of your life with — it should be built to last and made to fit your room. We craft custom bed frames, headboards, and matching nightstands in solid wood, from chunky timber-stud frames to clean modern platforms — plus the built-in bunk and loft beds that make a kids' room or bunkhouse.",
@@ -1026,10 +1026,10 @@ export const SERVICES: Service[] = [
     galleryIndices: [24, 25],
     projectType: "Beds & Nightstands",
     showcase: [
-      { image: "/cards/beds-timber.webp", caption: "Solid-timber stud frame" },
-      { image: "/cards/beds-modern.webp", caption: "Modern walnut platform" },
-      { image: "/cards/beds-headboard.webp", caption: "Paneled & upholstered headboard" },
-      { image: "/cards/beds-nightstand.webp", caption: "Matching nightstand" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-timber.webp", caption: "Solid-timber stud frame" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-modern.webp", caption: "Modern walnut platform" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-headboard.webp", caption: "Paneled & upholstered headboard" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-nightstand.webp", caption: "Matching nightstand" },
     ],
     seo: {
       title: "Beds, Frames & Nightstands",

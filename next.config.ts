@@ -19,6 +19,14 @@ const nextConfig: NextConfig = {
   images: {
     // Prefer AVIF (smaller than WebP) with WebP fallback.
     formats: ["image/avif", "image/webp"],
+    // What-We-Build media is served from the public Supabase Storage bucket.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "nkarcozbgtgtcqfhytrx.supabase.co",
+        pathname: "/storage/v1/object/public/what-we-build/**",
+      },
+    ],
   },
   // Tree-shake unused framer-motion exports out of the client bundle.
   experimental: {

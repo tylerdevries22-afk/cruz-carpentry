@@ -12,295 +12,295 @@ export interface GalleryPhoto {
 
 export const GALLERY_PHOTOS: GalleryPhoto[] = [
   {
-    "thumb": "/gallery/thumb/cruz-01.webp",
-    "full": "/gallery/cruz-01.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-01.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-01.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom solid-wood dining table in a renovated kitchen with white cabinetry"
   },
   {
-    "thumb": "/gallery/thumb/cruz-02.webp",
-    "full": "/gallery/cruz-02.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-02.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-02.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Hardwood staircase with iron balusters and raised-panel wainscoting"
   },
   {
-    "thumb": "/gallery/thumb/cruz-03.webp",
-    "full": "/gallery/cruz-03.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-03.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-03.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Open staircase with a custom iron-baluster railing"
   },
   {
-    "thumb": "/gallery/thumb/cruz-04.webp",
-    "full": "/gallery/cruz-04.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-04.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-04.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Second-floor landing railing with iron balusters"
   },
   {
-    "thumb": "/gallery/thumb/cruz-05.webp",
-    "full": "/gallery/cruz-05.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-05.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-05.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Loft railing with iron balusters overlooking the main floor"
   },
   {
-    "thumb": "/gallery/thumb/cruz-06.webp",
-    "full": "/gallery/cruz-06.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-06.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-06.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Stairwell railing with iron balusters and a wood handrail"
   },
   {
-    "thumb": "/gallery/thumb/cruz-07.webp",
-    "full": "/gallery/cruz-07.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-07.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-07.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom floating wood shelves mounted on a wall"
   },
   {
-    "thumb": "/gallery/thumb/cruz-08.webp",
-    "full": "/gallery/cruz-08.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-08.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-08.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Staircase framing with newel posts and railing in progress"
   },
   {
-    "thumb": "/gallery/thumb/cruz-09.webp",
-    "full": "/gallery/cruz-09.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-09.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-09.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom kitchen island cabinetry under construction"
   },
   {
-    "thumb": "/gallery/thumb/cruz-10.webp",
-    "full": "/gallery/cruz-10.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-10.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-10.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Built-in bookshelves and entertainment center against a blue wall"
   },
   {
-    "thumb": "/gallery/thumb/cruz-11.webp",
-    "full": "/gallery/cruz-11.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-11.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-11.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Under-stair built-in cabinetry and shelving"
   },
   {
-    "thumb": "/gallery/thumb/cruz-12.webp",
-    "full": "/gallery/cruz-12.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-12.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-12.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Built-in pantry shelving in a custom niche"
   },
   {
-    "thumb": "/gallery/thumb/cruz-13.webp",
-    "full": "/gallery/cruz-13.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/thumb/cruz-13.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/cruz-13.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Floor-to-ceiling wardrobe cabinetry"
   },
   {
-    "thumb": "/gallery/thumb/cruz-14.webp",
-    "full": "/gallery/cruz-14.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-14.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-14.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom kitchen cabinetry installation"
   },
   {
-    "thumb": "/gallery/thumb/cruz-15.webp",
-    "full": "/gallery/cruz-15.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-15.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-15.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Built-in bookcase with a cabinet base and drawers"
   },
   {
-    "thumb": "/gallery/thumb/cruz-16.webp",
-    "full": "/gallery/cruz-16.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-16.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-16.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Kitchen cabinetry paired with floating wood shelves"
   },
   {
-    "thumb": "/gallery/thumb/cruz-17.webp",
-    "full": "/gallery/cruz-17.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/real-photos/thumb/cruz-17.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/real-photos/cruz-17.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Mudroom built-in lockers and cabinetry"
   },
   {
-    "thumb": "/gallery/thumb/cruz-18.webp",
-    "full": "/gallery/cruz-18.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-18.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-18.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom kitchen and pantry cabinetry with islands"
   },
   {
-    "thumb": "/gallery/thumb/cruz-19.webp",
-    "full": "/gallery/cruz-19.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-19.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-19.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Built-in storage bench with a window seat"
   },
   {
-    "thumb": "/gallery/thumb/cruz-20.webp",
-    "full": "/gallery/cruz-20.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/real-photos/thumb/cruz-20.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/interior-exterior-doors/real-photos/cruz-20.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Rustic sliding barn door"
   },
   {
-    "thumb": "/gallery/thumb/cruz-21.webp",
-    "full": "/gallery/cruz-21.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/thumb/cruz-21.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/real-photos/cruz-21.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Built-in cubby shelving unit"
   },
   {
-    "thumb": "/gallery/thumb/cruz-22.webp",
-    "full": "/gallery/cruz-22.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-22.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-22.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Staircase railing with iron balusters, overhead view"
   },
   {
-    "thumb": "/gallery/thumb/cruz-23.webp",
-    "full": "/gallery/cruz-23.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/thumb/cruz-23.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/cruz-23.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Tall built-in pantry cabinet with wainscoting"
   },
   {
-    "thumb": "/gallery/thumb/cruz-24.webp",
-    "full": "/gallery/cruz-24.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/real-photos/thumb/cruz-24.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/real-photos/cruz-24.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom built-in bunk beds"
   },
   {
-    "thumb": "/gallery/thumb/cruz-25.webp",
-    "full": "/gallery/cruz-25.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/real-photos/thumb/cruz-25.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/real-photos/cruz-25.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Custom loft bed with built-in stairs and a desk"
   },
   {
-    "thumb": "/gallery/thumb/cruz-26.webp",
-    "full": "/gallery/cruz-26.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/real-photos/thumb/cruz-26.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/real-photos/cruz-26.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Mudroom cubbies with a built-in bench"
   },
   {
-    "thumb": "/gallery/thumb/cruz-27.webp",
-    "full": "/gallery/cruz-27.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/thumb/cruz-27.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/cruz-27.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Custom closet shelving system framed out"
   },
   {
-    "thumb": "/gallery/thumb/cruz-28.webp",
-    "full": "/gallery/cruz-28.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/thumb/cruz-28.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/cruz-28.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Exposed ceiling beam installation in progress"
   },
   {
-    "thumb": "/gallery/thumb/cruz-29.webp",
-    "full": "/gallery/cruz-29.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/thumb/cruz-29.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/real-photos/cruz-29.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Walk-in closet system with drawers and shelving"
   },
   {
-    "thumb": "/gallery/thumb/cruz-30.webp",
-    "full": "/gallery/cruz-30.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-30.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-30.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Staircase with iron balusters and reclaimed-wood risers"
   },
   {
-    "thumb": "/gallery/thumb/cruz-31.webp",
-    "full": "/gallery/cruz-31.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-31.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-31.webp",
     "width": 1920,
     "height": 1440,
     "alt": "New staircase under construction"
   },
   {
-    "thumb": "/gallery/thumb/cruz-32.webp",
-    "full": "/gallery/cruz-32.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-32.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-32.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Finished staircase with iron balusters"
   },
   {
-    "thumb": "/gallery/thumb/cruz-33.webp",
-    "full": "/gallery/cruz-33.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/thumb/cruz-33.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/cruz-33.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Wood ceiling beam and range-hood surround with window trim"
   },
   {
-    "thumb": "/gallery/thumb/cruz-34.webp",
-    "full": "/gallery/cruz-34.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-34.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-34.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Kitchen with a marble island and a custom wood range hood"
   },
   {
-    "thumb": "/gallery/thumb/cruz-35.webp",
-    "full": "/gallery/cruz-35.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/thumb/cruz-35.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/cruz-35.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Coffered wood ceiling with custom trim"
   },
   {
-    "thumb": "/gallery/thumb/cruz-36.webp",
-    "full": "/gallery/cruz-36.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/real-photos/thumb/cruz-36.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/real-photos/cruz-36.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom window and ceiling trim detail"
   },
   {
-    "thumb": "/gallery/thumb/cruz-37.webp",
-    "full": "/gallery/cruz-37.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/real-photos/thumb/cruz-37.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/trim-molding-wainscoting/real-photos/cruz-37.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Raised-panel wall paneling and cased openings"
   },
   {
-    "thumb": "/gallery/thumb/cruz-38.webp",
-    "full": "/gallery/cruz-38.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/thumb/cruz-38.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/cruz-38.webp",
     "width": 1440,
     "height": 1920,
     "alt": "Cruz Carpentry craftsman on site"
   },
   {
-    "thumb": "/gallery/thumb/cruz-39.webp",
-    "full": "/gallery/cruz-39.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/thumb/cruz-39.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/real-photos/cruz-39.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Exposed beam ceiling with custom window trim"
   },
   {
-    "thumb": "/gallery/thumb/cruz-40.webp",
-    "full": "/gallery/cruz-40.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/fireplace-mantels/real-photos/thumb/cruz-40.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/fireplace-mantels/real-photos/cruz-40.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Fireplace with a timber mantel and tile surround"
   },
   {
-    "thumb": "/gallery/thumb/cruz-41.webp",
-    "full": "/gallery/cruz-41.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/thumb/cruz-41.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/real-photos/cruz-41.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Custom wood kitchen with floating shelves and a range hood"
   },
   {
-    "thumb": "/gallery/thumb/cruz-42.webp",
-    "full": "/gallery/cruz-42.webp",
+    "thumb": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/thumb/cruz-42.webp",
+    "full": "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/real-photos/cruz-42.webp",
     "width": 1920,
     "height": 1440,
     "alt": "Modern cable-rail loft railing"

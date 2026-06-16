@@ -90,10 +90,10 @@ export function Hero() {
           loop
           playsInline
           preload="none"
-          poster="/images/hero-poster.webp"
+          poster="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/hero-poster.webp"
         >
-          <source src="/videos/hero.webm" type="video/webm" />
-          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/hero.webm" type="video/webm" />
+          <source src="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/hero.mp4" type="video/mp4" />
         </video>
       </motion.div>
 

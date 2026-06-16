@@ -77,7 +77,7 @@ export default function RootLayout({
         <link
           rel="preload"
           as="image"
-          href="/images/hero-poster.webp"
+          href="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/hero-poster.webp"
           type="image/webp"
           fetchPriority="high"
         />

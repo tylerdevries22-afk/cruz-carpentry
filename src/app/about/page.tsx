@@ -61,7 +61,7 @@ export default function AboutPage() {
             <Reveal>
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                 <Image
-                  src="/gallery/cruz-38.webp"
+                  src="https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/general/real-photos/cruz-38.webp"
                   alt="A Cruz Carpentry craftsman at work on site"
                   fill
                   sizes="(max-width: 1024px) 100vw, 600px"
