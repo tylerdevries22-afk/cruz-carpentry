@@ -16,7 +16,7 @@ export const PROJECT_TYPES = [
   "Garage & Storage",
   "Beams & Ceilings",
   "Fireplace Mantel",
-  "Interior & Barn Doors",
+  "Interior & Exterior Doors",
   "Custom Woodwork",
   "Cedar Sauna",
   "Cedar Hot Tub",

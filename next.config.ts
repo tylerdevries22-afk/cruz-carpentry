@@ -40,6 +40,7 @@ const nextConfig: NextConfig = {
       { source: "/services/home-offices", destination: "/services/desks-libraries", permanent: true },
       { source: "/services/window-seats", destination: "/services/custom-woodwork", permanent: true },
       { source: "/services/bunk-loft-beds", destination: "/services/custom-woodwork", permanent: true },
+      { source: "/services/interior-barn-doors", destination: "/services/interior-exterior-doors", permanent: true },
     ];
   },
 };

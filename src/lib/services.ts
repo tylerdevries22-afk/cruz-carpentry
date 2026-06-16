@@ -533,25 +533,25 @@ export const SERVICES: Service[] = [
     },
   },
   {
-    slug: "interior-barn-doors",
+    slug: "interior-exterior-doors",
     num: "09",
-    title: "Interior & Barn Doors",
-    shortTitle: "Interior & Barn Doors",
+    title: "Interior & Exterior Doors",
+    shortTitle: "Interior & Exterior Doors",
     cardDescription:
-      "Door hanging, crisp cased openings, and sliding barn doors that shape how your home flows together.",
+      "Custom interior doors and grand exterior entries — from fluted and raised-panel passage doors to statement pivot and double front doors.",
     Icon: DoorIcon,
-    cardImage: "/cards/09.webp",
-    heroImage: "/gallery/cruz-20.webp",
+    cardImage: "/cards/door-exterior-pivot.webp",
+    heroImage: "/cards/door-exterior-arched.webp",
     tagline: "A well-made door announces itself every time you touch it.",
     intro:
-      "Doors do quiet, constant work — they shape how rooms connect and how a home feels to move through. We build and hang solid interior doors, sliding barn doors, and the crisp cased openings between them, all set dead-plumb so they swing or glide true and latch with a satisfying, solid sound.",
+      "Doors do quiet, constant work — they shape how rooms connect inside and they make the first impression at the curb. We build and hang custom interior passage doors and grand exterior entries alike: solid slabs set dead-plumb so they swing true and latch with a satisfying, solid sound, and weather-sealed front doors built to face Colorado sun, wind, and snow for decades.",
     materials: [
-      "Solid-wood, frame-and-panel, and plank-built barn doors",
-      "Heavy-duty barn-door track in steel, black iron, or brass",
-      "Precision-hung swing doors, shimmed and plumbed to close true",
-      "Custom cased openings, jambs, and casing to frame each passage",
-      "Soft-close and floor-guide hardware so doors run quiet and straight",
-      "Painted, stained, or natural-oil finishes to suit the room",
+      "Solid-wood interior doors — flush, fluted, raised-panel, or reclaimed plank",
+      "Grand exterior entries — single, double, and oversized pivot front doors",
+      "Weather-suited species and six-sided sealing built for the Colorado climate",
+      "Precision-hung and shimmed dead-plumb to swing and latch true",
+      "Custom cased openings, jambs, sidelights, and transoms",
+      "Hardware to match — hand-forged iron, unlacquered brass, or modern stainless",
     ],
     details: [
       {
@@ -559,8 +559,8 @@ export const SERVICES: Service[] = [
         body: "A door is only as good as its hang. We plumb the jamb, shim the hinges, and set the reveals so the door closes with one easy push and an even gap all around.",
       },
       {
-        title: "Barn doors that glide, not sag",
-        body: "We mount the track into solid blocking and size the hardware to the slab, so a heavy door rolls smoothly for years instead of dropping out of alignment.",
+        title: "Entries built to face the weather",
+        body: "An exterior door takes sun, wind, and big temperature swings every day. We build entries from stable, weather-suited wood, seal all six faces, and set proper thresholds and weatherstripping so they stay tight and true through Colorado seasons.",
       },
       {
         title: "Panels built to stay flat",
@@ -569,8 +569,8 @@ export const SERVICES: Service[] = [
     ],
     faq: [
       {
-        q: "Will a barn door actually block sound and light?",
-        a: "A surface-sliding barn door is great for style and space-saving but leaves small gaps. Where privacy and sound matter most, we'll recommend a pocket or swing door instead — and tell you straight.",
+        q: "Will a custom wood front door hold up to Colorado weather?",
+        a: "Yes — we build entries from stable, weather-suited species, seal every face and edge, and set proper thresholds and weatherstripping. A well-built and maintained wood entry handles intense sun, wind, and snow for decades.",
       },
       {
         q: "Can you replace builder doors throughout the house?",
@@ -578,15 +578,23 @@ export const SERVICES: Service[] = [
       },
       {
         q: "Do you make the doors or just hang them?",
-        a: "Both. We build custom slabs and barn doors, and we also expertly hang and case doors you've sourced.",
+        a: "Both. We build custom interior slabs and statement exterior entries, and we also expertly hang and case doors you've sourced.",
       },
     ],
     galleryIndices: [20],
-    projectType: "Interior & Barn Doors",
+    projectType: "Interior & Exterior Doors",
+    showcase: [
+      { image: "/cards/door-exterior-pivot.webp", caption: "Modern walnut pivot entry" },
+      { image: "/cards/door-interior-fluted.webp", caption: "Fluted white-oak interior door" },
+      { image: "/cards/door-exterior-double.webp", caption: "Mahogany double entry with transom" },
+      { image: "/cards/door-interior-paneled.webp", caption: "Raised-panel interior doors" },
+      { image: "/cards/door-exterior-arched.webp", caption: "Arched alder entry, forged iron" },
+      { image: "/cards/door-interior-plank.webp", caption: "Reclaimed-oak plank door" },
+    ],
     seo: {
-      title: "Interior & Barn Doors",
+      title: "Interior & Exterior Doors",
       description:
-        "Custom barn doors, solid interior doors, and crisp cased openings for Colorado homes — built solid and hung dead-plumb to swing or glide true.",
+        "Custom interior doors and grand exterior entries for Colorado homes — fluted, raised-panel, pivot, and double front doors, built solid, weather-sealed, and hung dead-plumb.",
     },
   },
   {
