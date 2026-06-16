@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
+import { REVEAL_STAGGER } from "@/lib/constants";
 
 // Shared, honest 4-step process — no invented lead times or guarantees.
 const STEPS = [
@@ -39,7 +40,7 @@ export function ServiceProcess() {
 
         <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {STEPS.map((step, i) => (
-            <Reveal key={step.n} delay={i * 0.05}>
+            <Reveal key={step.n} delay={Math.min(i, 5) * REVEAL_STAGGER}>
               <div>
                 <span className="font-serif text-2xl italic text-[#CA8A04]">
                   {step.n}

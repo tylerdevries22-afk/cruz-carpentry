@@ -7,7 +7,7 @@ import {
   initialEstimateState,
 } from "@/app/actions/estimate";
 import { PROJECT_TYPES } from "@/lib/estimate-schema";
-import { PHONE, PHONE_HREF } from "@/lib/constants";
+import { PHONE, PHONE_HREF, EASE, REVEAL_DURATION } from "@/lib/constants";
 
 const fieldBase =
   "w-full rounded-lg border bg-white px-4 py-3 text-[#1C1917] text-base " +
@@ -57,10 +57,10 @@ export function EstimateForm({
     <section id="estimate" className="relative bg-[#F5EEE2] py-24 sm:py-32 px-6">
       <motion.div
         className="max-w-2xl mx-auto"
-        initial={reduced ? false : { opacity: 0, y: 40 }}
+        initial={reduced ? false : { opacity: 0, y: 48 }}
         whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        viewport={{ once: true, amount: 0.15, margin: "0px 0px -10% 0px" }}
+        transition={{ duration: REVEAL_DURATION, ease: EASE }}
       >
         <div className="text-center mb-12">
           <p className="text-[#B45309] text-xs font-semibold tracking-[0.28em] uppercase mb-5">

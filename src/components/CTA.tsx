@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { PHONE, PHONE_HREF } from "@/lib/constants";
+import { PHONE, PHONE_HREF, SCRUB_SPRING } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 export function CTA() {
@@ -15,30 +15,25 @@ export function CTA() {
     target: ref,
     offset: ["start end", "end start"],
   });
-  const smooth = useSpring(scrollYProgress, { stiffness: 55, damping: 20 });
+  const smooth = useSpring(scrollYProgress, SCRUB_SPRING);
 
-  // Background wood parallax
-  const bgY = useTransform(smooth, [0, 1], ["-10%", "10%"]);
-  const bgOpacity = useTransform(smooth, [0, 0.2, 0.8, 1], [0, 0.08, 0.08, 0]);
+  // Background wood parallax — deeper travel + a wider opacity plateau so the
+  // dark section "breathes in" rather than snapping at the light→dark seam.
+  const bgY = useTransform(smooth, [0, 1], ["-18%", "18%"]);
+  const bgOpacity = useTransform(smooth, [0, 0.15, 0.85, 1], [0, 0.08, 0.08, 0]);
 
   // Content reveal driven by scroll
   const { scrollYProgress: reveal } = useScroll({
     target: ref,
     offset: ["start 80%", "start 30%"],
   });
-  const revealSmooth = useSpring(reveal, { stiffness: 65, damping: 18 });
+  const revealSmooth = useSpring(reveal, SCRUB_SPRING);
 
   const y = useTransform(revealSmooth, [0, 1], [60, 0]);
-  const opacity = useTransform(revealSmooth, [0, 0.5], [0, 1]);
+  const opacity = useTransform(revealSmooth, [0, 0.65], [0, 1]);
 
-  // Label clip-path draws in
-  const labelClip = useTransform(revealSmooth, [0, 0.4],
-    ["polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
-     "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"]
-  );
-
-  // Gold line draws in
-  const lineScaleX = useTransform(revealSmooth, [0.1, 0.6], [0, 1]);
+  // Gold line draws in (transform:scaleX — GPU-composited)
+  const lineScaleX = useTransform(revealSmooth, [0.1, 0.55], [0, 1]);
 
   return (
     <section
@@ -61,13 +56,11 @@ export function CTA() {
         className="relative z-10 max-w-3xl mx-auto text-center"
         style={reduced ? undefined : { y, opacity }}
       >
-        {/* Label */}
-        <motion.p
-          className="text-[#CA8A04] text-xs font-semibold tracking-[0.28em] uppercase mb-5"
-          style={reduced ? undefined : { clipPath: labelClip }}
-        >
+        {/* Label rides the container's y/opacity (was a per-frame clip-path
+            wipe — not GPU-compositable, repainted every scroll frame). */}
+        <p className="text-[#CA8A04] text-xs font-semibold tracking-[0.28em] uppercase mb-5">
           Get Started
-        </motion.p>
+        </p>
 
         {/* Gold line */}
         <motion.div

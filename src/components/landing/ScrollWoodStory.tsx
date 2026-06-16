@@ -1,12 +1,13 @@
 "use client";
 
-import { useTransform, MotionValue } from "framer-motion";
+import { useState } from "react";
+import { useTransform, useMotionValueEvent, MotionValue } from "framer-motion";
 import { motion } from "framer-motion";
 import { useScrollScrub } from "@/hooks/useScrollScrub";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { WoodChapter } from "./WoodChapter";
 import { ProgressBar } from "./ProgressBar";
-import { chapters, SCROLL_HEIGHT, Chapter } from "@/config/woodMotionConfig";
+import { chapters, SCROLL_HEIGHT, CROSSFADE, Chapter } from "@/config/woodMotionConfig";
 
 // Wrapper so useTransform is called at component top level, not inside a map
 function ChapterLayer({
@@ -16,9 +17,13 @@ function ChapterLayer({
   chapter: Chapter;
   progress: MotionValue<number>;
 }) {
+  // Overlapping cross-fade: fade IN before this chapter's start and OUT after
+  // its end, so a neighbor is always rising while this one falls and the summed
+  // opacity stays ≥1 across every boundary — no black dip. The first chapter
+  // clamps opaque at progress 0, the last at progress 1.
   const chapterOpacity = useTransform(
     progress,
-    [chapter.start, chapter.start + 0.035, chapter.end - 0.035, chapter.end],
+    [chapter.start - CROSSFADE, chapter.start, chapter.end, chapter.end + CROSSFADE],
     [0, 1, 1, 0],
     { clamp: true }
   );
@@ -41,12 +46,12 @@ function ChapterDot({
 }) {
   const dotOpacity = useTransform(
     progress,
-    [chapter.start, chapter.start + 0.03, chapter.end - 0.03, chapter.end],
+    [chapter.start, chapter.start + 0.05, chapter.end - 0.05, chapter.end],
     [0.25, 1, 1, 0.25]
   );
   const dotScale = useTransform(
     progress,
-    [chapter.start, chapter.start + 0.03, chapter.end - 0.03, chapter.end],
+    [chapter.start, chapter.start + 0.05, chapter.end - 0.05, chapter.end],
     [0.7, 1.4, 1.4, 0.7]
   );
 
@@ -61,22 +66,43 @@ function ChapterDot({
 }
 
 export function ScrollWoodStory() {
-  const { containerRef, progress } = useScrollScrub();
   const reduced = useReducedMotion();
-
+  // Branch BEFORE creating any scroll hooks, so reduced-motion visitors pay zero
+  // for the scrub spring / per-frame listener (the motion lives in the child).
   if (reduced) {
     return <ReducedMotionFallback />;
   }
+  return <ScrollWoodStoryMotion />;
+}
+
+function ScrollWoodStoryMotion() {
+  const { containerRef, progress } = useScrollScrub();
+
+  // Window the mounted chapters to the active one ±1, so at most ~3 full-viewport
+  // images decode/hold GPU memory at a time instead of all 7. active±1 always
+  // covers both chapters visible during an overlapping cross-fade (the incoming
+  // chapter starts fading in only CROSSFADE before its start, well inside the
+  // previous chapter's active window).
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(progress, "change", (v) => {
+    let idx = 0;
+    for (let i = 0; i < chapters.length; i++) {
+      if (v >= chapters[i].start) idx = i;
+    }
+    setActive((prev) => (prev === idx ? prev : idx));
+  });
 
   return (
     <div id="process" ref={containerRef} style={{ height: SCROLL_HEIGHT }} className="relative">
       {/* Sticky viewport */}
       <div className="sticky top-0 h-[100svh] overflow-hidden bg-black">
 
-        {/* Cinematic chapter layers */}
-        {chapters.map((chapter) => (
-          <ChapterLayer key={chapter.id} chapter={chapter} progress={progress} />
-        ))}
+        {/* Cinematic chapter layers — windowed to the active chapter ±1 */}
+        {chapters.map((chapter, i) =>
+          Math.abs(i - active) <= 1 ? (
+            <ChapterLayer key={chapter.id} chapter={chapter} progress={progress} />
+          ) : null,
+        )}
 
         {/* Progress bar — bottom left */}
         <ProgressBar progress={progress} />

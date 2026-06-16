@@ -10,12 +10,14 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { EASE } from "@/lib/constants";
+import { EASE, REVEAL_DURATION, REVEAL_Y, REVEAL_STAGGER, SCRUB_SPRING } from "@/lib/constants";
 import { SERVICES, type Service } from "@/lib/services";
 
 // One-shot in-view reveal (a single IntersectionObserver per card, not a live
 // scroll listener) — far cheaper than per-card useScroll, and disabled for
-// reduced-motion users. Each card links to its detail page.
+// reduced-motion users. Each card links to its detail page. A pure opacity + y
+// drift-up (no horizontal slide) on a real per-index cascade reads calmer and
+// more luxurious than the prior scissor-in-from-the-sides paired pop.
 function ServiceCard({ service, index }: { service: Service; index: number }) {
   const reduced = useReducedMotion();
   const imageSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px";
@@ -23,10 +25,11 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
   const reveal = reduced
     ? {}
     : {
-        initial: { opacity: 0, y: 32, x: index % 2 === 0 ? -24 : 24 },
-        whileInView: { opacity: 1, y: 0, x: 0 },
-        viewport: { once: true, amount: 0.2 },
-        transition: { duration: 0.6, ease: EASE, delay: (index % 2) * 0.05 },
+        initial: { opacity: 0, y: REVEAL_Y },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, amount: 0.18, margin: "0px 0px -8% 0px" },
+        // Cap the cascade so cards far down the grid don't wait too long.
+        transition: { duration: REVEAL_DURATION, ease: EASE, delay: Math.min(index, 5) * REVEAL_STAGGER },
       };
 
   return (
@@ -95,21 +98,16 @@ function SectionHeader({
   sectionProgress: ReturnType<typeof useSpring>;
   reduced: boolean;
 }) {
-  const y = useTransform(sectionProgress, [0, 0.3], [50, 0]);
-  const opacity = useTransform(sectionProgress, [0, 0.25], [0, 1]);
-  const labelClip = useTransform(sectionProgress, [0, 0.2],
-    ["polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
-     "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"]
-  );
+  const y = useTransform(sectionProgress, [0, 0.35], [64, 0]);
+  const opacity = useTransform(sectionProgress, [0, 0.28], [0, 1]);
 
   return (
     <motion.div className="max-w-2xl mb-20" style={reduced ? undefined : { y, opacity }}>
-      <motion.p
-        className="text-[#B45309] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
-        style={reduced ? undefined : { clipPath: labelClip }}
-      >
+      {/* Eyebrow rides the container's y/opacity (was a per-frame clip-path wipe,
+          which is not GPU-compositable and repainted on every scroll frame). */}
+      <p className="text-[#B45309] text-xs font-semibold tracking-[0.25em] uppercase mb-5">
         What We Build
-      </motion.p>
+      </p>
       <h2 className="font-serif text-5xl sm:text-6xl text-[#1C1917] leading-tight">
         Craftsmanship in
         <br />
@@ -133,13 +131,13 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const sectionSmooth = useSpring(sectionScroll, { stiffness: 50, damping: 20 });
+  const sectionSmooth = useSpring(sectionScroll, SCRUB_SPRING);
 
-  const bgY = useTransform(sectionSmooth, [0, 1], ["-10%", "10%"]);
+  const bgY = useTransform(sectionSmooth, [0, 1], ["-16%", "16%"]);
   const bgOpacity = useTransform(sectionSmooth, [0, 0.15, 0.85, 1], [0, 0.055, 0.055, 0]);
 
-  // Decorative large background number (parallaxes at different speed)
-  const decoY = useTransform(sectionSmooth, [0, 1], ["-20%", "20%"]);
+  // Decorative ghost word parallaxes faster than the bg for layered depth.
+  const decoY = useTransform(sectionSmooth, [0, 1], ["-28%", "28%"]);
 
   return (
     <section id="services" ref={sectionRef} className="relative bg-[#FAF7F2] py-28 sm:py-36 px-6 overflow-hidden">

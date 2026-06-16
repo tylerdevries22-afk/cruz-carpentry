@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
+import { REVEAL_STAGGER } from "@/lib/constants";
 import type { Service } from "@/lib/services";
 
 /**
@@ -28,7 +29,7 @@ export function ServiceShowcase({ service }: { service: Service }) {
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {service.showcase.map((item, i) => (
-            <Reveal key={item.image} delay={(i % 4) * 0.05}>
+            <Reveal key={item.image} delay={(i % 4) * REVEAL_STAGGER}>
               <figure>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-[#E5D9C9]">
                   <Image

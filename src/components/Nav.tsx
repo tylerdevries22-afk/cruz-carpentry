@@ -48,7 +48,10 @@ export function Nav() {
       </a>
 
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        // Transition only compositable-ish paint props; the backdrop-blur snaps
+        // rather than animating (transitioning backdrop-filter is expensive and
+        // stutters the nav at the scroll threshold, especially on mobile).
+        className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow,border-color] duration-500 ${
           scrolled
             ? "bg-[#FAF7F2]/90 backdrop-blur-md shadow-sm border-b border-[#E8DDD4]"
             : "bg-gradient-to-b from-black/30 to-transparent"

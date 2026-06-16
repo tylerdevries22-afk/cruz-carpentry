@@ -6,30 +6,37 @@ import {
   useScroll,
   useTransform,
   useSpring,
+  useInView,
   useReducedMotion,
 } from "framer-motion";
-import { PHONE, PHONE_HREF, EASE } from "@/lib/constants";
+import { PHONE, PHONE_HREF, EASE, SCRUB_SPRING } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
+// Slow-luxury load reveal: a long, well-spaced stagger so each element arrives
+// with breathing room rather than popping in as a quick burst.
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
+  show: { transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
 };
 
 const riseUp = {
-  hidden: { y: 32, opacity: 0 },
-  show: { y: 0, opacity: 1, transition: { duration: 0.7, ease: EASE } },
+  hidden: { y: 48, opacity: 0 },
+  show: { y: 0, opacity: 1, transition: { duration: 1.1, ease: EASE } },
 };
 
 const fadein = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.7, ease: EASE } },
+  show: { opacity: 1, transition: { duration: 1.0, ease: EASE } },
 };
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduced = useReducedMotion() ?? false;
+  // Only promote the video layer / run the scroll-cue loop while the hero is on
+  // screen, so neither holds a compositor layer or a perpetual rAF once the
+  // user scrolls into the rest of the page.
+  const inView = useInView(heroRef);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -50,14 +57,16 @@ export function Hero() {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 25 });
+  const smooth = useSpring(scrollYProgress, SCRUB_SPRING);
 
-  // Content floats up and fades as user scrolls away
-  const contentY = useTransform(smooth, [0, 1], [0, -90]);
-  const contentOpacity = useTransform(smooth, [0, 0.65], [1, 0]);
+  // Content floats up and dissolves slowly as the user scrolls away — deeper
+  // travel than the video so the two layers separate (parallax depth), and the
+  // fade lingers to ~88% of the exit for a drawn-out hand-off into ProofBand.
+  const contentY = useTransform(smooth, [0, 1], [0, -150]);
+  const contentOpacity = useTransform(smooth, [0, 0.88], [1, 0]);
 
-  // Video subtly zooms as hero exits (parallax depth)
-  const videoScale = useTransform(smooth, [0, 1], [1, 1.1]);
+  // Video zooms as the hero exits (parallax depth)
+  const videoScale = useTransform(smooth, [0, 1], [1, 1.16]);
 
   return (
     <section
@@ -69,7 +78,10 @@ export function Hero() {
       {/* Video wrapper — scale drives parallax depth on scroll-out */}
       <motion.div
         className="absolute inset-0"
-        style={{ scale: reduced ? 1 : videoScale, willChange: "transform" }}
+        style={{
+          scale: reduced ? 1 : videoScale,
+          willChange: inView && !reduced ? "transform" : "auto",
+        }}
       >
         <video
           ref={videoRef}
@@ -158,13 +170,13 @@ export function Hero() {
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
         <span className="text-white/45 text-[9px] tracking-[0.3em] uppercase">Scroll</span>
-        {reduced ? (
+        {reduced || !inView ? (
           <div className="w-px h-8 bg-gradient-to-b from-white/45 to-transparent" />
         ) : (
           <motion.div
             className="w-px h-8 bg-gradient-to-b from-white/45 to-transparent"
             animate={{ scaleY: [0, 1, 0], opacity: [0, 1, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "top" }}
           />
         )}

@@ -64,7 +64,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${bodoni.variable} ${jost.variable}`}>
+    // data-scroll-behavior tells Next 16 the smooth-scroll is intentional (for
+    // in-page anchor jumps) and to disable it during route transitions, so it
+    // never fights the scroll-linked animations. See globals.css `html`.
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${bodoni.variable} ${jost.variable}`}
+    >
       <body>
         {/* Prioritize the hero poster (LCP) so it paints before the video loads. */}
         <link

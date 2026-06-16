@@ -37,7 +37,9 @@ export function FeaturedWork() {
 
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {photos.map((p, i) => (
-            <Reveal key={p.thumb} delay={(i % 4) * 0.04}>
+            // Real per-tile cascade (capped) instead of the prior i%4 column
+            // delay, which was sub-perceptual and misordered the 2-col layout.
+            <Reveal key={p.thumb} delay={Math.min(i, 7) * 0.07}>
               <Link
                 href="/gallery"
                 aria-label={`${p.alt} — view the full gallery`}
@@ -50,7 +52,9 @@ export function FeaturedWork() {
                   sizes="(max-width: 640px) 50vw, 25vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
                 />
-                <div className="absolute inset-0 bg-[#1C1917]/0 transition-colors duration-300 group-hover:bg-[#1C1917]/20" />
+                {/* Opacity-faded solid overlay (GPU-composited) rather than an
+                    animated background-color, and timed to match the zoom. */}
+                <div className="absolute inset-0 bg-[#1C1917] opacity-0 transition-opacity duration-500 group-hover:opacity-20" />
               </Link>
             </Reveal>
           ))}

@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { TrustStrip } from "@/components/ui/TrustStrip";
+import { Reveal } from "@/components/ui/Reveal";
 
 /**
  * Slim trust + CTA band immediately after the hero, so a decision-ready visitor
  * has a conversion path without scrolling the full page. Dark to flow out of the
- * hero video.
+ * hero video. A gentle Reveal carries the hero's floaty motion across the seam
+ * instead of meeting a hard static edge.
  */
 export function ProofBand() {
   return (
     <section className="border-b border-white/5 bg-[#1C1917] px-6 py-7">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-5 sm:flex-row sm:justify-between">
+      <Reveal className="mx-auto flex max-w-6xl flex-col items-center gap-5 sm:flex-row sm:justify-between">
         <TrustStrip tone="dark" className="justify-center sm:justify-start" />
         <Link
           href="/contact"
@@ -17,7 +19,7 @@ export function ProofBand() {
         >
           Get a Free Quote
         </Link>
-      </div>
+      </Reveal>
     </section>
   );
 }

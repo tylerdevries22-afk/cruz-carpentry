@@ -20,7 +20,11 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
     { clamp: true }
   );
 
-  const scale = useTransform(localProgress, [0, 1], chapter.scale);
+  // One continuous slow push-in across the WHOLE story (driven by GLOBAL
+  // progress, not per-chapter) so cross-fading layers always share the same
+  // scale — the zoom never reverses direction at a chapter boundary, and the
+  // image never rests at exactly 1.0 (avoids an un-scaled re-raster shimmer).
+  const scale = useTransform(progress, [0, 1], [1.02, 1.14]);
 
   // Static per-chapter grade — applied once, NOT as a per-frame MotionValue, so
   // the browser never re-rasters a full-viewport CSS filter while scrolling
@@ -28,15 +32,20 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
   // cost). Only transform (scale) + opacity remain animated.
   const filter = `brightness(${chapter.filters.brightness}) contrast(${chapter.filters.contrast}) saturate(${chapter.filters.saturate}) sepia(${chapter.filters.sepia})`;
 
+  // Gentle enter-darken (was +0.15, which fought the now-overlapping cross-fade
+  // and deepened the old seam dip) settling to the chapter's resting vignette.
   const overlayOpacity = useTransform(
     localProgress,
     [0, 0.6, 1],
-    [chapter.overlayOpacity + 0.15, chapter.overlayOpacity, chapter.overlayOpacity]
+    [chapter.overlayOpacity + 0.05, chapter.overlayOpacity, chapter.overlayOpacity]
   );
 
-  const textY = useTransform(localProgress, [0, 0.12, 0.88, 1], [36, 0, 0, -18]);
-  const textOpacity = useTransform(localProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
-  const labelOpacity = useTransform(localProgress, [0, 0.08, 0.92, 1], [0, 1, 1, 0]);
+  // Label, text-opacity and text-Y all share ONE enter/exit window so the block
+  // moves as a single unit (the prior mismatched windows read as a faint jitter)
+  // — a longer, slower drift in and out for the floatier feel.
+  const textY = useTransform(localProgress, [0, 0.14, 0.86, 1], [48, 0, 0, -24]);
+  const textOpacity = useTransform(localProgress, [0, 0.14, 0.86, 1], [0, 1, 1, 0]);
+  const labelOpacity = useTransform(localProgress, [0, 0.14, 0.86, 1], [0, 1, 1, 0]);
 
   return (
     <motion.div className="absolute inset-0 overflow-hidden" style={{ opacity: chapterOpacity }}>
@@ -138,7 +147,7 @@ function SawdustOverlay({ localProgress }: { localProgress: MotionValue<number> 
   const opacity = useTransform(localProgress, [0.05, 0.35, 0.8, 1], [0, 0.7, 0.7, 0]);
   return (
     <motion.div
-      className="absolute inset-0 pointer-events-none mix-blend-screen"
+      className="absolute inset-0 pointer-events-none"
       style={{ opacity }}
     >
       <div
@@ -174,18 +183,19 @@ function SawdustOverlay({ localProgress }: { localProgress: MotionValue<number> 
 }
 
 function FinishCTA({ localProgress }: { localProgress: MotionValue<number> }) {
-  const opacity = useTransform(localProgress, [0.45, 0.75], [0, 1]);
-  const y = useTransform(localProgress, [0.45, 0.75], [28, 0]);
-  const warmGlow = useTransform(localProgress, [0, 1], [0, 0.18]);
+  const opacity = useTransform(localProgress, [0.4, 0.8], [0, 1]);
+  const y = useTransform(localProgress, [0.4, 0.8], [28, 0]);
+  const warmGlow = useTransform(localProgress, [0, 1], [0, 0.16]);
 
   return (
     <>
+      {/* Pre-tinted gold radial faded by opacity only — no mix-blend backdrop
+          read (the old mixBlendMode:'overlay' forced a per-frame blend group). */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
           opacity: warmGlow,
-          background: "radial-gradient(ellipse at 50% 55%, rgba(202,138,4,0.35) 0%, transparent 65%)",
-          mixBlendMode: "overlay",
+          background: "radial-gradient(ellipse at 50% 55%, rgba(202,138,4,0.5) 0%, transparent 65%)",
         }}
       />
       <motion.div

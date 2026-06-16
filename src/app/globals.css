@@ -14,6 +14,12 @@
   --color-wood: #5C3617;
 }
 
+:root {
+  /* Canonical site easing (quintic expo-out) — shared by CSS keyframes and the
+     JS EASE token in src/lib/constants.ts so the two can't drift. */
+  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 72px; /* fixed nav height */
@@ -35,11 +41,13 @@ h1, h2, h3, h4, h5, h6 {
    paints immediately as the LCP element, and runs at paint time without waiting
    for JS hydration. Auto-disabled by the reduced-motion rule below. */
 @keyframes heroRise {
-  from { transform: translateY(18px); }
+  from { transform: translateY(30px); }
   to { transform: translateY(0); }
 }
 .hero-rise {
-  animation: heroRise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Matches the JS riseUp duration so the LCP headline floats up on the same
+     slow curve as the staggered framer children instead of snapping in ahead. */
+  animation: heroRise 1s var(--ease-luxe) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
+import { REVEAL_STAGGER } from "@/lib/constants";
 import type { Service } from "@/lib/services";
 
 export function ServiceDetails({ service }: { service: Service }) {
@@ -16,7 +17,7 @@ export function ServiceDetails({ service }: { service: Service }) {
 
         <div className="mt-14 grid gap-6 sm:grid-cols-3">
           {service.details.map((detail, i) => (
-            <Reveal key={detail.title} delay={i * 0.05}>
+            <Reveal key={detail.title} delay={Math.min(i, 5) * REVEAL_STAGGER}>
               <div className="h-full rounded-2xl border border-[#E8DDD4] bg-white p-8">
                 <div className="mb-6 h-10 w-10 text-[#B45309]">
                   <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">

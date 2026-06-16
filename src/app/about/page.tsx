@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { TrustStrip } from "@/components/ui/TrustStrip";
 import { Reveal } from "@/components/ui/Reveal";
 import { ServiceProcess } from "@/components/service/ServiceProcess";
+import { REVEAL_STAGGER } from "@/lib/constants";
 
 const DESCRIPTION =
   "Cruz Carpentry is a custom carpentry and fine-millwork shop serving the Colorado Front Range — built by hand, in solid wood, to last.";
@@ -116,7 +117,7 @@ export default function AboutPage() {
             </Reveal>
             <div className="mt-14 grid gap-6 sm:grid-cols-3">
               {VALUES.map((v, i) => (
-                <Reveal key={v.title} delay={i * 0.05}>
+                <Reveal key={v.title} delay={Math.min(i, 5) * REVEAL_STAGGER}>
                   <div className="h-full rounded-2xl border border-[#E8DDD4] bg-white p-8">
                     <h3 className="mb-3 font-serif text-xl leading-snug text-[#1C1917]">
                       {v.title}

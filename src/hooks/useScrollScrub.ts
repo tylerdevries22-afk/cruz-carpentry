@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useScroll, useSpring, MotionValue } from "framer-motion";
-import { springConfig } from "@/config/woodMotionConfig";
+import { SCRUB_SPRING } from "@/lib/constants";
 
 export interface ScrollScrub {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -17,7 +17,7 @@ export function useScrollScrub(): ScrollScrub {
     offset: ["start start", "end end"],
   });
 
-  const progress = useSpring(scrollYProgress, springConfig);
+  const progress = useSpring(scrollYProgress, SCRUB_SPRING);
 
   return { containerRef, progress };
 }
