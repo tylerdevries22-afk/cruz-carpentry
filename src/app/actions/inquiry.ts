@@ -4,6 +4,7 @@ import { PHONE } from "@/lib/constants";
 import { inquirySubmitSchema } from "@/lib/wizard-schema";
 import { priceProject } from "@/lib/pricing";
 import type { EstimateInput, EstimateResult } from "@/lib/pricing";
+import { scoreLead } from "@/lib/lead-score";
 import { getClientIp } from "@/lib/request-ip";
 import { withRetry, isPermanentDbError } from "@/lib/retry";
 import { recordHitAndCheckLimit, isOverSupabaseRateLimit } from "@/lib/rate-limit";
@@ -65,6 +66,20 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
     return { ok: false, message: `We couldn't submit your request right now. ${CONTACT_FALLBACK}` };
   }
 
+  const lead = scoreLead(
+    {
+      tier: data.tier,
+      projectType: data.projectType,
+      budgetBand: data.budgetBand,
+      timeline: data.timeline,
+      areas: data.areas,
+      contactRole: data.contactRole,
+      email: data.email,
+      zip: data.zip,
+    },
+    estimate,
+  );
+
   const row = {
     first_name: data.firstName,
     last_name: data.lastName,
@@ -91,6 +106,9 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
     est_market: estimate.market,
     engine_version: estimate.engineVersion,
     rules_version: estimate.rulesVersion,
+    lead_score: lead.score,
+    lead_category: lead.category,
+    lead_factors: lead.factors,
     source: "website_estimate_wizard",
   };
 
@@ -108,6 +126,12 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
     console.error(`[inquiry] insert failed (code=${code ?? "?"}): ${message ?? "unknown"}`);
     return { ok: false, message: `Something went wrong submitting your request. ${CONTACT_FALLBACK}`, estimate };
   }
+
+  // Structured new-lead log (no PII) — visible in runtime logs for triage until
+  // the admin dashboard / email notification ships.
+  console.log(
+    `[inquiry] NEW LEAD score=${lead.score} category=${lead.category} type=${data.projectType} tier=${data.tier} est=${estimate.low}-${estimate.high}`,
+  );
 
   return {
     ok: true,
