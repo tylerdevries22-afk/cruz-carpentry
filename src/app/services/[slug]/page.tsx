@@ -11,6 +11,7 @@ import { ServiceProcess } from "@/components/service/ServiceProcess";
 import { ServiceMaterials } from "@/components/service/ServiceMaterials";
 import { ServiceDetails } from "@/components/service/ServiceDetails";
 import { ServiceFAQ } from "@/components/service/ServiceFAQ";
+import { RelatedServices } from "@/components/service/RelatedServices";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 import { JsonLd } from "@/components/JsonLd";
 import { SERVICES, getServiceBySlug } from "@/lib/services";
@@ -130,6 +131,7 @@ export default async function ServicePage({
           />
         )}
         <ServiceFAQ service={service} />
+        <RelatedServices current={service} />
         <EstimateForm defaultProjectType={service.projectType} />
         <CTA />
       </main>

@@ -4,8 +4,8 @@ import { PROJECT_TYPES } from "./estimate-schema";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 
 describe("SERVICES data", () => {
-  it("defines exactly 12 services", () => {
-    expect(SERVICES).toHaveLength(12);
+  it("defines exactly 21 services", () => {
+    expect(SERVICES).toHaveLength(21);
   });
 
   it("has unique, URL-safe slugs", () => {

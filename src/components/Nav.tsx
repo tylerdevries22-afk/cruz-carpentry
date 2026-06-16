@@ -12,9 +12,9 @@ import { MobileMenu, type NavLinkItem } from "@/components/MobileMenu";
 // detail page) — navigating home and scrolling to the section.
 const NAV_LINKS: NavLinkItem[] = [
   { label: "What We Build", href: "/services" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Our Process", href: "/#process" },
-  { label: "Get a Quote", href: "/#estimate" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function Nav() {

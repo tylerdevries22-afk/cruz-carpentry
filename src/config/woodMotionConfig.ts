@@ -16,7 +16,9 @@ export interface Chapter {
   overlayOpacity: number;
 }
 
-export const SCROLL_HEIGHT = "550vh";
+// Shortened from 550vh so the cinematic process story stays a signature moment
+// without pushing the services, proof, and form ~9 viewports down the page.
+export const SCROLL_HEIGHT = "320vh";
 
 export const chapters: Chapter[] = [
   {

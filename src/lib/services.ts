@@ -12,6 +12,15 @@ import {
   SquareIcon,
   SaunaIcon,
   WineIcon,
+  DeskIcon,
+  HotTubIcon,
+  PergolaIcon,
+  BarIcon,
+  KitchenIcon,
+  OfficeIcon,
+  WindowSeatIcon,
+  GarageIcon,
+  BedIcon,
 } from "@/components/icons/ServiceIcons";
 
 export interface ServiceDetail {
@@ -742,6 +751,519 @@ export const SERVICES: Service[] = [
       title: "Wine Cellars & Wine Rooms",
       description:
         "Custom wine cellars and wine rooms for Colorado homes — hand-built racking, glass enclosures, and tasting spaces designed around your collection.",
+    },
+  },
+  {
+    slug: "desks-libraries",
+    num: "13",
+    title: "Custom Desks & Home Libraries",
+    shortTitle: "Desks & Libraries",
+    cardDescription:
+      "Built-in desks, paneled studies, and floor-to-ceiling library walls — a home office or reading room built around how you work and what you collect.",
+    Icon: DeskIcon,
+    cardImage: "/cards/13.webp",
+    heroImage: "/cards/13.webp",
+    tagline: "A room that works as hard as you do.",
+    intro:
+      "Whether it's a fitted desk that finally tames the home office or a floor-to-ceiling library with a rolling ladder, a built-in study turns a spare room into the best room in the house. We design around your work, your books, and your space — then build it in solid wood to last a whole career.",
+    materials: [
+      "Solid hardwoods — walnut, white oak, cherry — with grain-matched fronts",
+      "Floor-to-ceiling shelving with a rolling ladder and rail",
+      "Integrated desks with drawers, file storage, and hidden cable management",
+      "Adjustable and fixed shelving sized to your collection",
+      "Paneled walls and wainscoting to finish the room",
+      "Integrated, dimmable lighting in shelves and over the desk",
+    ],
+    details: [
+      {
+        title: "A wall built for a lifetime of books",
+        body: "Floor-to-ceiling shelving — with a ladder where the wall runs tall — turns a collection into the centerpiece of the room, engineered to carry real weight without a sag.",
+      },
+      {
+        title: "A desk built for how you work",
+        body: "We plan the desk around your real workflow — monitor height, drawers where you reach, outlets and cords hidden — so the office works as well as it looks.",
+      },
+      {
+        title: "Paneling that makes it a room",
+        body: "Wainscot, paneled walls, and a finished ceiling turn four blank walls into a study with the gravity of a room that was always meant to be there.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can you fit a home office into a small or shared room?",
+        a: "Yes — a fitted desk and shelving wall make the most of a tight space, and we can tuck a full office into a closet, a landing, or one wall of a guest room.",
+      },
+      {
+        q: "Can you build a library with a rolling ladder?",
+        a: "Absolutely — a ladder on a rail is one of our favorite details, and we build the wall to carry it safely from end to end.",
+      },
+      {
+        q: "Will it match the trim and cabinetry in the rest of my home?",
+        a: "Yes. We match species, profile, and finish so a new study reads as original to the house.",
+      },
+    ],
+    galleryIndices: [],
+    projectType: "Desks & Libraries",
+    seo: {
+      title: "Custom Desks & Home Libraries",
+      description:
+        "Built-in desks, home offices, and floor-to-ceiling library walls for Colorado homes — solid-wood shelving, rolling ladders, and paneled studies built to last.",
+    },
+  },
+  {
+    slug: "cedar-hot-tubs",
+    num: "14",
+    title: "Cedar Hot Tubs & Surrounds",
+    shortTitle: "Cedar Hot Tubs",
+    cardDescription:
+      "Handcrafted cedar soaking tubs and the custom decking, steps, and surrounds that frame them — a backyard wellness retreat in naturally rot-resistant cedar.",
+    Icon: HotTubIcon,
+    cardImage: "/cards/14.webp",
+    heroImage: "/cards/14.webp",
+    tagline: "Soak under the Front Range sky.",
+    intro:
+      "A cedar hot tub is wellness you can feel and smell — naturally rot-resistant wood, tight cooperage, and a surround built right into your deck or patio. We craft the tub, the steps, the screening, and the decking around it as one cohesive cedar retreat, engineered to take the Colorado weather and the heat.",
+    materials: [
+      "Western red cedar — aromatic, stable, naturally rot- and rot-resistant",
+      "Tight stave cooperage and tongue-and-groove construction",
+      "Custom cedar decking, steps, skirting, and benches around the tub",
+      "Privacy screens and slatted surrounds designed to your yard",
+      "Hidden, heat- and weather-rated stainless hardware",
+      "Coordinated with your heater, jets, and plumbing",
+    ],
+    details: [
+      {
+        title: "Cedar built for water and weather",
+        body: "Western red cedar is the time-honored choice for soaking tubs — it resists rot, stays comfortable to the touch, and fills the air with that unmistakable cedar scent.",
+      },
+      {
+        title: "Tub and surround as one design",
+        body: "We don't just drop in a tub — we build the decking, steps, screening, and seating around it so the whole retreat reads as one intentional, finished space.",
+      },
+      {
+        title: "Built for the Colorado climate",
+        body: "Sun, snow, and freeze-thaw are hard on outdoor wood. We detail the drainage, fasteners, and finishes so the tub and deck hold up season after season.",
+      },
+    ],
+    faq: [
+      {
+        q: "Do you build the tub itself, or just the surround?",
+        a: "Both — we build handcrafted cedar soaking tubs and the custom decking, steps, and screening around them, or just the surround and decking for a tub you already have.",
+      },
+      {
+        q: "Why cedar for a hot tub?",
+        a: "Cedar is naturally rot-resistant, stable in heat and moisture, stays cool to the touch, and smells incredible — the traditional standard for fine soaking tubs.",
+      },
+      {
+        q: "Do you handle the heater and plumbing?",
+        a: "We build the woodwork and coordinate closely with a licensed plumber and your chosen heater/jet system so everything is installed safely and to spec.",
+      },
+    ],
+    galleryIndices: [],
+    projectType: "Cedar Hot Tub",
+    seo: {
+      title: "Cedar Hot Tubs & Surrounds",
+      description:
+        "Handcrafted cedar hot tubs, soaking tubs, and custom decking surrounds for Colorado homes — rot-resistant cedar, built for the Front Range climate.",
+    },
+  },
+  {
+    slug: "outdoor-living",
+    num: "15",
+    title: "Outdoor Living — Pergolas & Decks",
+    shortTitle: "Outdoor Living",
+    cardDescription:
+      "Cedar pergolas, custom decks, timber structures, and tongue-and-groove patio ceilings that extend your home into the Colorado outdoors.",
+    Icon: PergolaIcon,
+    cardImage: "/cards/15.webp",
+    heroImage: "/cards/15.webp",
+    tagline: "Bring the craftsmanship outside.",
+    intro:
+      "The Front Range practically lives outdoors half the year. We build the cedar pergolas, decks, and timber structures that turn a backyard into a destination — exposed beams, tongue-and-groove ceilings, built-in benches — all in weather-tough wood, joined to last through Colorado seasons.",
+    materials: [
+      "Cedar and structural timber, with composite decking options",
+      "Exposed timber beams and posts with real joinery",
+      "Tongue-and-groove pergola and patio ceilings",
+      "Hidden fasteners for clean, splinter-free surfaces",
+      "Built-in benches, planters, and integrated lighting",
+      "Code-compliant footings engineered for snow load and wind",
+    ],
+    details: [
+      {
+        title: "Timber-framed to last",
+        body: "Posts, beams, and rafters are sized and joined for real structure — not a kit — so a pergola or deck stands solid through wind, sun, and heavy mountain snow.",
+      },
+      {
+        title: "Ceilings that finish the space",
+        body: "A tongue-and-groove ceiling under a pergola or covered patio turns an open frame into an outdoor room, warm overhead and finished like the inside of the house.",
+      },
+      {
+        title: "Built for snow load and sun",
+        body: "We detail the footings, flashing, fasteners, and finishes for Colorado's freeze-thaw and intense UV, so the structure ages gracefully instead of greying out and loosening.",
+      },
+    ],
+    faq: [
+      {
+        q: "Cedar or composite?",
+        a: "Both have a place — cedar for natural beauty and structure, composite for low-maintenance decking surfaces. We'll help you choose the right mix for your budget and exposure.",
+      },
+      {
+        q: "Do you handle permits and footings?",
+        a: "Yes — we engineer code-compliant footings and pull the required permits so the structure is safe, inspected, and built to last.",
+      },
+      {
+        q: "Can you tie into my existing deck or home?",
+        a: "Absolutely — we integrate new pergolas and decks with existing structures and the home's rooflines so the addition looks original.",
+      },
+    ],
+    galleryIndices: [],
+    projectType: "Outdoor Living",
+    seo: {
+      title: "Outdoor Living — Pergolas & Decks",
+      description:
+        "Custom cedar pergolas, decks, and timber outdoor structures for Colorado homes — exposed beams, T&G ceilings, built to take snow load and Front Range sun.",
+    },
+  },
+  {
+    slug: "home-bars",
+    num: "16",
+    title: "Home Bars & Butler's Pantries",
+    shortTitle: "Home Bars",
+    cardDescription:
+      "Wet bars, beverage stations, and butler's pantries with glass-front display, backlit shelving, and integrated wine and beverage fridges — built for entertaining.",
+    Icon: BarIcon,
+    cardImage: "/cards/16.webp",
+    heroImage: "/cards/16.webp",
+    tagline: "Where the party finds its center.",
+    intro:
+      "A home bar or butler's pantry is the entertaining hub — and a chance to show off real cabinetry. We build wet bars, beverage stations, and sculleries with glass-front uppers, backlit floating shelves, and integrated fridges, finished to match your kitchen and made to handle a crowd.",
+    materials: [
+      "Hardwood cabinetry — walnut, oak, cherry — to match your kitchen",
+      "Glass-front display uppers and backlit floating shelves",
+      "Integrated wine and beverage fridges, sinks, and ice makers",
+      "Stone, quartz, or butcher-block counters",
+      "Dedicated stemware, bottle, and glass storage",
+      "Soft-close drawers and doors throughout",
+    ],
+    details: [
+      {
+        title: "Display that glows",
+        body: "Glass-front cabinets and backlit shelves turn your glassware and favorite bottles into the feature — warm light that makes the whole bar come alive after dark.",
+      },
+      {
+        title: "Built around your appliances",
+        body: "Wine fridge, beverage cooler, ice maker, bar sink — we plan the cabinetry around the exact units you want so everything fits flush and runs cleanly.",
+      },
+      {
+        title: "Pairs with the wine cellar",
+        body: "A bar and a wine room are a natural duo. We build them to share a material palette and detailing so the entertaining spaces feel like one cohesive design.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can you build a true wet bar with plumbing?",
+        a: "Yes — we build the cabinetry and counters and coordinate with a licensed plumber and electrician for the sink, fridges, and any appliances.",
+      },
+      {
+        q: "Will it match my kitchen?",
+        a: "That's the goal — we match species, finish, and hardware so the bar or butler's pantry reads as an extension of the kitchen.",
+      },
+      {
+        q: "Can you fit specific fridges and appliances?",
+        a: "Absolutely. Give us the models you want and we build the openings and surrounds to the exact specs.",
+      },
+    ],
+    galleryIndices: [],
+    projectType: "Home Bar",
+    seo: {
+      title: "Home Bars & Butler's Pantries",
+      description:
+        "Custom home bars, wet bars, and butler's pantries for Colorado homes — glass-front display, backlit shelving, and integrated wine and beverage fridges.",
+    },
+  },
+  {
+    slug: "kitchen-islands",
+    num: "17",
+    title: "Kitchen Islands & Custom Kitchens",
+    shortTitle: "Kitchen Islands",
+    cardDescription:
+      "Statement islands and full custom kitchens — waterfall counters, seated islands, integrated appliances, and cabinetry built around how you cook.",
+    Icon: KitchenIcon,
+    cardImage: "/gallery/cruz-34.webp",
+    heroImage: "/gallery/cruz-34.webp",
+    tagline: "The island everyone gathers around.",
+    intro:
+      "The island is where the kitchen really lives — prep, gather, homework, a glass of wine. We build statement islands and full custom kitchens around the way you actually cook: the right work zones, seating that fits, appliances built in clean, and cabinetry finished to the last reveal.",
+    materials: [
+      "Solid-wood fronts on furniture-grade cabinet boxes",
+      "Waterfall, seated, and double-island configurations",
+      "Integrated appliance, sink, and outlet cutouts built to spec",
+      "Stone, quartz, or butcher-block countertops",
+      "Dovetailed, soft-close drawers and pull-out storage",
+      "Spice, tray, trash, and charging organization built in",
+    ],
+    details: [
+      {
+        title: "An island built around how you cook",
+        body: "Prep zone, seating, storage, and clearances are all planned to your real routine, so the island works as hard as it looks — not just a slab in the middle of the room.",
+      },
+      {
+        title: "Appliances built in clean",
+        body: "Range, hood, fridge, dishwasher, microwave drawer — we build the cabinetry to your exact appliance specs so everything sits flush and panels disappear into the design.",
+      },
+      {
+        title: "Storage that disappears",
+        body: "Deep pan drawers, pull-out pantries, hidden trash, and tray dividers keep the counters clear and every tool exactly where you reach for it.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can you build just an island, or a whole kitchen?",
+        a: "Both — a standalone statement island, a full custom kitchen, or a refresh of part of an existing one.",
+      },
+      {
+        q: "Can you match my existing cabinetry?",
+        a: "Yes. We match species, door style, and finish so a new island or run blends seamlessly with what's there.",
+      },
+      {
+        q: "Do you handle countertops and appliances?",
+        a: "We build and install the cabinetry and coordinate closely with your counter fabricator and appliance specs so everything lands flush and on schedule.",
+      },
+    ],
+    galleryIndices: [34, 18, 9, 1, 14, 16, 41],
+    projectType: "Custom Cabinetry",
+    seo: {
+      title: "Kitchen Islands & Custom Kitchens",
+      description:
+        "Custom kitchen islands and full kitchens for Colorado homes — waterfall and seated islands, integrated appliances, and dovetailed cabinetry built to last.",
+    },
+  },
+  {
+    slug: "home-offices",
+    num: "18",
+    title: "Home Offices & Studies",
+    shortTitle: "Home Offices",
+    cardDescription:
+      "Fitted home offices and studies — built-in desks, dual workstations, file storage, and shelving that turn a spare room into a productive, beautiful workspace.",
+    Icon: OfficeIcon,
+    cardImage: "/cards/18.webp",
+    heroImage: "/cards/18.webp",
+    tagline: "Work from home, beautifully.",
+    intro:
+      "Working from home deserves better than a folding table in the corner. We build fitted offices and studies with wall-to-wall desks, dual workstations, real file storage, and shelving — a workspace organized around your day and finished like the rest of your home.",
+    materials: [
+      "Hardwood desk cabinetry with grain-matched fronts",
+      "Single, dual, or shared workstation layouts",
+      "Full-extension file and supply drawers, soft-close",
+      "Upper cabinets and open display shelving",
+      "Hidden cable management, outlets, and charging",
+      "Paneled walls plus task and shelf lighting",
+    ],
+    details: [
+      {
+        title: "A desk built for real work",
+        body: "Monitor height, keyboard depth, drawers within reach, and cords routed out of sight — the office is planned around how you actually work, not a stock footprint.",
+      },
+      {
+        title: "Storage that ends the clutter",
+        body: "Real file drawers, supply storage, and a home for the printer mean the desk stays clear and the paperwork actually has somewhere to go.",
+      },
+      {
+        title: "A room you want to be in",
+        body: "Paneling, shelving, and warm lighting turn a spare bedroom into a study with the focus and calm that working from home should have.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can you fit two workstations in one room?",
+        a: "Yes — side-by-side or facing dual desks are a common request, and we plan the layout so both have storage, light, and elbow room.",
+      },
+      {
+        q: "Can you build an office into a closet or small space?",
+        a: "Absolutely — a 'cloffice' or a single fitted wall makes a full, tidy workspace out of a closet, a landing, or one corner of a room.",
+      },
+      {
+        q: "Can you hide the printer, cords, and gear?",
+        a: "That's the point — we design in cable management, a printer cubby, and closed storage so the tech disappears.",
+      },
+    ],
+    galleryIndices: [],
+    projectType: "Desks & Libraries",
+    seo: {
+      title: "Home Offices & Studies",
+      description:
+        "Custom built-in home offices and studies for Colorado homes — fitted desks, dual workstations, file storage, and shelving for a beautiful work-from-home space.",
+    },
+  },
+  {
+    slug: "window-seats",
+    num: "19",
+    title: "Window Seats & Banquettes",
+    shortTitle: "Window Seats",
+    cardDescription:
+      "Built-in window seats and breakfast-nook banquettes with hidden storage — the cozy, hardworking corners that make a home feel custom.",
+    Icon: WindowSeatIcon,
+    cardImage: "/gallery/cruz-19.webp",
+    heroImage: "/gallery/cruz-19.webp",
+    tagline: "The coziest seat in the house.",
+    intro:
+      "A window seat or a built-in banquette is the kind of detail people fall in love with — a reading nook in the bay window, a breakfast bench that seats the whole family, storage hidden underneath. We build them to fit the spot exactly, with comfort and storage designed in.",
+    materials: [
+      "Solid-wood frames and bench bases built to be sat on hard",
+      "Lift-top or drawer storage tucked under the seat",
+      "Cushion platforms sized for real comfort",
+      "Paneling and trim matched to the surrounding room",
+      "Integrated bookshelves, cubbies, and side cabinets",
+      "Durable, scrubbable finishes for daily use",
+    ],
+    details: [
+      {
+        title: "Storage hidden under the seat",
+        body: "Lift-top benches or deep drawers turn a seat into a place to stash blankets, games, and seasonal gear — function hiding in plain sight.",
+      },
+      {
+        title: "Built to the exact nook",
+        body: "Bay windows, odd corners, and sloped walls are where window seats shine. We template the space so the bench fits like it was framed in with the house.",
+      },
+      {
+        title: "Comfort designed in",
+        body: "Seat height, depth, and back angle are planned for how you'll actually sit — and we coordinate cushions so the nook is as comfortable as it is charming.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can you add storage underneath?",
+        a: "Almost always — lift-top seats or drawers are one of the best reasons to build a window seat in the first place.",
+      },
+      {
+        q: "Can you fit a bay window or an awkward corner?",
+        a: "Yes — irregular spaces are exactly where a built-in bench beats any piece of furniture. We build to the real conditions of the nook.",
+      },
+      {
+        q: "Do you provide the cushions?",
+        a: "We build the bench and platform and coordinate with an upholsterer (or your chosen cushions) so everything fits perfectly.",
+      },
+    ],
+    galleryIndices: [19],
+    projectType: "Custom Woodwork",
+    seo: {
+      title: "Window Seats & Banquettes",
+      description:
+        "Custom built-in window seats and breakfast-nook banquettes for Colorado homes — hidden storage, fit to the exact nook, comfortable and built to last.",
+    },
+  },
+  {
+    slug: "garage-storage",
+    num: "20",
+    title: "Garage & Storage Systems",
+    shortTitle: "Garage Storage",
+    cardDescription:
+      "Custom garage cabinetry, workbenches, and whole-home storage systems — built-in organization that turns the garage and utility spaces into the tidiest rooms in the house.",
+    Icon: GarageIcon,
+    cardImage: "/cards/20.webp",
+    heroImage: "/cards/20.webp",
+    tagline: "Order, built in.",
+    intro:
+      "The garage doesn't have to be the room where everything gets dumped. We build custom garage cabinetry, workbenches, slat-wall organization, and overhead storage — durable, dialed-in systems that make the garage and every utility space genuinely usable.",
+    materials: [
+      "Heavy-duty cabinetry and workbenches built for real loads",
+      "Slat-wall and hook systems for tools and gear",
+      "Overhead and tall storage for seasonal items",
+      "Butcher-block or laminate work surfaces",
+      "Durable, scrubbable, moisture-tolerant finishes",
+      "Lockable and ventilated options where you need them",
+    ],
+    details: [
+      {
+        title: "Built for real loads and wear",
+        body: "Garage storage takes a beating — heavy tools, totes, gear. We build with the bracing and hardware to carry it, not flimsy kit cabinetry that sags in a season.",
+      },
+      {
+        title: "A workbench that works",
+        body: "A solid bench with the right height, storage, and surface turns the garage into a genuine workshop — with everything you reach for within arm's length.",
+      },
+      {
+        title: "Every inch organized",
+        body: "Floor cabinets, overhead storage, and slat-wall together get the clutter off the floor and onto a system, so the cars (and the chaos) finally fit.",
+      },
+    ],
+    faq: [
+      {
+        q: "Do you do garages and other rooms?",
+        a: "Yes — garages, mudrooms, pantries, laundry, basements, and utility spaces. Anywhere storage needs to work hard.",
+      },
+      {
+        q: "Is it durable enough for a garage?",
+        a: "We build to garage-grade standards — tougher materials, finishes, and hardware than interior cabinetry, sized for heavy daily use.",
+      },
+      {
+        q: "Can you design around my space and doors?",
+        a: "Absolutely — we plan around door swings, vehicle clearances, water heaters, and panels so the system fits the real garage.",
+      },
+    ],
+    galleryIndices: [],
+    projectType: "Garage & Storage",
+    seo: {
+      title: "Garage & Storage Systems",
+      description:
+        "Custom garage cabinetry, workbenches, and storage systems for Colorado homes — heavy-duty, organized built-ins for the garage and every utility space.",
+    },
+  },
+  {
+    slug: "bunk-loft-beds",
+    num: "21",
+    title: "Built-In Bunk & Loft Beds",
+    shortTitle: "Bunk & Loft Beds",
+    cardDescription:
+      "Custom built-in bunk and loft beds with stairs, drawers, and desks — the showpiece of a kids' room, guest room, or mountain cabin.",
+    Icon: BedIcon,
+    cardImage: "/gallery/cruz-24.webp",
+    heroImage: "/gallery/cruz-25.webp",
+    tagline: "The bed they'll never want to leave.",
+    intro:
+      "A built-in bunk or loft bed is the heart of a kids' room or a bunkhouse — and a Colorado-cabin essential. We build them in solid wood with safe stairs and rails, drawers and desks tucked underneath, and the kind of nooks that turn bedtime into the best part of the day.",
+    materials: [
+      "Solid-wood bed frames engineered to last for years",
+      "Built-in staircases or ladders with proper guard rails",
+      "Under-bed drawers, desks, and cubby storage",
+      "Integrated reading lights and outlets",
+      "Finishes safe and durable for kids' rooms",
+      "Layouts for two, three, or four built-in sleepers",
+    ],
+    details: [
+      {
+        title: "Safe by design",
+        body: "Guard rails, sturdy stairs or ladders, and load-tested framing mean a bunk or loft that's genuinely safe for kids — built well beyond a flat-pack bed.",
+      },
+      {
+        title: "Storage and desks built in",
+        body: "Drawers, a desk, and shelving tucked under the platform turn a bed into a whole little room — perfect for small bedrooms and bunkhouses.",
+      },
+      {
+        title: "Built for the cabin and the kids' room",
+        body: "From a mountain bunkhouse that sleeps the whole family to a magical kids'-room loft, we design the build to the space and the way it'll be used.",
+      },
+    ],
+    faq: [
+      {
+        q: "Are built-in bunk and loft beds safe for kids?",
+        a: "Yes — we engineer guard rails, stairs/ladders, and load capacity to be genuinely safe, while keeping the design clean and built-in.",
+      },
+      {
+        q: "Can you fit several beds into one room?",
+        a: "That's a specialty — bunk walls that sleep four, L-shaped layouts, and loft+desk combos all make the most of a small or shared room.",
+      },
+      {
+        q: "Can you add storage and a desk underneath?",
+        a: "Absolutely — drawers, a desk, and shelving under the platform are some of the best parts of a custom built-in bed.",
+      },
+    ],
+    galleryIndices: [24, 25],
+    projectType: "Custom Woodwork",
+    seo: {
+      title: "Built-In Bunk & Loft Beds",
+      description:
+        "Custom built-in bunk and loft beds for Colorado homes and cabins — safe stairs and rails, under-bed drawers and desks, built in solid wood.",
     },
   },
 ];

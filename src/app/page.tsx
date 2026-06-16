@@ -2,7 +2,8 @@ import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { LandingPage } from "@/components/landing/LandingPage";
 import { Services } from "@/components/Services";
-import { Gallery } from "@/components/gallery/Gallery";
+import { ProofBand } from "@/components/ProofBand";
+import { FeaturedWork } from "@/components/FeaturedWork";
 import { EstimateForm } from "@/components/EstimateForm";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
@@ -36,9 +37,10 @@ export default function Home() {
       <Nav />
       <main id="main" tabIndex={-1}>
         <Hero />
+        <ProofBand />
         <LandingPage />
         <Services />
-        <Gallery />
+        <FeaturedWork />
         <EstimateForm />
         <CTA />
       </main>
