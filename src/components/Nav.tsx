@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { PHONE, PHONE_HREF, EASE } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
@@ -30,10 +31,10 @@ export function Nav() {
         className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between"
         aria-label="Main navigation"
       >
-        {/* Logo — links back to top */}
-        <a
-          href="#top"
-          aria-label="Cruz Carpentry — back to top"
+        {/* Logo — links home (and back to top from any route) */}
+        <Link
+          href="/#top"
+          aria-label="Cruz Carpentry — back to home"
           className={`text-2xl tracking-tight transition-colors duration-300 select-none rounded-sm
                       focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
             scrolled
@@ -43,7 +44,7 @@ export function Nav() {
         >
           <span className="font-serif italic">Cruz</span>
           <span className="font-serif font-medium"> Carpentry</span>
-        </a>
+        </Link>
 
         {/* Right actions */}
         <div className="flex items-center gap-4 sm:gap-5">

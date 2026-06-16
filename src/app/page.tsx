@@ -7,20 +7,9 @@ import { EstimateForm } from "@/components/EstimateForm";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { PHONE_HREF, SITE_URL } from "@/lib/constants";
+import { SERVICES } from "@/lib/services";
 
-const SERVICE_NAMES = [
-  "Custom Cabinetry — Kitchen & Bath",
-  "Built-In Shelving & Entertainment Centers",
-  "Staircases & Railings",
-  "Trim, Molding & Wainscoting",
-  "Custom Closets & Wardrobes",
-  "Mudrooms, Lockers & Benches",
-  "Exposed Beams & Wood Ceilings",
-  "Fireplace Mantels & Surrounds",
-  "Interior & Barn Doors",
-  "Custom Woodwork & Specialty Builds",
-  "Custom Cedar Saunas",
-];
+const SERVICE_NAMES = SERVICES.map((service) => service.title);
 
 // LocalBusiness structured data for local SEO / rich results. Address, geo, and
 // aggregateRating are intentionally omitted until the owner supplies real data

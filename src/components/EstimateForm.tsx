@@ -27,7 +27,12 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export function EstimateForm() {
+export function EstimateForm({
+  defaultProjectType = "",
+}: {
+  /** Pre-selects the "Project type" dropdown (used on service detail pages). */
+  defaultProjectType?: string;
+} = {}) {
   const [state, formAction, pending] = useActionState(
     submitEstimate,
     initialEstimateState,
@@ -179,7 +184,7 @@ export function EstimateForm() {
                 <select
                   id="projectType"
                   name="projectType"
-                  defaultValue=""
+                  defaultValue={defaultProjectType}
                   className={fieldClass(Boolean(errors.projectType))}
                 >
                   <option value="" disabled>

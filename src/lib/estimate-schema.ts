@@ -1,12 +1,23 @@
 import { z } from "zod";
 
-/** Project categories offered in the estimate form's dropdown. */
+/**
+ * Project categories offered in the estimate form's dropdown. Mirrors the 12
+ * services in `@/lib/services` (each service's `projectType` must appear here,
+ * verified by services.test.ts) plus a catch-all.
+ */
 export const PROJECT_TYPES = [
+  "Custom Cabinetry",
   "Built-In Shelving",
-  "Closet System",
-  "Kitchen Cabinetry",
-  "Home Office",
+  "Staircases & Railings",
   "Trim & Millwork",
+  "Custom Closets",
+  "Mudroom & Entryway",
+  "Beams & Ceilings",
+  "Fireplace Mantel",
+  "Interior & Barn Doors",
+  "Custom Woodwork",
+  "Cedar Sauna",
+  "Wine Cellar",
   "Other / Not sure",
 ] as const;
 

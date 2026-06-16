@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -17,9 +18,15 @@ import { GALLERY_PHOTOS, type GalleryPhoto } from "./photos";
 function GalleryHeader({
   sectionSmooth,
   reduced,
+  eyebrow,
+  heading,
+  subheading,
 }: {
   sectionSmooth: ReturnType<typeof useSpring>;
   reduced: boolean;
+  eyebrow: string;
+  heading: ReactNode;
+  subheading: string;
 }) {
   const y = useTransform(sectionSmooth, [0, 0.25], [50, 0]);
   const opacity = useTransform(sectionSmooth, [0, 0.2], [0, 1]);
@@ -39,13 +46,11 @@ function GalleryHeader({
         className="text-[#B45309] text-xs font-semibold tracking-[0.25em] uppercase mb-5"
         style={reduced ? undefined : { clipPath: labelClip }}
       >
-        Our Work
+        {eyebrow}
       </motion.p>
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
         <h2 className="font-serif text-5xl sm:text-6xl text-[#1C1917] leading-tight">
-          Built with purpose,
-          <br />
-          <em className="italic">finished with care</em>
+          {heading}
         </h2>
         <div className="sm:text-right shrink-0">
           <motion.div
@@ -53,7 +58,7 @@ function GalleryHeader({
             style={reduced ? undefined : { scaleX: lineScaleX }}
           />
           <p className="text-[#57534E] text-sm font-light">
-            Tap any photo to view it full size
+            {subheading}
           </p>
         </div>
       </div>
@@ -203,7 +208,28 @@ function Lightbox({
   );
 }
 
-export function Gallery() {
+const defaultHeading = (
+  <>
+    Built with purpose,
+    <br />
+    <em className="italic">finished with care</em>
+  </>
+);
+
+export function Gallery({
+  photos = GALLERY_PHOTOS,
+  eyebrow = "Our Work",
+  heading = defaultHeading,
+  subheading = "Tap any photo to view it full size",
+  id = "gallery",
+}: {
+  /** Defaults to the full gallery; pass a subset for a filtered grid. */
+  photos?: GalleryPhoto[];
+  eyebrow?: string;
+  heading?: ReactNode;
+  subheading?: string;
+  id?: string;
+} = {}) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const reduced = useReducedMotion() ?? false;
@@ -218,7 +244,7 @@ export function Gallery() {
   const accentY = useTransform(sectionSmooth, [0, 1], ["-18%", "18%"]);
   const accentOpacity = useTransform(sectionSmooth, [0, 0.1, 0.9, 1], [0, 0.07, 0.07, 0]);
 
-  const count = GALLERY_PHOTOS.length;
+  const count = photos.length;
   const close = useCallback(() => {
     setOpenIndex(null);
     // Return focus to the tile that opened the lightbox (WCAG 2.4.3).
@@ -236,7 +262,7 @@ export function Gallery() {
   return (
     <section
       ref={sectionRef}
-      id="gallery"
+      id={id}
       className="relative bg-[#F0E8DC] py-28 sm:py-36 px-6 overflow-hidden"
     >
       {/* Parallax dark wood accent */}
@@ -257,11 +283,17 @@ export function Gallery() {
       </motion.div>
 
       <div className="relative max-w-7xl mx-auto">
-        <GalleryHeader sectionSmooth={sectionSmooth} reduced={reduced} />
+        <GalleryHeader
+          sectionSmooth={sectionSmooth}
+          reduced={reduced}
+          eyebrow={eyebrow}
+          heading={heading}
+          subheading={subheading}
+        />
 
         {/* Uniform square grid — centered thumbnails, click to open full image. */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
-          {GALLERY_PHOTOS.map((photo, i) => (
+          {photos.map((photo, i) => (
             <motion.button
               key={photo.thumb}
               type="button"
@@ -302,7 +334,7 @@ export function Gallery() {
       <AnimatePresence>
         {openIndex !== null && (
           <Lightbox
-            photos={GALLERY_PHOTOS}
+            photos={photos}
             index={openIndex}
             onClose={close}
             onPrev={prev}
