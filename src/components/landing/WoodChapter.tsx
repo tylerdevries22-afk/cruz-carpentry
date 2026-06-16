@@ -3,8 +3,6 @@
 import { motion, MotionValue, useTransform } from "framer-motion";
 import Image from "next/image";
 import { Chapter } from "@/config/woodMotionConfig";
-import { PHONE, PHONE_HREF } from "@/lib/constants";
-import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 interface WoodChapterProps {
   chapter: Chapter;
@@ -100,7 +98,6 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
       {/* Stage-specific overlays */}
       {chapter.id === "measure" && <MeasureOverlay localProgress={localProgress} />}
       {chapter.id === "cut" && <SawdustOverlay localProgress={localProgress} />}
-      {chapter.id === "finish" && <FinishCTA localProgress={localProgress} />}
     </motion.div>
   );
 }
@@ -187,37 +184,5 @@ function SawdustOverlay({ localProgress }: { localProgress: MotionValue<number> 
         }}
       />
     </motion.div>
-  );
-}
-
-function FinishCTA({ localProgress }: { localProgress: MotionValue<number> }) {
-  const opacity = useTransform(localProgress, [0.4, 0.8], [0, 1]);
-  const y = useTransform(localProgress, [0.4, 0.8], [28, 0]);
-  const warmGlow = useTransform(localProgress, [0, 1], [0, 0.16]);
-
-  return (
-    <>
-      {/* Pre-tinted gold radial faded by opacity only — no mix-blend backdrop
-          read (the old mixBlendMode:'overlay' forced a per-frame blend group). */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          opacity: warmGlow,
-          background: "radial-gradient(ellipse at 50% 55%, rgba(202,138,4,0.5) 0%, transparent 65%)",
-        }}
-      />
-      <motion.div
-        className="absolute bottom-10 left-0 right-0 flex justify-center z-10"
-        style={{ opacity, y }}
-      >
-        <a
-          href={PHONE_HREF}
-          className="inline-flex items-center gap-3 bg-[#B45309] hover:bg-[#92400E] active:bg-[#92400E] text-white px-10 py-4 rounded-full text-base font-medium transition-colors duration-200 cursor-pointer shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
-        >
-          <PhoneIcon className="w-4 h-4" />
-          Call for a Free Quote · {PHONE}
-        </a>
-      </motion.div>
-    </>
   );
 }
