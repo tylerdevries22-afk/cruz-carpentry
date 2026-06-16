@@ -106,8 +106,13 @@ export function WoodChapter({ chapter, progress, chapterOpacity }: WoodChapterPr
 }
 
 function MeasureOverlay({ localProgress }: { localProgress: MotionValue<number> }) {
-  const opacity = useTransform(localProgress, [0.2, 0.5, 0.85, 1], [0, 0.85, 0.85, 0]);
+  // Fully opaque at peak (was 0.85) so the guides read crisply against the wood.
+  const opacity = useTransform(localProgress, [0.2, 0.5, 0.85, 1], [0, 1, 1, 0]);
   const pathLength = useTransform(localProgress, [0.2, 0.65], [0, 1], { clamp: true });
+
+  // Bright amber-gold (the site's vibrant accent, as on the hero star rating) —
+  // far higher contrast against the warm tan wood than the old muted #CA8A04.
+  const GOLD = "#FBBF24";
 
   return (
     <motion.div className="absolute inset-0 pointer-events-none" style={{ opacity }}>
@@ -115,29 +120,32 @@ function MeasureOverlay({ localProgress }: { localProgress: MotionValue<number> 
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 1920 1080"
         preserveAspectRatio="xMidYMid slice"
+        // Static (non-animated) dark halo so every gold stroke separates from
+        // whatever wood tone sits behind it — applied once, not per scroll frame.
+        style={{ filter: "drop-shadow(0 1px 2.5px rgba(0,0,0,0.65))" }}
       >
         <motion.line
           x1="220" y1="420" x2="1700" y2="420"
-          stroke="#CA8A04" strokeWidth="1.5" strokeDasharray="14 8"
+          stroke={GOLD} strokeWidth="2.5" strokeDasharray="14 8"
           style={{ pathLength }}
         />
         <motion.line
           x1="220" y1="660" x2="1700" y2="660"
-          stroke="#CA8A04" strokeWidth="1.5" strokeDasharray="14 8"
+          stroke={GOLD} strokeWidth="2.5" strokeDasharray="14 8"
           style={{ pathLength }}
         />
         {Array.from({ length: 13 }).map((_, i) => (
           <line
             key={i}
             x1={220 + i * 120} y1="408" x2={220 + i * 120} y2="432"
-            stroke="#CA8A04" strokeWidth="1.5"
+            stroke={GOLD} strokeWidth="2.5"
           />
         ))}
-        <text x="960" y="395" textAnchor="middle" fill="#CA8A04" fontSize="20" fontFamily="monospace" opacity="0.95">
+        <text x="960" y="395" textAnchor="middle" fill={GOLD} fontSize="22" fontWeight="700" fontFamily="monospace" opacity="1">
           96&#34; — 2438mm
         </text>
-        <path d="M 220 406 L 220 434 L 250 434" stroke="#CA8A04" strokeWidth="2" fill="none" />
-        <path d="M 1700 406 L 1700 434 L 1670 434" stroke="#CA8A04" strokeWidth="2" fill="none" />
+        <path d="M 220 406 L 220 434 L 250 434" stroke={GOLD} strokeWidth="3" fill="none" />
+        <path d="M 1700 406 L 1700 434 L 1670 434" stroke={GOLD} strokeWidth="3" fill="none" />
       </svg>
     </motion.div>
   );
