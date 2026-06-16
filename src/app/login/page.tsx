@@ -31,8 +31,13 @@ export default async function LoginPage() {
             <Link href="/estimate" className="font-medium text-[#B45309] hover:underline">
               Request an estimate
             </Link>{" "}
-            and create one.
+            — set a password during the request and your account is created automatically.
           </p>
+          <div className="mt-6 border-t border-[#F0E8DC] pt-4 text-center">
+            <Link href="/admin/login" className="text-xs text-[#A8A29E] hover:text-[#57534E] hover:underline">
+              Cruz Carpentry staff? Admin sign-in →
+            </Link>
+          </div>
         </div>
       </main>
       <Footer />
