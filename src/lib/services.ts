@@ -141,7 +141,7 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Floor-to-ceiling built-ins, floating shelves, and media walls designed around your room, your TV, and your home office.",
     Icon: BookshelfIcon,
-    cardImage: "/gallery/cruz-10.webp",
+    cardImage: "/cards/02.webp",
     heroImage: "/cards/02.webp",
     tagline: "Storage that becomes architecture.",
     intro:
@@ -182,7 +182,7 @@ export const SERVICES: Service[] = [
         a: "Yes. We commonly finish built-ins to match existing trim or cabinetry so the room reads as one cohesive design.",
       },
     ],
-    galleryIndices: [7, 10, 11, 12, 15, 21],
+    galleryIndices: [7, 11, 12, 15, 21],
     projectType: "Built-In Shelving",
     seo: {
       title: "Built-In Shelving & Entertainment Centers",
@@ -255,8 +255,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Crown molding, baseboards, casings, wall paneling, and wainscoting that give a room its finished, architectural soul.",
     Icon: MoldingIcon,
-    cardImage: "/gallery/cruz-37.webp",
-    heroImage: "/gallery/cruz-36.webp",
+    cardImage: "/cards/trim-card.webp",
+    heroImage: "/cards/trim-hero.webp",
     tagline: "The details that turn a builder-grade box into a home.",
     intro:
       "Trim is the quiet architecture of a room — crown, casing, base, and paneling that frame every wall and doorway. It's also where shortcuts show fastest. We mill to the right proportions, fit each corner tight, and finish so the woodwork reads as one continuous, intentional line around the room.",
@@ -296,7 +296,7 @@ export const SERVICES: Service[] = [
         a: "We install paint-ready and can finish in place, or coordinate with your painter for a flawless final coat.",
       },
     ],
-    galleryIndices: [23, 33, 35, 36, 37],
+    galleryIndices: [],
     projectType: "Trim & Millwork",
     seo: {
       title: "Trim, Molding & Wainscoting",
@@ -597,8 +597,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Window seats, banquettes, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
     Icon: SquareIcon,
-    cardImage: "/gallery/cruz-19.webp",
-    heroImage: "/gallery/cruz-19.webp",
+    cardImage: "/cards/woodwork-card.webp",
+    heroImage: "/cards/woodwork-hero.webp",
     tagline: "The builds no catalog has a page for.",
     intro:
       "Some of the best projects don't fit a category — a window seat sized to a bay, a breakfast banquette with hidden storage, a feature wall, a one-off piece a room was designed around. This is where we love to start from a sketch, solve the problem in wood, and build something that exists nowhere else.",
@@ -638,7 +638,7 @@ export const SERVICES: Service[] = [
         a: "If it's made of wood and it'll make your home better, we're interested. The trickier the spot, the more we enjoy it.",
       },
     ],
-    galleryIndices: [19],
+    galleryIndices: [],
     projectType: "Custom Woodwork",
     seo: {
       title: "Custom Woodwork & Specialty Builds",
