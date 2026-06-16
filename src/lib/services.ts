@@ -1,5 +1,4 @@
 import type { ComponentType } from "react";
-import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 import {
   CabinetIcon,
   BookshelfIcon,
@@ -125,6 +124,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [1, 9, 14, 16, 18, 34, 41],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/ai-generated/custom-cabinetry-a.webp", caption: "Painted shaker kitchen with walnut island" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-cabinetry/ai-generated/custom-cabinetry-b.webp", caption: "Stained walnut butler's pantry cabinetry" },
+    ],
     projectType: "Custom Cabinetry",
     seo: {
       title: "Custom Cabinetry & Kitchens",
@@ -182,6 +185,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [7, 11, 12, 15, 21],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/ai-generated/built-in-shelving-a.webp", caption: "Living-room media built-in by a stone fireplace" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/built-in-shelving/ai-generated/built-in-shelving-b.webp", caption: "Office floating shelves over base cabinets" },
+    ],
     projectType: "Built-In Shelving",
     seo: {
       title: "Built-In Shelving & Entertainment Centers",
@@ -239,6 +246,11 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [2, 3, 4, 5, 6, 22, 30, 32, 42],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/ai-generated/04.webp", caption: "Iron-baluster staircase with wainscoting" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/ai-generated/staircases-railings-a.webp", caption: "Floating-tread stair with steel cable railing" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/staircases-railings/ai-generated/staircases-railings-b.webp", caption: "Iron balusters with a turned wood newel" },
+    ],
     projectType: "Staircases & Railings",
     seo: {
       title: "Staircases & Railings",
@@ -357,6 +369,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [13, 23, 27, 29],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/ai-generated/custom-closets-a.webp", caption: "Walnut walk-in closet with a center island" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-closets/ai-generated/custom-closets-b.webp", caption: "Reach-in wardrobe with drawers and hanging" },
+    ],
     projectType: "Custom Closets",
     seo: {
       title: "Custom Closets & Wardrobes",
@@ -414,6 +430,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [17, 21, 26],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/ai-generated/mudrooms-lockers-a.webp", caption: "Built-in lockers with bench and cubbies" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/mudrooms-lockers/ai-generated/mudrooms-lockers-b.webp", caption: "Entry drop-zone with hooks and baskets" },
+    ],
     projectType: "Mudroom & Entryway",
     seo: {
       title: "Mudrooms, Lockers & Benches",
@@ -471,6 +491,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [28, 33, 35, 39],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/ai-generated/exposed-beams-ceilings-a.webp", caption: "Stained coffered ceiling in a refined room" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/exposed-beams-ceilings/ai-generated/exposed-beams-ceilings-b.webp", caption: "Vaulted great room with timber trusses" },
+    ],
     projectType: "Beams & Ceilings",
     seo: {
       title: "Exposed Beams & Wood Ceilings",
@@ -528,6 +552,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [40],
+    showcase: [
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/fireplace-mantels/ai-generated/fireplace-mantels-a.webp", caption: "Reclaimed-timber mantel over a stone fireplace" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/fireplace-mantels/ai-generated/fireplace-mantels-b.webp", caption: "Modern floating mantel on charcoal stone" },
+    ],
     projectType: "Fireplace Mantel",
     seo: {
       title: "Fireplace Mantels & Surrounds",
@@ -1030,6 +1058,7 @@ export const SERVICES: Service[] = [
       { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-modern.webp", caption: "Modern walnut platform" },
       { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-headboard.webp", caption: "Paneled & upholstered headboard" },
       { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-nightstand.webp", caption: "Matching nightstand" },
+      { image: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/10.webp", caption: "Built-in bunk loft with stair storage" },
     ],
     seo: {
       title: "Beds, Frames & Nightstands",
@@ -1052,15 +1081,22 @@ export function getServiceBySlug(slug: string): Service | undefined {
  * showcase images, then real gallery photos (square thumbs). Capped so the card
  * stays light. Services with a single image just render that one (no swipe).
  */
-export function cardCarouselImages(service: Service, cap = 5): string[] {
-  const gallery = service.galleryIndices
-    .map((n) => GALLERY_PHOTOS[n - 1]?.thumb)
-    .filter((src): src is string => Boolean(src));
-  const showcase = (service.showcase ?? []).map((s) => s.image);
+/**
+ * AI-ONLY image set for a homepage card's photo carousel: the card image, the
+ * hero, and the "styles we build" showcase images — filtered to the Supabase
+ * `ai-generated/` folder so real project photos never appear in the cards (those
+ * still show on each detail page's "Selected Work" gallery). Deduped + capped.
+ */
+export function cardCarouselImages(service: Service, cap = 6): string[] {
+  const candidates = [
+    service.cardImage,
+    service.heroImage,
+    ...(service.showcase ?? []).map((s) => s.image),
+  ];
   const seen = new Set<string>();
   const ordered: string[] = [];
-  for (const src of [service.cardImage, ...showcase, ...gallery]) {
-    if (src && !seen.has(src)) {
+  for (const src of candidates) {
+    if (src && src.includes("/ai-generated/") && !seen.has(src)) {
       seen.add(src);
       ordered.push(src);
     }
