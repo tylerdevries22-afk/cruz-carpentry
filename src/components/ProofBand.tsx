@@ -1,24 +1,19 @@
-import Link from "next/link";
 import { TrustStrip } from "@/components/ui/TrustStrip";
+import { HgtvBadge } from "@/components/ui/HgtvBadge";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * Slim trust + CTA band immediately after the hero, so a decision-ready visitor
- * has a conversion path without scrolling the full page. Dark to flow out of the
- * hero video. A gentle Reveal carries the hero's floaty motion across the seam
- * instead of meeting a hard static edge.
+ * Credibility band — the "As featured on HGTV" badge over the trust signals.
+ * Sits between the cinematic wood story and the Services grid as a calm light
+ * bridge into the catalog (it was previously a dark trust+CTA band wedged
+ * directly under the hero, stacking three dark sections in a row).
  */
 export function ProofBand() {
   return (
-    <section className="border-b border-white/5 bg-[#1C1917] px-6 py-7">
-      <Reveal className="mx-auto flex max-w-6xl flex-col items-center gap-5 sm:flex-row sm:justify-between">
-        <TrustStrip tone="dark" className="justify-center sm:justify-start" />
-        <Link
-          href="/contact"
-          className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-[#B45309] px-7 py-3 text-sm font-medium text-white transition-colors hover:bg-[#92400E] active:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1917]"
-        >
-          Get a Free Quote
-        </Link>
+    <section className="border-y border-[#E8DDD4] bg-[#F0E8DC] px-6 py-12 sm:py-14">
+      <Reveal className="mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
+        <HgtvBadge />
+        <TrustStrip className="justify-center" />
       </Reveal>
     </section>
   );

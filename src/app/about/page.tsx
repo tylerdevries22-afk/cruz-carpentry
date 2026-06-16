@@ -11,7 +11,7 @@ import { ServiceProcess } from "@/components/service/ServiceProcess";
 import { REVEAL_STAGGER } from "@/lib/constants";
 
 const DESCRIPTION =
-  "Cruz Carpentry is a custom carpentry and fine-millwork shop serving the Colorado Front Range — built by hand, in solid wood, to last.";
+  "Cruz Carpentry is a custom carpentry and fine-millwork shop serving the Colorado Front Range — built by hand, in solid wood, to last. Featured on HGTV in 2022 for a dream home in Morrison, Colorado.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -102,6 +102,27 @@ export default function AboutPage() {
               </div>
             </Reveal>
           </div>
+        </section>
+
+        {/* Featured on HGTV */}
+        <section id="hgtv" className="scroll-mt-24 bg-[#1C1917] px-6 py-20 sm:py-28">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#CA8A04]">
+              As Featured On
+            </p>
+            <p className="font-sans text-6xl font-extrabold leading-none tracking-tight text-[#5BB04A] sm:text-7xl">
+              HGTV
+            </p>
+            <h2 className="mt-8 font-serif text-2xl leading-snug text-white sm:text-3xl">
+              A dream home in <em className="italic">Morrison, Colorado</em>
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg font-light leading-relaxed text-white/70">
+              In 2022, we were featured on HGTV for a dream home in Morrison,
+              Colorado. The project covered interior trim, custom doors, and three
+              wooden arch beams — wrapped in about two weeks, and the finished home
+              was absolutely gorgeous.
+            </p>
+          </Reveal>
         </section>
 
         {/* Values */}

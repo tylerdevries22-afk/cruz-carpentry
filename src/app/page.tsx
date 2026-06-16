@@ -37,8 +37,8 @@ export default function Home() {
       <Nav />
       <main id="main" tabIndex={-1}>
         <Hero />
-        <ProofBand />
         <LandingPage />
+        <ProofBand />
         <Services />
         <FeaturedWork />
         <EstimateForm />
