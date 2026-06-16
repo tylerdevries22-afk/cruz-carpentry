@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import type { EstimateResult } from "@/lib/pricing/types";
 import { submitInquiry } from "@/app/actions/inquiry";
+import { SERVICES } from "@/lib/services";
 import {
   ACCESS_LEVELS,
   BUDGET_BANDS,
@@ -32,6 +34,35 @@ interface PhotoItem {
 }
 
 const MAX_PHOTOS = 10;
+
+// Each project-type key → the homepage "What We Build" card image, so the
+// "What are we building?" tiles show the same thumbnail as the home page.
+const PROJECT_TYPE_SLUG: Record<string, string> = {
+  custom_cabinetry: "custom-cabinetry",
+  built_in_shelving: "built-in-shelving",
+  custom_closets: "custom-closets",
+  mudrooms_lockers: "mudrooms-lockers",
+  trim_wainscoting: "trim-molding-wainscoting",
+  fireplace_mantels: "fireplace-mantels",
+  exposed_beams: "exposed-beams-ceilings",
+  staircases_railings: "staircases-railings",
+  interior_exterior_doors: "interior-exterior-doors",
+  wine_cellars: "wine-cellars",
+  home_bars: "home-bars",
+  home_offices: "desks-libraries",
+  garage_storage: "garage-storage",
+  beds_frames: "beds-frames-nightstands",
+  custom_woodwork: "custom-woodwork",
+  cedar_hot_tubs: "cedar-hot-tubs",
+};
+const SLUG_IMAGE: Record<string, string> = Object.fromEntries(
+  SERVICES.map((s) => [s.slug, s.cardImage]),
+);
+const PROJECT_TYPE_IMAGE: Record<string, string> = Object.fromEntries(
+  Object.entries(PROJECT_TYPE_SLUG)
+    .map(([key, slug]) => [key, SLUG_IMAGE[slug]])
+    .filter(([, img]) => Boolean(img)),
+);
 
 /** Downscale + re-encode (JPEG) client-side — strips EXIF/GPS, honors orientation. */
 async function compressImage(file: File): Promise<Blob> {
@@ -506,6 +537,7 @@ export function EstimateWizard() {
             value={data.projectType}
             onChange={(v) => set("projectType", v)}
             error={errors.projectType}
+            images={PROJECT_TYPE_IMAGE}
           />
         )}
 
@@ -856,17 +888,53 @@ function Cards({
   value,
   onChange,
   error,
+  images,
 }: {
   options: readonly string[];
   value: string;
   onChange: (v: string) => void;
   error?: string;
+  /** Optional per-option thumbnail (e.g. the homepage card image). */
+  images?: Record<string, string>;
 }) {
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {options.map((o) => {
           const active = value === o;
+          const img = images?.[o];
+          // Photo-backed tile — same footprint as the plain button (the image is
+          // absolutely positioned, so it doesn't change the button's height).
+          if (img) {
+            return (
+              <button
+                key={o}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onChange(o)}
+                className={`group relative flex items-end overflow-hidden rounded-xl border px-4 py-4 text-left text-sm transition ${active ? "border-[#B45309] ring-2 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
+              >
+                <Image
+                  src={img}
+                  alt=""
+                  fill
+                  sizes="(max-width:640px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
+                <span className="relative z-10 font-medium leading-snug text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                  {LABELS[o] ?? o}
+                </span>
+                {active && (
+                  <span className="absolute right-2 top-2 z-10 grid h-5 w-5 place-items-center rounded-full bg-[#B45309] text-white shadow">
+                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} aria-hidden="true">
+                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            );
+          }
           return (
             <button
               key={o}
