@@ -23,6 +23,7 @@ export const PROJECT_TYPES = [
   "Outdoor Living",
   "Home Bar",
   "Wine Cellar",
+  "Beds & Nightstands",
   "Other / Not sure",
 ] as const;
 

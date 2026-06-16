@@ -316,3 +316,22 @@ export function BedIcon() {
     </svg>
   );
 }
+
+export function BedFrameIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+      {/* headboard */}
+      <path d="M5 12 V33" />
+      <path d="M5 14 H17 V25" />
+      {/* pillow */}
+      <path d="M9 25 V19 H16 V25" />
+      {/* bed frame + foot legs */}
+      <rect x="5" y="25" width="27" height="9" rx="1.5" />
+      <line x1="9" y1="34" x2="9" y2="40" />
+      <line x1="30" y1="34" x2="30" y2="40" />
+      {/* nightstand */}
+      <rect x="37" y="27" width="9" height="13" rx="1.5" />
+      <line x1="37" y1="33" x2="46" y2="33" />
+    </svg>
+  );
+}

@@ -17,6 +17,7 @@ import {
   PergolaIcon,
   BarIcon,
   GarageIcon,
+  BedFrameIcon,
 } from "@/components/icons/ServiceIcons";
 
 export interface ServiceDetail {
@@ -61,6 +62,12 @@ export interface Service {
   galleryIndices: number[];
   /** Pre-selected value for the estimate form (must exist in PROJECT_TYPES). */
   projectType: string;
+  /**
+   * Optional illustrative "styles we build" images. These are AI-generated
+   * design examples (NOT completed-project photos), shown under a clearly-labeled
+   * heading — distinct from the real-photo `galleryIndices`.
+   */
+  showcase?: { image: string; caption: string }[];
   seo: { title: string; description: string };
 }
 
@@ -588,13 +595,13 @@ export const SERVICES: Service[] = [
     title: "Custom Woodwork & Specialty Builds",
     shortTitle: "Custom Woodwork",
     cardDescription:
-      "Built-in bunk beds, window seats, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
+      "Window seats, banquettes, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
     Icon: SquareIcon,
-    cardImage: "/cards/10.webp",
-    heroImage: "/gallery/cruz-25.webp",
+    cardImage: "/gallery/cruz-19.webp",
+    heroImage: "/gallery/cruz-19.webp",
     tagline: "The builds no catalog has a page for.",
     intro:
-      "Some of the best projects don't fit a category — a loft bed with stairs and drawers built into a tricky corner, a window seat sized to a bay, a feature wall, a one-off piece a room was designed around. This is where we love to start from a sketch, solve the problem in wood, and build something that exists nowhere else.",
+      "Some of the best projects don't fit a category — a window seat sized to a bay, a breakfast banquette with hidden storage, a feature wall, a one-off piece a room was designed around. This is where we love to start from a sketch, solve the problem in wood, and build something that exists nowhere else.",
     materials: [
       "Whatever the piece calls for — solid hardwood, plywood, or mixed materials",
       "Joinery chosen for the job: dovetail, mortise-and-tenon, lap, or floating",
@@ -610,7 +617,7 @@ export const SERVICES: Service[] = [
       },
       {
         title: "Engineered, not improvised",
-        body: "A bunk or loft bed has to be as safe as it is handsome. We calculate the loads and hide the structure so the finished piece is rock-solid and clean-lined.",
+        body: "A window seat you stand on or a feature wall full of shelving has to be as solid as it is handsome. We calculate the loads and hide the structure so the finished piece is rock-solid and clean-lined.",
       },
       {
         title: "Made to fit the exact spot",
@@ -623,20 +630,20 @@ export const SERVICES: Service[] = [
         a: "That's exactly how most of these start. Bring a photo, a rough sketch, or just a description, and we'll help shape it into something buildable.",
       },
       {
-        q: "Are built-in bunk and loft beds safe?",
-        a: "Yes — we engineer guardrails, ladders, and load capacity to be genuinely safe for kids, while keeping the design clean and built-in.",
+        q: "Can you build a window seat or banquette with storage?",
+        a: "Yes — lift-top or drawer storage under a window seat or breakfast banquette is one of our favorite details, built to fit the exact nook.",
       },
       {
         q: "Is there anything you won't take on?",
         a: "If it's made of wood and it'll make your home better, we're interested. The trickier the spot, the more we enjoy it.",
       },
     ],
-    galleryIndices: [19, 24, 25],
+    galleryIndices: [19],
     projectType: "Custom Woodwork",
     seo: {
       title: "Custom Woodwork & Specialty Builds",
       description:
-        "One-of-a-kind built-ins for Colorado homes — loft and bunk beds, window seats, feature walls, and specialty pieces built from a sketch.",
+        "One-of-a-kind built-ins for Colorado homes — window seats, banquettes, feature walls, and specialty pieces built from a sketch.",
     },
   },
   {
@@ -1040,6 +1047,69 @@ export const SERVICES: Service[] = [
       title: "Garage & Storage Systems",
       description:
         "Custom garage cabinetry, workbenches, and storage systems for Colorado homes — heavy-duty, organized built-ins for the garage and every utility space.",
+    },
+  },
+  {
+    slug: "beds-frames-nightstands",
+    num: "18",
+    title: "Beds, Frames & Nightstands",
+    shortTitle: "Beds & Nightstands",
+    cardDescription:
+      "Custom bed frames, headboards, and matching nightstands — from chunky solid-timber frames to refined platform beds, plus built-in bunk and loft beds.",
+    Icon: BedFrameIcon,
+    cardImage: "/cards/beds-timber.webp",
+    heroImage: "/cards/beds-modern.webp",
+    tagline: "The centerpiece of the room you rest in.",
+    intro:
+      "A bed is the one piece of furniture you spend a third of your life with — it should be built to last and made to fit your room. We craft custom bed frames, headboards, and matching nightstands in solid wood, from chunky timber-stud frames to clean modern platforms — plus the built-in bunk and loft beds that make a kids' room or bunkhouse.",
+    materials: [
+      "Solid hardwoods — walnut, white oak, maple, cherry — and full-dimension timber",
+      "Chunky solid-stud and beam frames with exposed mortise-and-tenon joinery",
+      "Low modern platforms and floating frames",
+      "Paneled, slatted, fluted, or upholstered headboards",
+      "Matching nightstands with dovetailed, soft-close drawers",
+      "Built-in bunk and loft beds with safe stairs, rails, drawers, and desks",
+    ],
+    details: [
+      {
+        title: "Built from real timber",
+        body: "We build frames from full, solid wood — including chunky squared studs and beams joined with mortise-and-tenon — so the bed is rock-solid and silent, not a creaky flat-pack.",
+      },
+      {
+        title: "Designed to match",
+        body: "Headboard, frame, and nightstands are designed as a set, in a wood and style that ties into the rest of your bedroom.",
+      },
+      {
+        title: "A bed for every room",
+        body: "From a primary-suite statement bed to built-in bunks and lofts for a kids' room or mountain bunkhouse — we build it to the space and the way it'll be used.",
+      },
+    ],
+    faq: [
+      {
+        q: "Do you build standard mattress sizes?",
+        a: "Yes — twin through California king, plus custom sizes for unusual spaces or vintage mattresses.",
+      },
+      {
+        q: "Can you match a nightstand or dresser to the bed?",
+        a: "Absolutely — matching nightstands are part of most builds, and we can carry the design into a dresser or bench too.",
+      },
+      {
+        q: "Do you build built-in bunk and loft beds?",
+        a: "Yes — built-in bunk and loft beds with safe stairs or ladders, guard rails, and drawers or a desk underneath are a specialty.",
+      },
+    ],
+    galleryIndices: [24, 25],
+    projectType: "Beds & Nightstands",
+    showcase: [
+      { image: "/cards/beds-timber.webp", caption: "Solid-timber stud frame" },
+      { image: "/cards/beds-modern.webp", caption: "Modern walnut platform" },
+      { image: "/cards/beds-headboard.webp", caption: "Paneled & upholstered headboard" },
+      { image: "/cards/beds-nightstand.webp", caption: "Matching nightstand" },
+    ],
+    seo: {
+      title: "Beds, Frames & Nightstands",
+      description:
+        "Custom solid-wood bed frames, headboards, nightstands, and built-in bunk & loft beds for Colorado homes — timber-stud frames to modern platforms, built to last.",
     },
   },
 ];
