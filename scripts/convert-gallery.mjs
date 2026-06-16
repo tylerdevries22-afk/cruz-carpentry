@@ -94,9 +94,11 @@ for (const file of sources) {
   const full = await sharp(input)
     .rotate()
     .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
-    // Warm & golden grade — applied identically to every photo for a cohesive look.
-    .modulate({ saturation: 1.14 })
-    .linear([1.14, 1.04, 0.9], [-10, -8, -4])
+    // Warm & golden grade + clarity — applied identically to every photo so the
+    // wood pops and the whole set stays cohesive.
+    .modulate({ saturation: 1.27 })
+    .linear([1.21, 1.06, 0.84], [-16, -12, -6])
+    .sharpen({ sigma: 1 })
     .webp({ quality: QUALITY })
     .toFile(path.join(outDir, name));
 
@@ -104,9 +106,9 @@ for (const file of sources) {
   await sharp(input)
     .rotate()
     .resize(THUMB, THUMB, { fit: "cover", position: "centre" })
-    .sharpen({ sigma: 0.6 })
-    .modulate({ saturation: 1.14 })
-    .linear([1.14, 1.04, 0.9], [-10, -8, -4])
+    .modulate({ saturation: 1.27 })
+    .linear([1.21, 1.06, 0.84], [-16, -12, -6])
+    .sharpen({ sigma: 1 })
     .webp({ quality: QUALITY })
     .toFile(path.join(thumbDir, name));
 
