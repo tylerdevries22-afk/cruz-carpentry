@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin-auth";
 import { adminLogout } from "@/app/actions/admin";
@@ -83,11 +84,19 @@ export default async function AdminPage() {
             <h1 className="font-serif text-3xl text-[#1C1917]">Inquiries</h1>
             <p className="text-sm text-[#78716C]">{inquiries.length} most recent</p>
           </div>
-          <form action={adminLogout}>
-            <button className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white">
-              Sign out
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/rates"
+              className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white"
+            >
+              Rate editor
+            </Link>
+            <form action={adminLogout}>
+              <button className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white">
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
 
         {inquiries.length === 0 ? (
