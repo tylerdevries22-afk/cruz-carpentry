@@ -84,12 +84,12 @@ export function ServiceHero({ service }: { service: Service }) {
             <PhoneIcon className="h-4 w-4" />
             Call for a Free Quote · {PHONE}
           </a>
-          <a
-            href="#estimate"
+          <Link
+            href="/estimate"
             className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-white/30 bg-white/5 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/15 active:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
           >
             Request an Estimate
-          </a>
+          </Link>
         </div>
       </div>
     </section>

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { PHONE, PHONE_HREF } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
@@ -85,16 +86,27 @@ export function CTA() {
           in-home consultation and estimate.
         </p>
 
-        <a
-          href={PHONE_HREF}
-          className="inline-flex items-center gap-3 bg-[#B45309] hover:bg-[#92400E]
-                     text-white px-10 py-5 rounded-full text-lg font-medium
-                     transition-colors duration-200 cursor-pointer shadow-2xl shadow-black/40
-                     focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1917]"
-        >
-          <PhoneIcon />
-          {PHONE}
-        </a>
+        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Link
+            href="/estimate"
+            className="inline-flex items-center justify-center bg-[#B45309] hover:bg-[#92400E]
+                       text-white px-10 py-5 rounded-full text-lg font-medium
+                       transition-colors duration-200 shadow-2xl shadow-black/40
+                       focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1917]"
+          >
+            Request a Free Estimate
+          </Link>
+          <a
+            href={PHONE_HREF}
+            className="inline-flex items-center justify-center gap-3 border border-white/30 bg-white/5
+                       text-white px-10 py-5 rounded-full text-lg font-medium
+                       transition-colors duration-200 cursor-pointer hover:bg-white/15
+                       focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1917]"
+          >
+            <PhoneIcon />
+            {PHONE}
+          </a>
+        </div>
 
         <p className="text-white/60 text-sm mt-8 font-light tracking-wider">
           Serving the Colorado Front Range &middot; Free estimates
