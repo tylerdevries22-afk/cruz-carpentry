@@ -7,23 +7,25 @@
 
 export type Tier = "essential" | "premium" | "signature";
 
+// Mirrors the 16 "What We Build" service categories (one taxonomy across the
+// cards, the wizard, and the pricing engine) plus two escape hatches.
 export type ProjectType =
+  | "custom_cabinetry"
   | "built_in_shelving"
-  | "entertainment_center"
-  | "custom_cabinets"
-  | "vanity"
-  | "closet_system"
-  | "mudroom_bench_lockers"
-  | "fireplace_surround"
-  | "wainscoting"
-  | "accent_wall"
-  | "trim_baseboards_crown"
-  | "floating_shelves"
-  | "custom_furniture"
-  | "casing"
-  | "repairs"
-  | "full_room"
-  | "install_only"
+  | "custom_closets"
+  | "mudrooms_lockers"
+  | "trim_wainscoting"
+  | "fireplace_mantels"
+  | "exposed_beams"
+  | "staircases_railings"
+  | "interior_exterior_doors"
+  | "wine_cellars"
+  | "home_bars"
+  | "home_offices"
+  | "garage_storage"
+  | "beds_frames"
+  | "custom_woodwork"
+  | "cedar_hot_tubs"
   | "other"
   | "not_sure";
 

@@ -22,7 +22,7 @@ function est(point: number, low = point * 0.85, high = point * 1.25): EstimateRe
 
 describe("scoreLead", () => {
   it("scores within 0–100 and sums its factors", () => {
-    const r = scoreLead({ tier: "premium", projectType: "custom_cabinets" }, est(8000));
+    const r = scoreLead({ tier: "premium", projectType: "custom_cabinetry" }, est(8000));
     expect(r.score).toBeGreaterThanOrEqual(0);
     expect(r.score).toBeLessThanOrEqual(100);
     expect(Object.values(r.factors).reduce((a, b) => a + b, 0)).toBe(r.score);
@@ -31,7 +31,7 @@ describe("scoreLead", () => {
   it("flags a hot lead", () => {
     const s: LeadSignals = {
       tier: "premium",
-      projectType: "custom_cabinets",
+      projectType: "custom_cabinetry",
       budgetBand: "25k_plus",
       timeline: "standard",
       email: "a@b.com",
@@ -46,7 +46,7 @@ describe("scoreLead", () => {
 
   it("flags a budget lead (essential + low band)", () => {
     const r = scoreLead(
-      { tier: "essential", projectType: "trim_baseboards_crown", budgetBand: "2_5k_5k", email: "a@b.com", areas: [{}], zip: "80020", contactRole: "homeowner", timeline: "flexible" },
+      { tier: "essential", projectType: "trim_wainscoting", budgetBand: "2_5k_5k", email: "a@b.com", areas: [{}], zip: "80020", contactRole: "homeowner", timeline: "flexible" },
       est(4000),
     );
     expect(r.category).toBe("budget");
@@ -54,7 +54,7 @@ describe("scoreLead", () => {
 
   it("flags a luxury lead (signature, not time-ready)", () => {
     const r = scoreLead(
-      { tier: "signature", projectType: "custom_cabinets", budgetBand: "10k_25k", timeline: "flexible", email: "a@b.com", areas: [{}], zip: "80206", contactRole: "homeowner" },
+      { tier: "signature", projectType: "custom_cabinetry", budgetBand: "10k_25k", timeline: "flexible", email: "a@b.com", areas: [{}], zip: "80206", contactRole: "homeowner" },
       est(12000),
     );
     expect(r.category).toBe("luxury");
@@ -68,7 +68,7 @@ describe("scoreLead", () => {
 
   it("flags a warm lead", () => {
     const r = scoreLead(
-      { tier: "premium", projectType: "custom_cabinets", timeline: "flexible", email: "a@b.com", areas: [{}], zip: "80123", contactRole: "renter" },
+      { tier: "premium", projectType: "custom_cabinetry", timeline: "flexible", email: "a@b.com", areas: [{}], zip: "80123", contactRole: "renter" },
       est(6000),
     );
     expect(r.category).toBe("warm");

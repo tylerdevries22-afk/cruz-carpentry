@@ -19,7 +19,7 @@ import { SERVICES, getServiceBySlug } from "@/lib/services";
 import { buildBusinessNode, BUSINESS_ID } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/constants";
 
-// Prerender all 12 service pages at build time; 404 anything else.
+// Prerender all 16 service pages at build time; 404 anything else.
 export const dynamicParams = false;
 
 export function generateStaticParams() {

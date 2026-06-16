@@ -129,24 +129,6 @@ export function SquareIcon() {
   );
 }
 
-export function SaunaIcon() {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-      {/* steam */}
-      <path d="M17 6c2 2.5 2 4.5 0 7s-2 4.5 0 7" />
-      <path d="M24 5c2 2.5 2 4.5 0 7s-2 4.5 0 7" />
-      <path d="M31 6c2 2.5 2 4.5 0 7s-2 4.5 0 7" />
-      {/* tiered bench */}
-      <path d="M8 30 H40" />
-      <line x1="12" y1="30" x2="12" y2="36" />
-      <line x1="36" y1="30" x2="36" y2="36" />
-      <path d="M8 38 H30" />
-      <line x1="12" y1="38" x2="12" y2="42" />
-      <line x1="26" y1="38" x2="26" y2="42" />
-    </svg>
-  );
-}
-
 export function WineIcon() {
   return (
     <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
@@ -193,26 +175,6 @@ export function HotTubIcon() {
       <ellipse cx="24" cy="26" rx="18" ry="7" />
       <path d="M6 26 v8 a18 7 0 0 0 36 0 v-8" />
       <ellipse cx="24" cy="26" rx="12.5" ry="4.5" />
-    </svg>
-  );
-}
-
-export function PergolaIcon() {
-  return (
-    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
-      {/* posts */}
-      <line x1="8" y1="18" x2="8" y2="42" />
-      <line x1="40" y1="18" x2="40" y2="42" />
-      {/* top beams */}
-      <line x1="4" y1="14" x2="44" y2="14" />
-      <line x1="4" y1="20" x2="44" y2="20" />
-      {/* rafters */}
-      <line x1="13" y1="11" x2="13" y2="23" />
-      <line x1="21" y1="11" x2="21" y2="23" />
-      <line x1="29" y1="11" x2="29" y2="23" />
-      <line x1="37" y1="11" x2="37" y2="23" />
-      {/* ground */}
-      <line x1="4" y1="42" x2="44" y2="42" />
     </svg>
   );
 }

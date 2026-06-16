@@ -42,32 +42,31 @@ export const LABOR_RATE: Record<"shop" | "install" | "finish" | "design", Record
   design: { essential: 95, premium: 125, signature: 160 },
 };
 
-/** Minimum project fee by tier; repair/trip floor is separate. */
+/** Minimum project fee by tier — the floor every estimate is clamped up to. */
 export const MIN_PROJECT_FEE: Record<Tier, number> = {
   essential: 550,
   premium: 850,
   signature: 1500,
 };
-export const REPAIR_TRIP_MIN = 275;
 
 /** Project-type labor multiplier (relative effort vs. a baseline built-in = 1.0). */
 export const PROJECT_TYPE_MULTIPLIER: Record<ProjectType, number> = {
+  custom_cabinetry: 1.2,
   built_in_shelving: 1.0,
-  entertainment_center: 1.05,
-  custom_cabinets: 1.15,
-  vanity: 1.0,
-  closet_system: 0.95,
-  mudroom_bench_lockers: 1.05,
-  fireplace_surround: 1.1,
-  wainscoting: 0.9,
-  accent_wall: 0.85,
-  trim_baseboards_crown: 0.8,
-  floating_shelves: 0.7,
-  custom_furniture: 1.2,
-  casing: 0.8,
-  repairs: 0.9,
-  full_room: 1.15,
-  install_only: 0.8,
+  custom_closets: 0.95,
+  mudrooms_lockers: 1.05,
+  trim_wainscoting: 0.85,
+  fireplace_mantels: 1.1,
+  exposed_beams: 1.15,
+  staircases_railings: 1.45,
+  interior_exterior_doors: 1.1,
+  wine_cellars: 1.3,
+  home_bars: 1.25,
+  home_offices: 1.15,
+  garage_storage: 0.95,
+  beds_frames: 1.15,
+  custom_woodwork: 1.2,
+  cedar_hot_tubs: 1.35,
   other: 1.0,
   not_sure: 1.0,
 };

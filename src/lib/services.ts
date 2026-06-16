@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 import {
   CabinetIcon,
   BookshelfIcon,
@@ -10,11 +11,9 @@ import {
   MantelIcon,
   DoorIcon,
   SquareIcon,
-  SaunaIcon,
   WineIcon,
   DeskIcon,
   HotTubIcon,
-  PergolaIcon,
   BarIcon,
   GarageIcon,
   BedFrameIcon,
@@ -192,7 +191,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "staircases-railings",
-    num: "03",
+    num: "08",
     title: "Staircases & Railings",
     shortTitle: "Staircases & Railings",
     cardDescription:
@@ -249,7 +248,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "trim-molding-wainscoting",
-    num: "04",
+    num: "05",
     title: "Trim, Molding & Wainscoting",
     shortTitle: "Trim & Millwork",
     cardDescription:
@@ -297,6 +296,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/trim-molding-wainscoting-a.webp", caption: "Raised-panel wainscoting with crown molding" },
+      { image: "/cards/trim-molding-wainscoting-b.webp", caption: "Board-and-batten with cased doorway" },
+    ],
     projectType: "Trim & Millwork",
     seo: {
       title: "Trim, Molding & Wainscoting",
@@ -306,7 +309,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "custom-closets",
-    num: "05",
+    num: "03",
     title: "Custom Closets & Wardrobes",
     shortTitle: "Custom Closets",
     cardDescription:
@@ -363,7 +366,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "mudrooms-lockers",
-    num: "06",
+    num: "04",
     title: "Mudrooms, Lockers & Benches",
     shortTitle: "Mudroom & Entryway",
     cardDescription:
@@ -477,7 +480,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "fireplace-mantels",
-    num: "08",
+    num: "06",
     title: "Fireplace Mantels & Surrounds",
     shortTitle: "Fireplace Mantel",
     cardDescription:
@@ -603,7 +606,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "custom-woodwork",
-    num: "10",
+    num: "15",
     title: "Custom Woodwork & Specialty Builds",
     shortTitle: "Custom Woodwork",
     cardDescription:
@@ -651,6 +654,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/custom-woodwork-a.webp", caption: "Backlit white-oak slatted feature wall" },
+      { image: "/cards/custom-woodwork-b.webp", caption: "Bespoke walnut display built-in" },
+    ],
     projectType: "Custom Woodwork",
     seo: {
       title: "Custom Woodwork & Specialty Builds",
@@ -659,65 +666,8 @@ export const SERVICES: Service[] = [
     },
   },
   {
-    slug: "cedar-saunas",
-    num: "11",
-    title: "Custom Cedar Saunas",
-    shortTitle: "Cedar Saunas",
-    cardDescription:
-      "Cedar saunas built for your space — tiered benches, tight tongue-and-groove paneling, and heater surrounds crafted to take the heat and last for years.",
-    Icon: SaunaIcon,
-    cardImage: "/images/sauna.webp",
-    heroImage: "/images/sauna.webp",
-    tagline: "A daily ritual, built into your home.",
-    intro:
-      "A sauna turns a corner of the house into a place to slow down and reset. We build custom cedar saunas fit to your space — tight tongue-and-groove walls, tiered benches shaped for comfort, and a clean heater surround — all engineered to handle heat and humidity and hold up beautifully for years of use.",
-    materials: [
-      "Western red cedar — aromatic, stable, and naturally suited to heat",
-      "Tongue-and-groove walls and ceiling that breathe with the heat",
-      "Tiered bench seating shaped and spaced for comfort",
-      "Heat-rated, hidden fasteners — nothing hot to the touch",
-      "Proper ventilation and clearances designed around the heater",
-      "Glass or solid cedar doors with the right hardware for heat",
-    ],
-    details: [
-      {
-        title: "Cedar, chosen for the job",
-        body: "Western red cedar stays cool to the touch, resists warping in humidity, and fills the room with that unmistakable sauna aroma — the right wood for the work.",
-      },
-      {
-        title: "Benches built for comfort",
-        body: "Bench height, depth, and board spacing are set for how you'll actually sit and lie, with smooth, rounded edges and no exposed metal.",
-      },
-      {
-        title: "Engineered for heat and moisture",
-        body: "Ventilation, clearances, and concealed heat-rated fasteners are all planned around the heater so the sauna performs safely and lasts.",
-      },
-    ],
-    faq: [
-      {
-        q: "Indoor or outdoor saunas?",
-        a: "We focus on custom indoor cedar saunas fit to a room or basement. Tell us your space and we'll design around it.",
-      },
-      {
-        q: "Do you handle the heater and electrical?",
-        a: "We build the sauna and its surround and coordinate with a licensed electrician and your chosen heater so everything is installed safely and to spec.",
-      },
-      {
-        q: "Why cedar over other woods?",
-        a: "Cedar's stability in heat and humidity, low heat retention, and natural aroma make it the standard for fine saunas. It simply holds up where other woods don't.",
-      },
-    ],
-    galleryIndices: [],
-    projectType: "Cedar Sauna",
-    seo: {
-      title: "Custom Cedar Saunas",
-      description:
-        "Custom-built cedar saunas for Colorado homes — tongue-and-groove cedar, tiered benches, and heater surrounds engineered for heat and built to last.",
-    },
-  },
-  {
     slug: "wine-cellars",
-    num: "12",
+    num: "10",
     title: "Wine Cellars & Wine Rooms",
     shortTitle: "Wine Cellars",
     cardDescription:
@@ -765,6 +715,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/wine-cellars-a.webp", caption: "Glass-enclosed cellar, custom wood racking" },
+      { image: "/cards/wine-cellars-b.webp", caption: "Backlit tasting room behind glass" },
+    ],
     projectType: "Wine Cellar",
     seo: {
       title: "Wine Cellars & Wine Rooms",
@@ -774,7 +728,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "desks-libraries",
-    num: "13",
+    num: "12",
     title: "Home Offices & Libraries",
     shortTitle: "Offices & Libraries",
     cardDescription:
@@ -826,6 +780,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/desks-libraries-a.webp", caption: "Floor-to-ceiling library with rolling ladder" },
+      { image: "/cards/desks-libraries-b.webp", caption: "White-oak built-ins with hardwood desk" },
+    ],
     projectType: "Desks & Libraries",
     seo: {
       title: "Home Offices & Libraries",
@@ -835,7 +793,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "cedar-hot-tubs",
-    num: "14",
+    num: "16",
     title: "Cedar Hot Tubs & Surrounds",
     shortTitle: "Cedar Hot Tubs",
     cardDescription:
@@ -883,6 +841,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/cedar-hot-tubs-a.webp", caption: "Round cedar tub on a mountain deck" },
+      { image: "/cards/cedar-hot-tubs-b.webp", caption: "Cedar tub with multi-level decking" },
+    ],
     projectType: "Cedar Hot Tub",
     seo: {
       title: "Cedar Hot Tubs & Surrounds",
@@ -891,65 +853,8 @@ export const SERVICES: Service[] = [
     },
   },
   {
-    slug: "outdoor-living",
-    num: "15",
-    title: "Outdoor Living — Pergolas & Decks",
-    shortTitle: "Outdoor Living",
-    cardDescription:
-      "Cedar pergolas, custom decks, timber structures, and tongue-and-groove patio ceilings that extend your home into the Colorado outdoors.",
-    Icon: PergolaIcon,
-    cardImage: "/cards/15.webp",
-    heroImage: "/cards/15.webp",
-    tagline: "Bring the craftsmanship outside.",
-    intro:
-      "The Front Range practically lives outdoors half the year. We build the cedar pergolas, decks, and timber structures that turn a backyard into a destination — exposed beams, tongue-and-groove ceilings, built-in benches — all in weather-tough wood, joined to last through Colorado seasons.",
-    materials: [
-      "Cedar and structural timber, with composite decking options",
-      "Exposed timber beams and posts with real joinery",
-      "Tongue-and-groove pergola and patio ceilings",
-      "Hidden fasteners for clean, splinter-free surfaces",
-      "Built-in benches, planters, and integrated lighting",
-      "Code-compliant footings engineered for snow load and wind",
-    ],
-    details: [
-      {
-        title: "Timber-framed to last",
-        body: "Posts, beams, and rafters are sized and joined for real structure — not a kit — so a pergola or deck stands solid through wind, sun, and heavy mountain snow.",
-      },
-      {
-        title: "Ceilings that finish the space",
-        body: "A tongue-and-groove ceiling under a pergola or covered patio turns an open frame into an outdoor room, warm overhead and finished like the inside of the house.",
-      },
-      {
-        title: "Built for snow load and sun",
-        body: "We detail the footings, flashing, fasteners, and finishes for Colorado's freeze-thaw and intense UV, so the structure ages gracefully instead of greying out and loosening.",
-      },
-    ],
-    faq: [
-      {
-        q: "Cedar or composite?",
-        a: "Both have a place — cedar for natural beauty and structure, composite for low-maintenance decking surfaces. We'll help you choose the right mix for your budget and exposure.",
-      },
-      {
-        q: "Do you handle permits and footings?",
-        a: "Yes — we engineer code-compliant footings and pull the required permits so the structure is safe, inspected, and built to last.",
-      },
-      {
-        q: "Can you tie into my existing deck or home?",
-        a: "Absolutely — we integrate new pergolas and decks with existing structures and the home's rooflines so the addition looks original.",
-      },
-    ],
-    galleryIndices: [],
-    projectType: "Outdoor Living",
-    seo: {
-      title: "Outdoor Living — Pergolas & Decks",
-      description:
-        "Custom cedar pergolas, decks, and timber outdoor structures for Colorado homes — exposed beams, T&G ceilings, built to take snow load and Front Range sun.",
-    },
-  },
-  {
     slug: "home-bars",
-    num: "16",
+    num: "11",
     title: "Home Bars & Butler's Pantries",
     shortTitle: "Home Bars",
     cardDescription:
@@ -997,6 +902,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/home-bars-a.webp", caption: "Walnut bar with backlit shelving" },
+      { image: "/cards/home-bars-b.webp", caption: "White-oak butler's pantry, marble counter" },
+    ],
     projectType: "Home Bar",
     seo: {
       title: "Home Bars & Butler's Pantries",
@@ -1006,7 +915,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "garage-storage",
-    num: "17",
+    num: "13",
     title: "Garage & Storage Systems",
     shortTitle: "Garage Storage",
     cardDescription:
@@ -1054,6 +963,10 @@ export const SERVICES: Service[] = [
       },
     ],
     galleryIndices: [],
+    showcase: [
+      { image: "/cards/garage-storage-a.webp", caption: "Custom garage cabinetry with workbench" },
+      { image: "/cards/garage-storage-b.webp", caption: "Floor-to-ceiling garage storage system" },
+    ],
     projectType: "Garage & Storage",
     seo: {
       title: "Garage & Storage Systems",
@@ -1063,7 +976,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "beds-frames-nightstands",
-    num: "18",
+    num: "14",
     title: "Beds, Frames & Nightstands",
     shortTitle: "Beds & Nightstands",
     cardDescription:
@@ -1126,6 +1039,31 @@ export const SERVICES: Service[] = [
   },
 ];
 
+/** Services in homepage display order (by num). */
+export const SERVICES_ORDERED: Service[] = [...SERVICES].sort((a, b) => a.num.localeCompare(b.num));
+
 export function getServiceBySlug(slug: string): Service | undefined {
   return SERVICES.find((service) => service.slug === slug);
+}
+
+/**
+ * Image list for a homepage card's photo carousel, in priority order and
+ * de-duplicated: the curated card image first, then AI "styles we build"
+ * showcase images, then real gallery photos (square thumbs). Capped so the card
+ * stays light. Services with a single image just render that one (no swipe).
+ */
+export function cardCarouselImages(service: Service, cap = 5): string[] {
+  const gallery = service.galleryIndices
+    .map((n) => GALLERY_PHOTOS[n - 1]?.thumb)
+    .filter((src): src is string => Boolean(src));
+  const showcase = (service.showcase ?? []).map((s) => s.image);
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  for (const src of [service.cardImage, ...showcase, ...gallery]) {
+    if (src && !seen.has(src)) {
+      seen.add(src);
+      ordered.push(src);
+    }
+  }
+  return ordered.slice(0, cap);
 }

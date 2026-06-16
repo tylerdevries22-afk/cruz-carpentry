@@ -31,7 +31,6 @@ import {
   MIN_PROJECT_FEE,
   PRIORITY_FACTOR,
   PROJECT_TYPE_MULTIPLIER,
-  REPAIR_TRIP_MIN,
   RISK_BUFFER,
   RULES_VERSION,
   RUSH_MULTIPLIER,
@@ -67,25 +66,27 @@ const roundTo = (n: number, step: number): number => Math.round(n / step) * step
 /** Visible-surface multiplier for the sheet-good carcass takeoff, per type. */
 function carcassSurfaceFactor(type: ProjectType): number {
   const map: Partial<Record<ProjectType, number>> = {
+    custom_cabinetry: 1.8,
     built_in_shelving: 1.6,
-    entertainment_center: 1.7,
-    custom_cabinets: 1.8,
-    vanity: 1.6,
-    closet_system: 1.5,
-    mudroom_bench_lockers: 1.6,
-    fireplace_surround: 1.2,
-    floating_shelves: 0.6,
-    custom_furniture: 1.4,
-    full_room: 1.7,
-    wainscoting: 1.0,
-    accent_wall: 1.0,
-    repairs: 0.5,
-    install_only: 0,
+    custom_closets: 1.5,
+    mudrooms_lockers: 1.6,
+    trim_wainscoting: 1.0,
+    fireplace_mantels: 1.2,
+    exposed_beams: 0.8, // mostly solid timber (priced via board-feet), low sheet goods
+    staircases_railings: 1.0,
+    interior_exterior_doors: 0.9, // priced per door (solid + hardware) more than sheet
+    wine_cellars: 1.9, // dense racking surface
+    home_bars: 1.8,
+    home_offices: 1.7,
+    garage_storage: 1.4,
+    beds_frames: 1.3, // furniture: less carcass surface
+    custom_woodwork: 1.4,
+    cedar_hot_tubs: 1.5,
   };
-  return map[type] ?? 1.2;
+  return map[type] ?? 1.2; // other / not_sure
 }
 
-const TRIM_TYPES: ReadonlySet<ProjectType> = new Set<ProjectType>(["trim_baseboards_crown", "casing"]);
+const TRIM_TYPES: ReadonlySet<ProjectType> = new Set<ProjectType>(["trim_wainscoting"]);
 
 function finishCoats(finish: Finish): number {
   switch (finish) {
@@ -247,12 +248,7 @@ export function estimate(
   const riskBuffer = afterPriority * riskFraction(input.risk);
   const pointRaw = afterPriority + riskBuffer;
 
-  const floor =
-    projectType === "repairs"
-      ? REPAIR_TRIP_MIN
-      : projectType === "install_only"
-        ? MIN_PROJECT_FEE.essential
-        : MIN_PROJECT_FEE[tier];
+  const floor = MIN_PROJECT_FEE[tier];
   const point = Math.max(floor, pointRaw);
 
   const hasMeasurements =

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PHONE, PHONE_HREF } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
-import { SERVICES } from "@/lib/services";
+import { SERVICES_ORDERED } from "@/lib/services";
 import { SERVICE_CITIES } from "@/lib/locations";
 
 const COMPANY_LINKS = [
@@ -48,7 +48,7 @@ export function Footer() {
         <div className="lg:col-span-5">
           <p className={headingClass}>What We Build</p>
           <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5">
-            {SERVICES.map((s) => (
+            {SERVICES_ORDERED.map((s) => (
               <li key={s.slug}>
                 <Link href={`/services/${s.slug}`} className={linkClass}>
                   {s.shortTitle}

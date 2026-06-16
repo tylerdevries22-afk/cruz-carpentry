@@ -25,7 +25,7 @@ describe("estimateInputSchema", () => {
     expect(estimateInputSchema.safeParse({ ...validInput, tier: "deluxe" }).success).toBe(false);
   });
   it("defaults areas to an empty array", () => {
-    const r = estimateInputSchema.safeParse({ projectType: "repairs", tier: "essential", finish: "painted" });
+    const r = estimateInputSchema.safeParse({ projectType: "custom_woodwork", tier: "essential", finish: "painted" });
     expect(r.success).toBe(true);
     if (r.success) expect(r.data.areas).toEqual([]);
   });

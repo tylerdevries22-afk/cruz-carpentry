@@ -1,15 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SERVICES, type Service } from "@/lib/services";
+import { SERVICES_ORDERED, type Service } from "@/lib/services";
 
 /**
  * "More of what we build" — 4 sibling service cards at the bottom of each
  * detail page, for internal linking and to keep visitors in the catalog.
+ * Walks the catalog in display order so "related" follows the grouped layout.
  */
 export function RelatedServices({ current }: { current: Service }) {
-  const idx = SERVICES.findIndex((s) => s.slug === current.slug);
+  const idx = SERVICES_ORDERED.findIndex((s) => s.slug === current.slug);
   const related = [1, 2, 3, 4].map(
-    (offset) => SERVICES[(idx + offset) % SERVICES.length],
+    (offset) => SERVICES_ORDERED[(idx + offset) % SERVICES_ORDERED.length],
   );
 
   return (

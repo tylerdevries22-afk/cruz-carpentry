@@ -115,12 +115,12 @@ describe("estimate()", () => {
     expect(r.breakdown.finishing).toBe(0);
   });
 
-  it("applies the repair trip minimum and low confidence with no measurements", () => {
+  it("applies the minimum project fee and low confidence with no measurements", () => {
     const r = estimate(
-      { projectType: "repairs", tier: "essential", finish: "painted", areas: [] },
+      { projectType: "other", tier: "essential", finish: "painted", areas: [] },
       1,
     );
-    expect(r.point).toBeGreaterThanOrEqual(275);
+    expect(r.point).toBeGreaterThanOrEqual(550); // essential minimum project fee floor
     expect(r.confidence).toBe("low");
     expect(r.low).toBeLessThan(r.point); // 0.70 spread
   });

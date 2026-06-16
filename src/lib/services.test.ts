@@ -4,8 +4,8 @@ import { PROJECT_TYPES } from "./estimate-schema";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 
 describe("SERVICES data", () => {
-  it("defines exactly 18 services", () => {
-    expect(SERVICES).toHaveLength(18);
+  it("defines exactly 16 services", () => {
+    expect(SERVICES).toHaveLength(16);
   });
 
   it("has unique, URL-safe slugs", () => {
@@ -19,9 +19,8 @@ describe("SERVICES data", () => {
   it("has sequential, unique badge numbers", () => {
     const nums = SERVICES.map((s) => s.num);
     expect(new Set(nums).size).toBe(nums.length);
-    SERVICES.forEach((s, i) => {
-      expect(s.num).toBe(String(i + 1).padStart(2, "0"));
-    });
+    const expected = SERVICES.map((_, i) => String(i + 1).padStart(2, "0"));
+    expect([...nums].sort()).toEqual(expected);
   });
 
   it("uses a projectType that exists in the estimate form", () => {

@@ -11,16 +11,16 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { EASE, REVEAL_DURATION, REVEAL_Y, REVEAL_STAGGER, SCRUB_SPRING } from "@/lib/constants";
-import { SERVICES, type Service } from "@/lib/services";
+import { SERVICES_ORDERED, cardCarouselImages, type Service } from "@/lib/services";
+import { ServiceCardCarousel } from "@/components/services/ServiceCardCarousel";
 
 // One-shot in-view reveal (a single IntersectionObserver per card, not a live
 // scroll listener) — far cheaper than per-card useScroll, and disabled for
-// reduced-motion users. Each card links to its detail page. A pure opacity + y
-// drift-up (no horizontal slide) on a real per-index cascade reads calmer and
-// more luxurious than the prior scissor-in-from-the-sides paired pop.
+// reduced-motion users. The photo area is a swipeable carousel; the text below
+// links to the detail page. The carousel controls are kept OUTSIDE that link so
+// we never nest interactive elements (button-in-anchor).
 function ServiceCard({ service, index }: { service: Service; index: number }) {
   const reduced = useReducedMotion();
-  const imageSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px";
 
   const reveal = reduced
     ? {}
@@ -33,58 +33,53 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
       };
 
   return (
-    <motion.div {...reveal} className="h-full">
+    <motion.div
+      {...reveal}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8DDD4] bg-white
+                 transition-[border-color,box-shadow] duration-500 hover:border-[#CA8A04]/30 hover:shadow-2xl
+                 focus-within:border-[#CA8A04]/40"
+    >
+      {/* Swipeable project photos */}
+      <div className="relative">
+        <ServiceCardCarousel images={cardCarouselImages(service)} alt={service.title} />
+        <span className="pointer-events-none absolute top-3 left-3 z-30 rounded-full bg-[#B45309] px-2.5 py-1 text-[0.7rem] font-semibold tracking-wider text-white">
+          {service.num}
+        </span>
+      </div>
+
+      {/* Content — links to the detail page */}
       <Link
         href={`/services/${service.slug}`}
         aria-label={`${service.title} — view details`}
-        className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#E8DDD4] bg-white
-                   transition-[border-color,box-shadow] duration-500 hover:border-[#CA8A04]/30 hover:shadow-2xl
-                   focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
+        className="flex flex-1 flex-col rounded-b-2xl p-7 sm:p-8
+                   focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#B45309]"
       >
-        {/* Representative project photo */}
-        <div className="relative aspect-[16/10] overflow-hidden">
-          <Image
-            src={service.cardImage}
-            alt={service.title}
-            fill
-            sizes={imageSizes}
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-          <span className="absolute top-3 left-3 bg-[#B45309] text-white text-[0.7rem] font-semibold tracking-wider px-2.5 py-1 rounded-full">
-            {service.num}
-          </span>
+        <div className="h-px bg-[#E8DDD4] mb-6" />
+        <div className="w-10 h-10 mb-5 text-[#B45309] transition-transform duration-300 group-hover:scale-110">
+          <service.Icon />
         </div>
-
-        {/* Content */}
-        <div className="flex flex-1 flex-col p-7 sm:p-8">
-          <div className="h-px bg-[#E8DDD4] mb-6" />
-          <div className="w-10 h-10 mb-5 text-[#B45309] group-hover:scale-110 transition-transform duration-300">
-            <service.Icon />
-          </div>
-          <h3 className="font-serif text-[1.2rem] text-[#1C1917] mb-3 leading-snug">
-            {service.title}
-          </h3>
-          <p className="text-[#57534E] text-[0.9375rem] leading-relaxed font-light">
-            {service.cardDescription}
-          </p>
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-medium text-[#B45309] transition-colors group-hover:text-[#92400E]">
-            View details
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </span>
-        </div>
+        <h3 className="font-serif text-[1.2rem] text-[#1C1917] mb-3 leading-snug">
+          {service.title}
+        </h3>
+        <p className="text-[#57534E] text-[0.9375rem] leading-relaxed font-light">
+          {service.cardDescription}
+        </p>
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-medium text-[#B45309] transition-colors group-hover:text-[#92400E]">
+          View details
+          <svg
+            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </span>
       </Link>
     </motion.div>
   );
@@ -162,7 +157,7 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
         {showHeader && <SectionHeader sectionProgress={sectionSmooth} reduced={reduced} />}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:gap-6">
-          {SERVICES.map((service, i) => (
+          {SERVICES_ORDERED.map((service, i) => (
             <ServiceCard key={service.slug} service={service} index={i} />
           ))}
         </div>

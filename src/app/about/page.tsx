@@ -83,7 +83,7 @@ export default function AboutPage() {
                     homes across the Colorado Front Range. We build the things that
                     make a house feel like it was made for the people in it —
                     kitchens and cabinetry, staircases and railings, built-ins,
-                    beams, closets, saunas, and the one-off pieces no catalog has a
+                    beams, closets, and the one-off pieces no catalog has a
                     page for.
                   </p>
                   <p>

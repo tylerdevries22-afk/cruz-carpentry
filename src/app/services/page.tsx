@@ -8,7 +8,7 @@ import { SERVICES } from "@/lib/services";
 import { SITE_URL } from "@/lib/constants";
 
 const DESCRIPTION =
-  "Custom carpentry services across the Colorado Front Range — cabinetry, staircases, built-ins, trim, closets, mudrooms, beams, mantels, doors, saunas, and wine cellars.";
+  "Custom carpentry services across the Colorado Front Range — cabinetry, staircases, built-ins, trim, closets, mudrooms, beams, mantels, doors, wine cellars, home bars, and more.";
 
 export const metadata: Metadata = {
   title: "What We Build",
