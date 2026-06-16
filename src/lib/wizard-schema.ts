@@ -80,6 +80,31 @@ export const BUDGET_BANDS = [
   "unsure",
 ] as const;
 
+export const PHOTO_LABELS = [
+  "wide_room",
+  "straight_on",
+  "close_up_existing",
+  "tape_measure",
+  "obstruction",
+  "inspiration",
+  "sketch",
+  "other",
+] as const;
+
+/** A stored photo: `{uploadToken}/{photoId}.{ext}` path + optional label. */
+export const photoSchema = z.object({
+  path: z
+    .string()
+    .regex(
+      /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/,
+      "Invalid photo path.",
+    ),
+  label: z.enum(PHOTO_LABELS).optional(),
+  bytes: z.number().int().nonnegative().max(8_000_000).optional(),
+  width: z.number().int().nonnegative().max(20000).optional(),
+  height: z.number().int().nonnegative().max(20000).optional(),
+});
+
 export const PRIORITIES = ["balanced", "price_quality", "fast_quality", "price_fast"] as const;
 export const COMPLEXITIES = ["simple", "moderate", "complex", "very_complex"] as const;
 export const ACCESS_LEVELS = ["easy", "moderate", "hard"] as const;
@@ -159,6 +184,7 @@ export const inquirySubmitSchema = estimateInputSchema.extend({
   contactRole: z.enum(CONTACT_ROLES).optional(),
   preferredContact: z.enum(PREFERRED_CONTACT).optional(),
   permissionToText: z.boolean().optional(),
+  photos: z.array(photoSchema).max(12).optional(),
   /** Honeypot — must be empty. */
   company: z.string().max(0).optional(),
 });

@@ -109,6 +109,7 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
     lead_score: lead.score,
     lead_category: lead.category,
     lead_factors: lead.factors,
+    photos: data.photos ?? [],
     source: "website_estimate_wizard",
   };
 

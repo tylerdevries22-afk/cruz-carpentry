@@ -10,6 +10,7 @@ import {
   CONTACT_ROLES,
   DESIGN_STYLES,
   FINISHES,
+  PHOTO_LABELS,
   PREFERRED_CONTACT,
   PRIORITIES,
   PROJECT_TYPES,
@@ -19,6 +20,45 @@ import {
 
 type Tier = (typeof TIERS)[number];
 type Priority = (typeof PRIORITIES)[number];
+
+interface PhotoItem {
+  id: string;
+  previewUrl: string;
+  label: string;
+  path?: string;
+  status: "uploading" | "done" | "error";
+}
+
+const MAX_PHOTOS = 10;
+
+/** Downscale + re-encode (JPEG) client-side — strips EXIF/GPS, honors orientation. */
+async function compressImage(file: File): Promise<Blob> {
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+  const maxDim = 2560;
+  const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+  const w = Math.round(bitmap.width * scale);
+  const h = Math.round(bitmap.height * scale);
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas unavailable");
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/jpeg", 0.82));
+  if (!blob) throw new Error("Compression failed");
+  return blob;
+}
+
+async function uploadPhoto(blob: Blob, uploadToken: string): Promise<string> {
+  const fd = new FormData();
+  fd.append("uploadToken", uploadToken);
+  fd.append("file", blob, "photo.jpg");
+  const res = await fetch("/api/inquiry/photos", { method: "POST", body: fd });
+  const json = await res.json();
+  if (!res.ok || !json.ok) throw new Error(json.error || "upload_failed");
+  return json.path as string;
+}
 
 const LABELS: Record<string, string> = {
   // project types
@@ -100,6 +140,14 @@ const LABELS: Record<string, string> = {
   phone: "Phone call",
   text: "Text",
   email: "Email",
+  // photo labels
+  wide_room: "Wide room",
+  straight_on: "Straight-on",
+  close_up_existing: "Close-up",
+  tape_measure: "With tape measure",
+  obstruction: "Obstruction",
+  inspiration: "Inspiration",
+  sketch: "Sketch",
 };
 
 const TIER_INFO: Record<Tier, { name: string; blurb: string; recommended?: boolean }> = {
@@ -165,6 +213,7 @@ interface WizardData {
   contactRole: string;
   preferredContact: string;
   permissionToText: boolean;
+  photos: PhotoItem[];
   company: string;
 }
 
@@ -172,6 +221,7 @@ const STEPS = [
   { key: "project", title: "What are we building?" },
   { key: "tier", title: "Choose a quality level" },
   { key: "measure", title: "Rough measurements" },
+  { key: "photos", title: "Add photos" },
   { key: "finish", title: "Finish & style" },
   { key: "priority", title: "What matters most?" },
   { key: "contact", title: "Your details" },
@@ -209,8 +259,12 @@ export function EstimateWizard() {
     contactRole: "",
     preferredContact: "",
     permissionToText: false,
+    photos: [],
     company: "",
   });
+  const [uploadToken] = useState(() =>
+    typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-fallback-uuid-0000-000000000000`,
+  );
   const [range, setRange] = useState<EstimateResult | null>(null);
   const [loadingRange, setLoadingRange] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -222,6 +276,28 @@ export function EstimateWizard() {
     setData((d) => ({ ...d, [k]: v }));
   const setArea = (i: number, k: keyof AreaInput, v: string) =>
     setData((d) => ({ ...d, areas: d.areas.map((a, j) => (j === i ? { ...a, [k]: v } : a)) }));
+
+  async function handleFiles(fileList: FileList | null) {
+    if (!fileList) return;
+    const room = MAX_PHOTOS - data.photos.length;
+    const files = Array.from(fileList).slice(0, Math.max(0, room));
+    for (const file of files) {
+      const id = crypto.randomUUID();
+      const previewUrl = URL.createObjectURL(file);
+      setData((d) => ({ ...d, photos: [...d.photos, { id, previewUrl, label: "", status: "uploading" }] }));
+      try {
+        const blob = await compressImage(file);
+        const path = await uploadPhoto(blob, uploadToken);
+        setData((d) => ({ ...d, photos: d.photos.map((p) => (p.id === id ? { ...p, path, status: "done" } : p)) }));
+      } catch {
+        setData((d) => ({ ...d, photos: d.photos.map((p) => (p.id === id ? { ...p, status: "error" } : p)) }));
+      }
+    }
+  }
+  const setPhotoLabel = (id: string, label: string) =>
+    setData((d) => ({ ...d, photos: d.photos.map((p) => (p.id === id ? { ...p, label } : p)) }));
+  const removePhoto = (id: string) =>
+    setData((d) => ({ ...d, photos: d.photos.filter((p) => p.id !== id) }));
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -314,6 +390,9 @@ export function EstimateWizard() {
       contactRole: data.contactRole || undefined,
       preferredContact: data.preferredContact || undefined,
       permissionToText: data.permissionToText,
+      photos: data.photos.flatMap((p) =>
+        p.status === "done" && p.path ? [{ path: p.path, label: p.label || undefined }] : [],
+      ),
       company: data.company,
     };
   }
@@ -440,6 +519,72 @@ export function EstimateWizard() {
             >
               + Add another area
             </button>
+          </div>
+        )}
+
+        {current === "photos" && (
+          <div className="space-y-5">
+            <p className="text-sm font-light text-[#57534E]">
+              Optional, but photos sharpen your estimate and let us scope without a wasted trip. Helpful shots: a
+              wide view of the room, the wall straight-on, a close-up of existing trim/cabinets, and anything in
+              the way (outlets, vents, pipes). Up to {MAX_PHOTOS}.
+            </p>
+            <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#D6CCBC] bg-[#FAF7F2] px-6 py-8 text-center transition hover:border-[#B45309]">
+              <span className="text-sm font-medium text-[#1C1917]">Tap to add photos</span>
+              <span className="mt-1 text-xs text-[#78716C]">or take one with your camera</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                capture="environment"
+                className="sr-only"
+                disabled={data.photos.length >= MAX_PHOTOS}
+                onChange={(e) => {
+                  void handleFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {data.photos.length > 0 && (
+              <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {data.photos.map((p) => (
+                  <li key={p.id} className="overflow-hidden rounded-xl border border-[#E7DFD3]">
+                    <div className="relative aspect-[4/3] bg-[#EFE7DA]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={p.previewUrl} alt="Project photo preview" className="h-full w-full object-cover" />
+                      {p.status !== "done" && (
+                        <span className={`absolute inset-0 flex items-center justify-center text-xs font-medium ${p.status === "error" ? "bg-[#B91C1C]/70 text-white" : "bg-black/40 text-white"}`}>
+                          {p.status === "error" ? "Upload failed" : "Uploading…"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 p-2">
+                      <select
+                        value={p.label}
+                        onChange={(e) => setPhotoLabel(p.id, e.target.value)}
+                        aria-label="Photo type"
+                        className="w-full rounded border border-[#E7DFD3] bg-white px-1.5 py-1 text-[11px] text-[#57534E] outline-none focus:ring-1 focus:ring-[#B45309]"
+                      >
+                        <option value="">Label…</option>
+                        {PHOTO_LABELS.map((l) => (
+                          <option key={l} value={l}>
+                            {LABELS[l] ?? l}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(p.id)}
+                        aria-label="Remove photo"
+                        className="shrink-0 rounded px-1.5 py-1 text-xs text-[#B45309] hover:underline"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 
