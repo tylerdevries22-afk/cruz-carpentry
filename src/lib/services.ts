@@ -16,11 +16,7 @@ import {
   HotTubIcon,
   PergolaIcon,
   BarIcon,
-  KitchenIcon,
-  OfficeIcon,
-  WindowSeatIcon,
   GarageIcon,
-  BedIcon,
 } from "@/components/icons/ServiceIcons";
 
 export interface ServiceDetail {
@@ -72,10 +68,10 @@ export const SERVICES: Service[] = [
   {
     slug: "custom-cabinetry",
     num: "01",
-    title: "Custom Cabinetry — Kitchen & Bath",
-    shortTitle: "Custom Cabinetry",
+    title: "Custom Cabinetry & Kitchens",
+    shortTitle: "Cabinetry & Kitchens",
     cardDescription:
-      "Kitchen, bath, and pantry cabinetry built to endure — islands, vanities, and custom storage finished with the precision of a true craftsman.",
+      "Full custom kitchens and statement islands, plus bath and pantry cabinetry — built to endure and finished with the precision of a true craftsman.",
     Icon: CabinetIcon,
     cardImage: "/cards/01.webp",
     heroImage: "/gallery/cruz-34.webp",
@@ -117,13 +113,17 @@ export const SERVICES: Service[] = [
         q: "Do you handle countertops and appliances?",
         a: "We build and install the cabinetry and coordinate closely with your counter fabricator and appliance specs so everything lands flush and on time.",
       },
+      {
+        q: "Do you build whole kitchens and islands?",
+        a: "Yes — full custom kitchens, statement islands (waterfall, seated, or double), and standalone cabinetry runs for kitchen, bath, and pantry.",
+      },
     ],
-    galleryIndices: [1, 9, 14, 16, 18, 41],
+    galleryIndices: [1, 9, 14, 16, 18, 34, 41],
     projectType: "Custom Cabinetry",
     seo: {
-      title: "Custom Cabinetry",
+      title: "Custom Cabinetry & Kitchens",
       description:
-        "Handcrafted kitchen, bath, and pantry cabinetry for Colorado Front Range homes — dovetailed drawers, solid-wood fronts, and a flawless, custom fit.",
+        "Custom kitchens, islands, and cabinetry for Colorado Front Range homes — dovetailed drawers, solid-wood fronts, integrated appliances, and a flawless custom fit.",
     },
   },
   {
@@ -134,8 +134,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Floor-to-ceiling built-ins, floating shelves, and media walls designed around your room, your TV, and your home office.",
     Icon: BookshelfIcon,
-    cardImage: "/cards/02.webp",
-    heroImage: "/gallery/cruz-10.webp",
+    cardImage: "/gallery/cruz-10.webp",
+    heroImage: "/cards/02.webp",
     tagline: "Storage that becomes architecture.",
     intro:
       "A wall of built-ins anchors a room — it frames your books, hides the cable box, and makes a space feel finished and intentional. We engineer each unit for real load and clean lines, with the bracing tucked out of sight so the shelves look like they grew from the wall.",
@@ -248,8 +248,8 @@ export const SERVICES: Service[] = [
     cardDescription:
       "Crown molding, baseboards, casings, wall paneling, and wainscoting that give a room its finished, architectural soul.",
     Icon: MoldingIcon,
-    cardImage: "/cards/04.webp",
-    heroImage: "/gallery/cruz-37.webp",
+    cardImage: "/gallery/cruz-37.webp",
+    heroImage: "/gallery/cruz-36.webp",
     tagline: "The details that turn a builder-grade box into a home.",
     intro:
       "Trim is the quiet architecture of a room — crown, casing, base, and paneling that frame every wall and doorway. It's also where shortcuts show fastest. We mill to the right proportions, fit each corner tight, and finish so the woodwork reads as one continuous, intentional line around the room.",
@@ -756,16 +756,16 @@ export const SERVICES: Service[] = [
   {
     slug: "desks-libraries",
     num: "13",
-    title: "Custom Desks & Home Libraries",
-    shortTitle: "Desks & Libraries",
+    title: "Home Offices & Libraries",
+    shortTitle: "Offices & Libraries",
     cardDescription:
-      "Built-in desks, paneled studies, and floor-to-ceiling library walls — a home office or reading room built around how you work and what you collect.",
+      "Fitted home offices, built-in desks, and floor-to-ceiling library walls — a study or workspace built around how you work and what you collect.",
     Icon: DeskIcon,
     cardImage: "/cards/13.webp",
-    heroImage: "/cards/13.webp",
+    heroImage: "/cards/18.webp",
     tagline: "A room that works as hard as you do.",
     intro:
-      "Whether it's a fitted desk that finally tames the home office or a floor-to-ceiling library with a rolling ladder, a built-in study turns a spare room into the best room in the house. We design around your work, your books, and your space — then build it in solid wood to last a whole career.",
+      "Whether it's a fitted office with dual workstations and real file storage, or a floor-to-ceiling library with a rolling ladder, a built-in study turns a spare room into the best room in the house. We design around your work, your books, and your space — then build it in solid wood to last a whole career.",
     materials: [
       "Solid hardwoods — walnut, white oak, cherry — with grain-matched fronts",
       "Floor-to-ceiling shelving with a rolling ladder and rail",
@@ -801,13 +801,17 @@ export const SERVICES: Service[] = [
         q: "Will it match the trim and cabinetry in the rest of my home?",
         a: "Yes. We match species, profile, and finish so a new study reads as original to the house.",
       },
+      {
+        q: "Can you fit two workstations or a shared office?",
+        a: "Yes — side-by-side or facing dual desks are a common request, and we plan the layout so both have storage, light, and elbow room.",
+      },
     ],
     galleryIndices: [],
     projectType: "Desks & Libraries",
     seo: {
-      title: "Custom Desks & Home Libraries",
+      title: "Home Offices & Libraries",
       description:
-        "Built-in desks, home offices, and floor-to-ceiling library walls for Colorado homes — solid-wood shelving, rolling ladders, and paneled studies built to last.",
+        "Custom home offices and built-in libraries for Colorado homes — fitted desks, dual workstations, floor-to-ceiling shelving, rolling ladders, and paneled studies.",
     },
   },
   {
@@ -982,179 +986,8 @@ export const SERVICES: Service[] = [
     },
   },
   {
-    slug: "kitchen-islands",
-    num: "17",
-    title: "Kitchen Islands & Custom Kitchens",
-    shortTitle: "Kitchen Islands",
-    cardDescription:
-      "Statement islands and full custom kitchens — waterfall counters, seated islands, integrated appliances, and cabinetry built around how you cook.",
-    Icon: KitchenIcon,
-    cardImage: "/gallery/cruz-34.webp",
-    heroImage: "/gallery/cruz-34.webp",
-    tagline: "The island everyone gathers around.",
-    intro:
-      "The island is where the kitchen really lives — prep, gather, homework, a glass of wine. We build statement islands and full custom kitchens around the way you actually cook: the right work zones, seating that fits, appliances built in clean, and cabinetry finished to the last reveal.",
-    materials: [
-      "Solid-wood fronts on furniture-grade cabinet boxes",
-      "Waterfall, seated, and double-island configurations",
-      "Integrated appliance, sink, and outlet cutouts built to spec",
-      "Stone, quartz, or butcher-block countertops",
-      "Dovetailed, soft-close drawers and pull-out storage",
-      "Spice, tray, trash, and charging organization built in",
-    ],
-    details: [
-      {
-        title: "An island built around how you cook",
-        body: "Prep zone, seating, storage, and clearances are all planned to your real routine, so the island works as hard as it looks — not just a slab in the middle of the room.",
-      },
-      {
-        title: "Appliances built in clean",
-        body: "Range, hood, fridge, dishwasher, microwave drawer — we build the cabinetry to your exact appliance specs so everything sits flush and panels disappear into the design.",
-      },
-      {
-        title: "Storage that disappears",
-        body: "Deep pan drawers, pull-out pantries, hidden trash, and tray dividers keep the counters clear and every tool exactly where you reach for it.",
-      },
-    ],
-    faq: [
-      {
-        q: "Can you build just an island, or a whole kitchen?",
-        a: "Both — a standalone statement island, a full custom kitchen, or a refresh of part of an existing one.",
-      },
-      {
-        q: "Can you match my existing cabinetry?",
-        a: "Yes. We match species, door style, and finish so a new island or run blends seamlessly with what's there.",
-      },
-      {
-        q: "Do you handle countertops and appliances?",
-        a: "We build and install the cabinetry and coordinate closely with your counter fabricator and appliance specs so everything lands flush and on schedule.",
-      },
-    ],
-    galleryIndices: [34, 18, 9, 1, 14, 16, 41],
-    projectType: "Custom Cabinetry",
-    seo: {
-      title: "Kitchen Islands & Custom Kitchens",
-      description:
-        "Custom kitchen islands and full kitchens for Colorado homes — waterfall and seated islands, integrated appliances, and dovetailed cabinetry built to last.",
-    },
-  },
-  {
-    slug: "home-offices",
-    num: "18",
-    title: "Home Offices & Studies",
-    shortTitle: "Home Offices",
-    cardDescription:
-      "Fitted home offices and studies — built-in desks, dual workstations, file storage, and shelving that turn a spare room into a productive, beautiful workspace.",
-    Icon: OfficeIcon,
-    cardImage: "/cards/18.webp",
-    heroImage: "/cards/18.webp",
-    tagline: "Work from home, beautifully.",
-    intro:
-      "Working from home deserves better than a folding table in the corner. We build fitted offices and studies with wall-to-wall desks, dual workstations, real file storage, and shelving — a workspace organized around your day and finished like the rest of your home.",
-    materials: [
-      "Hardwood desk cabinetry with grain-matched fronts",
-      "Single, dual, or shared workstation layouts",
-      "Full-extension file and supply drawers, soft-close",
-      "Upper cabinets and open display shelving",
-      "Hidden cable management, outlets, and charging",
-      "Paneled walls plus task and shelf lighting",
-    ],
-    details: [
-      {
-        title: "A desk built for real work",
-        body: "Monitor height, keyboard depth, drawers within reach, and cords routed out of sight — the office is planned around how you actually work, not a stock footprint.",
-      },
-      {
-        title: "Storage that ends the clutter",
-        body: "Real file drawers, supply storage, and a home for the printer mean the desk stays clear and the paperwork actually has somewhere to go.",
-      },
-      {
-        title: "A room you want to be in",
-        body: "Paneling, shelving, and warm lighting turn a spare bedroom into a study with the focus and calm that working from home should have.",
-      },
-    ],
-    faq: [
-      {
-        q: "Can you fit two workstations in one room?",
-        a: "Yes — side-by-side or facing dual desks are a common request, and we plan the layout so both have storage, light, and elbow room.",
-      },
-      {
-        q: "Can you build an office into a closet or small space?",
-        a: "Absolutely — a 'cloffice' or a single fitted wall makes a full, tidy workspace out of a closet, a landing, or one corner of a room.",
-      },
-      {
-        q: "Can you hide the printer, cords, and gear?",
-        a: "That's the point — we design in cable management, a printer cubby, and closed storage so the tech disappears.",
-      },
-    ],
-    galleryIndices: [],
-    projectType: "Desks & Libraries",
-    seo: {
-      title: "Home Offices & Studies",
-      description:
-        "Custom built-in home offices and studies for Colorado homes — fitted desks, dual workstations, file storage, and shelving for a beautiful work-from-home space.",
-    },
-  },
-  {
-    slug: "window-seats",
-    num: "19",
-    title: "Window Seats & Banquettes",
-    shortTitle: "Window Seats",
-    cardDescription:
-      "Built-in window seats and breakfast-nook banquettes with hidden storage — the cozy, hardworking corners that make a home feel custom.",
-    Icon: WindowSeatIcon,
-    cardImage: "/gallery/cruz-19.webp",
-    heroImage: "/gallery/cruz-19.webp",
-    tagline: "The coziest seat in the house.",
-    intro:
-      "A window seat or a built-in banquette is the kind of detail people fall in love with — a reading nook in the bay window, a breakfast bench that seats the whole family, storage hidden underneath. We build them to fit the spot exactly, with comfort and storage designed in.",
-    materials: [
-      "Solid-wood frames and bench bases built to be sat on hard",
-      "Lift-top or drawer storage tucked under the seat",
-      "Cushion platforms sized for real comfort",
-      "Paneling and trim matched to the surrounding room",
-      "Integrated bookshelves, cubbies, and side cabinets",
-      "Durable, scrubbable finishes for daily use",
-    ],
-    details: [
-      {
-        title: "Storage hidden under the seat",
-        body: "Lift-top benches or deep drawers turn a seat into a place to stash blankets, games, and seasonal gear — function hiding in plain sight.",
-      },
-      {
-        title: "Built to the exact nook",
-        body: "Bay windows, odd corners, and sloped walls are where window seats shine. We template the space so the bench fits like it was framed in with the house.",
-      },
-      {
-        title: "Comfort designed in",
-        body: "Seat height, depth, and back angle are planned for how you'll actually sit — and we coordinate cushions so the nook is as comfortable as it is charming.",
-      },
-    ],
-    faq: [
-      {
-        q: "Can you add storage underneath?",
-        a: "Almost always — lift-top seats or drawers are one of the best reasons to build a window seat in the first place.",
-      },
-      {
-        q: "Can you fit a bay window or an awkward corner?",
-        a: "Yes — irregular spaces are exactly where a built-in bench beats any piece of furniture. We build to the real conditions of the nook.",
-      },
-      {
-        q: "Do you provide the cushions?",
-        a: "We build the bench and platform and coordinate with an upholsterer (or your chosen cushions) so everything fits perfectly.",
-      },
-    ],
-    galleryIndices: [19],
-    projectType: "Custom Woodwork",
-    seo: {
-      title: "Window Seats & Banquettes",
-      description:
-        "Custom built-in window seats and breakfast-nook banquettes for Colorado homes — hidden storage, fit to the exact nook, comfortable and built to last.",
-    },
-  },
-  {
     slug: "garage-storage",
-    num: "20",
+    num: "17",
     title: "Garage & Storage Systems",
     shortTitle: "Garage Storage",
     cardDescription:
@@ -1207,63 +1040,6 @@ export const SERVICES: Service[] = [
       title: "Garage & Storage Systems",
       description:
         "Custom garage cabinetry, workbenches, and storage systems for Colorado homes — heavy-duty, organized built-ins for the garage and every utility space.",
-    },
-  },
-  {
-    slug: "bunk-loft-beds",
-    num: "21",
-    title: "Built-In Bunk & Loft Beds",
-    shortTitle: "Bunk & Loft Beds",
-    cardDescription:
-      "Custom built-in bunk and loft beds with stairs, drawers, and desks — the showpiece of a kids' room, guest room, or mountain cabin.",
-    Icon: BedIcon,
-    cardImage: "/gallery/cruz-24.webp",
-    heroImage: "/gallery/cruz-25.webp",
-    tagline: "The bed they'll never want to leave.",
-    intro:
-      "A built-in bunk or loft bed is the heart of a kids' room or a bunkhouse — and a Colorado-cabin essential. We build them in solid wood with safe stairs and rails, drawers and desks tucked underneath, and the kind of nooks that turn bedtime into the best part of the day.",
-    materials: [
-      "Solid-wood bed frames engineered to last for years",
-      "Built-in staircases or ladders with proper guard rails",
-      "Under-bed drawers, desks, and cubby storage",
-      "Integrated reading lights and outlets",
-      "Finishes safe and durable for kids' rooms",
-      "Layouts for two, three, or four built-in sleepers",
-    ],
-    details: [
-      {
-        title: "Safe by design",
-        body: "Guard rails, sturdy stairs or ladders, and load-tested framing mean a bunk or loft that's genuinely safe for kids — built well beyond a flat-pack bed.",
-      },
-      {
-        title: "Storage and desks built in",
-        body: "Drawers, a desk, and shelving tucked under the platform turn a bed into a whole little room — perfect for small bedrooms and bunkhouses.",
-      },
-      {
-        title: "Built for the cabin and the kids' room",
-        body: "From a mountain bunkhouse that sleeps the whole family to a magical kids'-room loft, we design the build to the space and the way it'll be used.",
-      },
-    ],
-    faq: [
-      {
-        q: "Are built-in bunk and loft beds safe for kids?",
-        a: "Yes — we engineer guard rails, stairs/ladders, and load capacity to be genuinely safe, while keeping the design clean and built-in.",
-      },
-      {
-        q: "Can you fit several beds into one room?",
-        a: "That's a specialty — bunk walls that sleep four, L-shaped layouts, and loft+desk combos all make the most of a small or shared room.",
-      },
-      {
-        q: "Can you add storage and a desk underneath?",
-        a: "Absolutely — drawers, a desk, and shelving under the platform are some of the best parts of a custom built-in bed.",
-      },
-    ],
-    galleryIndices: [24, 25],
-    projectType: "Custom Woodwork",
-    seo: {
-      title: "Built-In Bunk & Loft Beds",
-      description:
-        "Custom built-in bunk and loft beds for Colorado homes and cabins — safe stairs and rails, under-bed drawers and desks, built in solid wood.",
     },
   },
 ];

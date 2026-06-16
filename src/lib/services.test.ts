@@ -4,8 +4,8 @@ import { PROJECT_TYPES } from "./estimate-schema";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 
 describe("SERVICES data", () => {
-  it("defines exactly 21 services", () => {
-    expect(SERVICES).toHaveLength(21);
+  it("defines exactly 17 services", () => {
+    expect(SERVICES).toHaveLength(17);
   });
 
   it("has unique, URL-safe slugs", () => {
@@ -69,7 +69,7 @@ describe("SERVICES data", () => {
 describe("getServiceBySlug", () => {
   it("returns the matching service", () => {
     const service = getServiceBySlug("custom-cabinetry");
-    expect(service?.title).toBe("Custom Cabinetry — Kitchen & Bath");
+    expect(service?.title).toBe("Custom Cabinetry & Kitchens");
   });
 
   it("returns undefined for an unknown slug", () => {

@@ -33,6 +33,15 @@ const nextConfig: NextConfig = {
       { source: "/images/:path*", headers: mediumCache },
     ];
   },
+  // Service pages that were merged into others — redirect so old links/SEO don't 404.
+  async redirects() {
+    return [
+      { source: "/services/kitchen-islands", destination: "/services/custom-cabinetry", permanent: true },
+      { source: "/services/home-offices", destination: "/services/desks-libraries", permanent: true },
+      { source: "/services/window-seats", destination: "/services/custom-woodwork", permanent: true },
+      { source: "/services/bunk-loft-beds", destination: "/services/custom-woodwork", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
