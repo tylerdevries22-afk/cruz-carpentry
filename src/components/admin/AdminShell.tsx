@@ -30,8 +30,19 @@ function SlidersIcon({ className }: { className?: string }) {
   );
 }
 
+function HammerIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinejoin="round" aria-hidden="true">
+      <path d="M14 6l5 5-3 3-5-5 3-3z" />
+      <path d="M11 9L4 16a2 2 0 102.8 2.8L14 12" strokeLinecap="round" />
+      <path d="M12.5 4.5l5 5 2-2-5-5-2 2z" />
+    </svg>
+  );
+}
+
 const NAV = [
   { href: "/admin", label: "Leads", Icon: InboxIcon },
+  { href: "/admin/jobs", label: "Jobs", Icon: HammerIcon },
   { href: "/admin/applications", label: "Applications", Icon: BriefcaseIcon },
   { href: "/admin/rates", label: "Rate editor", Icon: SlidersIcon },
 ];
