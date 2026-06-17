@@ -11,16 +11,21 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { EASE, REVEAL_DURATION, REVEAL_Y, REVEAL_STAGGER, SCRUB_SPRING } from "@/lib/constants";
-import { SERVICES_ORDERED, cardCarouselImages, type Service } from "@/lib/services";
+import { cardCarouselImages, SERVICE_ICON_BY_SLUG, type CardService } from "@/lib/services";
 import { ServiceCardCarousel } from "@/components/services/ServiceCardCarousel";
+import type { CopyTree } from "@/lib/content/copy";
+import { renderCopy } from "@/lib/content/render";
 
 // One-shot in-view reveal (a single IntersectionObserver per card, not a live
 // scroll listener) — far cheaper than per-card useScroll, and disabled for
 // reduced-motion users. The photo area is a swipeable carousel; the text below
 // links to the detail page. The carousel controls are kept OUTSIDE that link so
 // we never nest interactive elements (button-in-anchor).
-function ServiceCard({ service, index }: { service: Service; index: number }) {
+function ServiceCard({ service, index }: { service: CardService; index: number }) {
   const reduced = useReducedMotion();
+  // Icon is resolved by slug — React components can't be serialized across the
+  // Server→Client boundary, so the page passes icon-less service data.
+  const Icon = SERVICE_ICON_BY_SLUG[service.slug];
 
   const reveal = reduced
     ? {}
@@ -57,7 +62,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
         {/* Icon + title on one row */}
         <div className="flex items-center gap-3.5">
           <span className="h-9 w-9 shrink-0 text-[#B45309] transition-transform duration-300 group-hover:scale-110">
-            <service.Icon />
+            {Icon ? <Icon /> : null}
           </span>
           <h3 className="font-serif text-[1.35rem] sm:text-[1.45rem] leading-snug text-[#1C1917]">
             {service.title}
@@ -94,9 +99,11 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
 function SectionHeader({
   sectionProgress,
   reduced,
+  header,
 }: {
   sectionProgress: ReturnType<typeof useSpring>;
   reduced: boolean;
+  header: CopyTree["home"]["services"];
 }) {
   const y = useTransform(sectionProgress, [0, 0.35], [64, 0]);
   const opacity = useTransform(sectionProgress, [0, 0.28], [0, 1]);
@@ -106,23 +113,29 @@ function SectionHeader({
       {/* Eyebrow rides the container's y/opacity (was a per-frame clip-path wipe,
           which is not GPU-compositable and repainted on every scroll frame). */}
       <p className="text-[#B45309] text-xs font-semibold tracking-[0.25em] uppercase mb-5">
-        What We Build
+        {header.eyebrow}
       </p>
       <h2 className="font-serif text-5xl sm:text-6xl text-[#1C1917] leading-tight">
-        Craftsmanship in
-        <br />
-        <em className="italic">every detail</em>
+        {renderCopy(header.heading)}
       </h2>
       <p className="text-[#57534E] text-lg font-light leading-relaxed mt-6">
-        From a single fireplace mantel to a whole home of custom millwork — these
-        are the things we shape in wood for homes across the Colorado Front Range.
-        Select any one to see how we build it.
+        {header.body}
       </p>
     </motion.div>
   );
 }
 
-export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
+export function Services({
+  services,
+  header,
+  showHeader = true,
+}: {
+  /** Services in display order (resolved from the content store by the page). */
+  services: CardService[];
+  /** Editable section copy (eyebrow/heading/body); only needed when showHeader. */
+  header?: CopyTree["home"]["services"];
+  showHeader?: boolean;
+}) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion() ?? false;
 
@@ -151,6 +164,7 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
 
       {/* Decorative ghost text */}
       <motion.div
+        aria-hidden="true"
         className="absolute right-0 top-1/2 -translate-y-1/2 text-[18rem] font-serif italic
                    text-[#1C1917]/[0.025] leading-none select-none pointer-events-none"
         style={{ y: reduced ? 0 : decoY }}
@@ -159,11 +173,11 @@ export function Services({ showHeader = true }: { showHeader?: boolean } = {}) {
       </motion.div>
 
       <div className="relative mx-auto max-w-7xl 2xl:max-w-[90rem]">
-        {showHeader && <SectionHeader sectionProgress={sectionSmooth} reduced={reduced} />}
+        {showHeader && header && <SectionHeader sectionProgress={sectionSmooth} reduced={reduced} header={header} />}
 
         {/* 1 col (phone) → 2 (md) → 3 (lg) → 4 (2xl ultra-wide ≥1536px) */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 2xl:grid-cols-4">
-          {SERVICES_ORDERED.map((service, i) => (
+          {services.map((service, i) => (
             <ServiceCard key={service.slug} service={service} index={i} />
           ))}
         </div>

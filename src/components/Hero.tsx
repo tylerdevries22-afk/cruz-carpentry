@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import { PHONE, PHONE_HREF, EASE, SCRUB_SPRING } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
+import type { CopyTree } from "@/lib/content/copy";
 
 // Slow-luxury load reveal: a long, well-spaced stagger so each element arrives
 // with breathing room rather than popping in as a quick burst.
@@ -29,7 +30,7 @@ const fadein = {
   show: { opacity: 1, transition: { duration: 1.0, ease: EASE } },
 };
 
-export function Hero() {
+export function Hero({ content }: { content: CopyTree["home"]["hero"] }) {
   const heroRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduced = useReducedMotion() ?? false;
@@ -116,7 +117,7 @@ export function Hero() {
         >
           <Stars />
           <span className="text-white/85 text-xs font-light tracking-widest uppercase">
-            5.0 · Google Reviews
+            {content.badge}
           </span>
         </motion.div>
 
@@ -141,7 +142,7 @@ export function Hero() {
           variants={riseUp}
           className="font-serif italic text-2xl sm:text-3xl text-white/90 mb-4 leading-snug"
         >
-          Built by Hand. Built to Last.
+          {content.tagline}
         </motion.p>
 
         {/* Specialty line — an h2 so the keyword/geo line is a real heading for
@@ -150,7 +151,7 @@ export function Hero() {
           variants={fadein}
           className="font-sans text-[11px] tracking-[0.28em] uppercase text-white/70 mb-10 font-light"
         >
-          Custom Carpentry &amp; Fine Millwork &nbsp;·&nbsp; Colorado
+          {content.specialty}
         </motion.h2>
 
         {/* CTA */}
@@ -163,7 +164,7 @@ export function Hero() {
                      focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
         >
           <PhoneIcon className="w-4 h-4" />
-          Call for a Free Quote &middot; {PHONE}
+          {content.ctaLabel} &middot; {PHONE}
         </motion.a>
       </motion.div>
 

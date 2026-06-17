@@ -6,96 +6,52 @@ import { EstimateForm } from "@/components/EstimateForm";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/JsonLd";
+import { getResolvedCopy } from "@/lib/content/source";
+import { renderCopy } from "@/lib/content/render";
 
-const DESCRIPTION =
-  "Answers to common questions about working with Cruz Carpentry — estimates, timelines, materials, service area, and how a custom carpentry project comes together.";
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = (await getResolvedCopy()).faq;
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical: "/faq" },
+    openGraph: {
+      title: `${seo.title} · Cruz Carpentry`,
+      description: seo.description,
+      url: "/faq",
+      type: "website",
+    },
+  };
+}
 
-export const metadata: Metadata = {
-  title: "FAQ",
-  description: DESCRIPTION,
-  alternates: { canonical: "/faq" },
-  openGraph: {
-    title: "FAQ · Cruz Carpentry",
-    description: DESCRIPTION,
-    url: "/faq",
-    type: "website",
-  },
-};
-
-const FAQS = [
-  {
-    q: "Do you offer free estimates?",
-    a: "Yes — every estimate is free and no-obligation. We come to you, take a look at the space, and talk through what you have in mind before anyone commits to anything.",
-  },
-  {
-    q: "What areas do you serve?",
-    a: "The Colorado Front Range — Denver, Boulder, Fort Collins, Loveland, Longmont, Greeley, Castle Rock, and the surrounding communities. If you're nearby, just ask.",
-  },
-  {
-    q: "How does a project work, start to finish?",
-    a: "Four steps: we consult on-site, design and select materials together so you approve every detail, build it by hand, then fit and finish it on-site so it looks like it was always part of the home.",
-  },
-  {
-    q: "How long does a custom project take?",
-    a: "It depends on the scope — a single mantel is quick, a whole kitchen or a home of millwork takes longer. We give you a realistic timeline once the design is set, and we keep you posted as we build.",
-  },
-  {
-    q: "Painted or stained — which should I choose?",
-    a: "Both hold up beautifully when they're done right. Painted finishes give you any color and a furniture-smooth surface; stained and oiled wood shows the grain and ages with character. We'll walk you through the trade-offs for your project.",
-  },
-  {
-    q: "Do you handle countertops, plumbing, and electrical?",
-    a: "We build and install the woodwork, and we coordinate closely with your countertop fabricator and licensed plumbers and electricians so everything lands flush, safe, and on schedule.",
-  },
-  {
-    q: "Are you licensed and insured?",
-    a: "Yes — Cruz Carpentry is licensed and insured, and all work is built to local building code and inspected where required.",
-  },
-  {
-    q: "Do you offer payment plans or financing?",
-    a: "Ask us about payment options when we put your estimate together — we'll let you know what's available for your project.",
-  },
-  {
-    q: "Can you match my existing cabinetry or trim?",
-    a: "Yes. We match species, profile, and finish so a new island, built-in, or run of trim blends seamlessly with what's already there.",
-  },
-  {
-    q: "How do I get started?",
-    a: "Call us at (720) 280-0812 or request a free estimate online with a few details about your project, and we'll reach out to schedule a visit.",
-  },
-];
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQS.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
-
-export default function FaqPage() {
+export default async function FaqPage() {
+  const copy = (await getResolvedCopy()).faq;
+  const faqs = copy.faqs;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
   return (
     <>
       <JsonLd data={jsonLd} />
       <Nav />
       <main id="main" tabIndex={-1}>
         <PageHeader
-          eyebrow="Questions & Answers"
-          title={
-            <>
-              Good to <em className="italic">know</em>
-            </>
-          }
-          sub="The questions we hear most often, before you ever pick up the phone."
+          eyebrow={copy.header.eyebrow}
+          title={renderCopy(copy.header.title)}
+          sub={copy.header.sub}
         />
 
         <section className="bg-white px-6 py-24 sm:py-32">
           <div className="mx-auto max-w-3xl">
             <Reveal>
               <div className="border-y border-[#E8DDD4]">
-                {FAQS.map((item) => (
+                {faqs.map((item) => (
                   <details
                     key={item.q}
                     className="group border-b border-[#E8DDD4] last:border-b-0"

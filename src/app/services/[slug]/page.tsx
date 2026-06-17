@@ -14,7 +14,8 @@ import { ServiceFAQ } from "@/components/service/ServiceFAQ";
 import { RelatedServices } from "@/components/service/RelatedServices";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 import { JsonLd } from "@/components/JsonLd";
-import { SERVICES, getServiceBySlug } from "@/lib/services";
+import { SERVICES } from "@/lib/services";
+import { getResolvedServiceBySlug } from "@/lib/content/source";
 import { buildBusinessNode, BUSINESS_ID } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/constants";
 
@@ -31,7 +32,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = await getResolvedServiceBySlug(slug);
   if (!service) return {};
 
   const path = `/services/${service.slug}`;
@@ -54,7 +55,7 @@ export default async function ServicePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = await getResolvedServiceBySlug(slug);
   if (!service) notFound();
 
   // Real Cruz project photos for this category (1-based cruz-NN → manifest).

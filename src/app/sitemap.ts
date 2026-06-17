@@ -1,13 +1,15 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/constants";
-import { SERVICES } from "@/lib/services";
+import { getResolvedServicesOrdered } from "@/lib/content/source";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
+  const services = await getResolvedServicesOrdered();
 
   const pages: { path: string; priority: number }[] = [
     { path: "", priority: 1 },
     { path: "/services", priority: 0.9 },
+    { path: "/estimate", priority: 0.9 },
     { path: "/gallery", priority: 0.8 },
     { path: "/about", priority: 0.7 },
     { path: "/careers", priority: 0.6 },
@@ -23,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: p.priority,
     })),
-    ...SERVICES.map((service) => ({
+    ...services.map((service) => ({
       url: `${SITE_URL}/services/${service.slug}`,
       lastModified,
       changeFrequency: "monthly" as const,

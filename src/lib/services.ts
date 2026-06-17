@@ -69,6 +69,15 @@ export interface Service {
   seo: { title: string; description: string };
 }
 
+/**
+ * A service without its `Icon` component. React components are functions and
+ * cannot be serialized across the Server→Client Component boundary, so a Server
+ * Component that resolves services from the content store must strip `Icon`
+ * before passing them to a Client Component. The client re-attaches the icon by
+ * slug via {@link SERVICE_ICON_BY_SLUG}.
+ */
+export type CardService = Omit<Service, "Icon">;
+
 export const SERVICES: Service[] = [
   {
     slug: "custom-cabinetry",
@@ -1076,30 +1085,43 @@ export function getServiceBySlug(slug: string): Service | undefined {
 }
 
 /**
- * Image list for a homepage card's photo carousel, in priority order and
- * de-duplicated: the curated card image first, then AI "styles we build"
- * showcase images, then real gallery photos (square thumbs). Capped so the card
- * stays light. Services with a single image just render that one (no swipe).
+ * Image set for a homepage card's photo carousel. The card's chosen `cardImage`
+ * is ALWAYS the lead (so an admin-picked thumbnail always shows), followed by the
+ * hero + "styles we build" showcase images filtered to the AI-generated folder so
+ * real project photos don't otherwise leak onto the cards (those show on each
+ * detail page's "Selected Work" gallery). Deduped + capped.
  */
-/**
- * AI-ONLY image set for a homepage card's photo carousel: the card image, the
- * hero, and the "styles we build" showcase images — filtered to the Supabase
- * `ai-generated/` folder so real project photos never appear in the cards (those
- * still show on each detail page's "Selected Work" gallery). Deduped + capped.
- */
-export function cardCarouselImages(service: Service, cap = 6): string[] {
-  const candidates = [
-    service.cardImage,
-    service.heroImage,
-    ...(service.showcase ?? []).map((s) => s.image),
-  ];
+export function cardCarouselImages(service: CardService, cap = 6): string[] {
   const seen = new Set<string>();
   const ordered: string[] = [];
-  for (const src of candidates) {
-    if (src && src.includes("/ai-generated/") && !seen.has(src)) {
+  const push = (src?: string) => {
+    if (src && !seen.has(src)) {
       seen.add(src);
       ordered.push(src);
     }
+  };
+  push(service.cardImage); // guaranteed lead — whatever thumbnail is set on the card
+  for (const src of [service.heroImage, ...(service.showcase ?? []).map((s) => s.image)]) {
+    if (src && src.includes("/ai-generated/")) push(src);
   }
   return ordered.slice(0, cap);
+}
+
+/**
+ * Client-safe slug → icon map. The icon components are pure stroked SVGs (no
+ * hooks), so they import cleanly into Client Components. A client receiving
+ * icon-less {@link CardService} data resolves its icon through this map.
+ */
+export const SERVICE_ICON_BY_SLUG: Record<string, ComponentType> =
+  Object.fromEntries(SERVICES.map((s) => [s.slug, s.Icon]));
+
+/**
+ * Drop the non-serializable `Icon` component so a resolved service can be passed
+ * from a Server Component to a Client Component. Pair with
+ * {@link SERVICE_ICON_BY_SLUG} on the client to render the icon.
+ */
+export function toCardService(service: Service): CardService {
+  const next = { ...service } as Partial<Service>;
+  delete next.Icon;
+  return next as CardService;
 }

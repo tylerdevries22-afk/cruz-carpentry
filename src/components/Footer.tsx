@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PHONE, PHONE_HREF } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
-import { SERVICES_ORDERED } from "@/lib/services";
+import { getResolvedServicesOrdered } from "@/lib/content/source";
 import { SERVICE_CITIES } from "@/lib/locations";
 
 const COMPANY_LINKS = [
@@ -19,8 +19,9 @@ const headingClass =
 const linkClass =
   "text-sm font-light text-white/65 transition-colors hover:text-white rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CA8A04]";
 
-export function Footer() {
+export async function Footer() {
   const year = new Date().getFullYear();
+  const services = await getResolvedServicesOrdered();
 
   return (
     <footer className="bg-[#1C1917] border-t border-white/5">
@@ -49,7 +50,7 @@ export function Footer() {
         <div className="lg:col-span-5">
           <p className={headingClass}>What We Build</p>
           <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5">
-            {SERVICES_ORDERED.map((s) => (
+            {services.map((s) => (
               <li key={s.slug}>
                 <Link href={`/services/${s.slug}`} className={linkClass}>
                   {s.shortTitle}

@@ -40,10 +40,21 @@ function HammerIcon({ className }: { className?: string }) {
   );
 }
 
+function ContentIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9l-6-6z" />
+      <path d="M14 3v6h6" />
+      <path d="M8 13h6M8 17h8" />
+    </svg>
+  );
+}
+
 const NAV = [
   { href: "/admin", label: "Leads", Icon: InboxIcon },
   { href: "/admin/jobs", label: "Jobs", Icon: HammerIcon },
   { href: "/admin/applications", label: "Applications", Icon: BriefcaseIcon },
+  { href: "/admin/content", label: "Site content", Icon: ContentIcon },
   { href: "/admin/rates", label: "Rate editor", Icon: SlidersIcon },
 ];
 

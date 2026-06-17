@@ -2,23 +2,26 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { EstimateWizard } from "@/components/estimate-wizard/EstimateWizard";
+import { getResolvedCopy } from "@/lib/content/source";
+import { renderCopy } from "@/lib/content/render";
 
-const DESCRIPTION =
-  "Request a custom carpentry estimate from Cruz Carpentry. Answer a few questions about your project and get a preliminary price range in minutes, priced with live material costs.";
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = (await getResolvedCopy()).estimate;
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical: "/estimate" },
+    openGraph: {
+      title: `${seo.title} · Cruz Carpentry`,
+      description: seo.description,
+      url: "/estimate",
+      type: "website",
+    },
+  };
+}
 
-export const metadata: Metadata = {
-  title: "Request a Custom Carpentry Estimate",
-  description: DESCRIPTION,
-  alternates: { canonical: "/estimate" },
-  openGraph: {
-    title: "Request a Custom Carpentry Estimate · Cruz Carpentry",
-    description: DESCRIPTION,
-    url: "/estimate",
-    type: "website",
-  },
-};
-
-export default function EstimatePage() {
+export default async function EstimatePage() {
+  const copy = (await getResolvedCopy()).estimate;
   return (
     <>
       <Nav />
@@ -26,15 +29,13 @@ export default function EstimatePage() {
         <section className="px-6 pb-24 pt-32 sm:pt-36">
           <div className="mx-auto max-w-3xl">
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-[#B45309]">
-              Request a Custom Carpentry Estimate
+              {copy.header.eyebrow}
             </p>
             <h1 className="font-serif text-4xl leading-tight text-[#1C1917] sm:text-5xl">
-              Let&apos;s price <em className="italic">your project</em>
+              {renderCopy(copy.header.heading)}
             </h1>
             <p className="mt-4 max-w-xl text-[0.9375rem] font-light leading-relaxed text-[#57534E]">
-              A few quick questions get you a preliminary range — priced with live
-              material costs. No obligation; final pricing follows a free on-site
-              review.
+              {copy.header.body}
             </p>
             <div className="mt-10">
               <EstimateWizard />

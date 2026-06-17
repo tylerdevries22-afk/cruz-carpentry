@@ -2,11 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
 import { Reveal } from "@/components/ui/Reveal";
+import type { CopyTree } from "@/lib/content/copy";
+import { renderCopy } from "@/lib/content/render";
 
 // A curated set of strong, finished projects (1-based cruz-NN).
 const FEATURED = [34, 32, 30, 41, 35, 40, 29, 24];
 
-export function FeaturedWork() {
+export function FeaturedWork({ content }: { content: CopyTree["home"]["featured"] }) {
   const photos = FEATURED.map((n) => GALLERY_PHOTOS[n - 1]).filter(Boolean);
 
   return (
@@ -16,17 +18,17 @@ export function FeaturedWork() {
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="mb-5 text-xs font-semibold uppercase tracking-[0.25em] text-[#B45309]">
-                Our Work
+                {content.eyebrow}
               </p>
               <h2 className="font-serif text-5xl leading-tight text-[#1C1917] sm:text-6xl">
-                A look at <em className="italic">what we build</em>
+                {renderCopy(content.heading)}
               </h2>
             </div>
             <Link
               href="/gallery"
               className="inline-flex items-center gap-2 self-start rounded-sm text-sm font-medium text-[#B45309] transition-colors hover:text-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0E8DC] sm:self-auto"
             >
-              View all 40+ projects
+              {content.viewAll}
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />

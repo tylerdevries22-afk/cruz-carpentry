@@ -10,21 +10,23 @@ import { JsonLd } from "@/components/JsonLd";
 import { buildBusinessNode, BUSINESS_ID } from "@/lib/jsonld";
 import { PHONE, PHONE_HREF, SITE_URL } from "@/lib/constants";
 import { SERVICE_CITIES } from "@/lib/locations";
+import { getResolvedCopy } from "@/lib/content/source";
+import { renderCopy } from "@/lib/content/render";
 
-const DESCRIPTION =
-  "Get in touch with Cruz Carpentry for a free, no-obligation estimate on custom carpentry across the Colorado Front Range. Call (720) 280-0812 or request a quote online.";
-
-export const metadata: Metadata = {
-  title: "Contact",
-  description: DESCRIPTION,
-  alternates: { canonical: "/contact" },
-  openGraph: {
-    title: "Contact · Cruz Carpentry",
-    description: DESCRIPTION,
-    url: "/contact",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = (await getResolvedCopy()).contact;
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical: "/contact" },
+    openGraph: {
+      title: `${seo.title} · Cruz Carpentry`,
+      description: seo.description,
+      url: "/contact",
+      type: "website",
+    },
+  };
+}
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -48,20 +50,17 @@ const jsonLd = {
   ],
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const copy = (await getResolvedCopy()).contact;
   return (
     <>
       <JsonLd data={jsonLd} />
       <Nav />
       <main id="main" tabIndex={-1}>
         <PageHeader
-          eyebrow="Contact"
-          title={
-            <>
-              Let&apos;s talk about <em className="italic">your project</em>
-            </>
-          }
-          sub="Free, no-obligation estimates across the Colorado Front Range. Call us, or send a few details and we'll reach out to schedule."
+          eyebrow={copy.header.eyebrow}
+          title={renderCopy(copy.header.title)}
+          sub={copy.header.sub}
         />
 
         {/* Contact info band */}
@@ -70,7 +69,7 @@ export default function ContactPage() {
             <Reveal>
               <div>
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#B45309]">
-                  Call
+                  {copy.info.call.label}
                 </p>
                 <a
                   href={PHONE_HREF}
@@ -80,33 +79,34 @@ export default function ContactPage() {
                   {PHONE}
                 </a>
                 <p className="mt-2 text-sm font-light text-[#57534E]">
-                  Talk to us directly about your project.
+                  {copy.info.call.note}
                 </p>
               </div>
             </Reveal>
             <Reveal delay={0.05}>
               <div>
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#B45309]">
-                  Estimates
+                  {copy.info.estimates.label}
                 </p>
-                <p className="font-serif text-2xl text-[#1C1917]">By appointment</p>
+                <p className="font-serif text-2xl text-[#1C1917]">
+                  {copy.info.estimates.value}
+                </p>
                 <p className="mt-2 text-sm font-light text-[#57534E]">
-                  Free, no-obligation estimates. We&apos;ll come to you, measure, and
-                  talk through what you have in mind.
+                  {copy.info.estimates.note}
                 </p>
               </div>
             </Reveal>
             <Reveal delay={0.1}>
               <div>
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#B45309]">
-                  Service Area
+                  {copy.info.serviceArea.label}
                 </p>
                 <p className="font-serif text-2xl text-[#1C1917]">
-                  Colorado Front Range
+                  {copy.info.serviceArea.value}
                 </p>
                 <p className="mt-2 text-sm font-light text-[#57534E]">
-                  {SERVICE_CITIES.slice(0, 6).join(", ")}, and surrounding
-                  communities.
+                  {SERVICE_CITIES.slice(0, 6).join(", ")}
+                  {copy.info.serviceArea.noteSuffix}
                 </p>
               </div>
             </Reveal>

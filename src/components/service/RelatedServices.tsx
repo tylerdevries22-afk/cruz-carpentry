@@ -1,17 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SERVICES_ORDERED, type Service } from "@/lib/services";
+import { type Service } from "@/lib/services";
+import { getResolvedServicesOrdered } from "@/lib/content/source";
 
 /**
  * "More of what we build" — 4 sibling service cards at the bottom of each
  * detail page, for internal linking and to keep visitors in the catalog.
  * Walks the catalog in display order so "related" follows the grouped layout.
  */
-export function RelatedServices({ current }: { current: Service }) {
-  const idx = SERVICES_ORDERED.findIndex((s) => s.slug === current.slug);
-  const related = [1, 2, 3, 4].map(
-    (offset) => SERVICES_ORDERED[(idx + offset) % SERVICES_ORDERED.length],
-  );
+export async function RelatedServices({ current }: { current: Service }) {
+  const ordered = await getResolvedServicesOrdered();
+  const idx = ordered.findIndex((s) => s.slug === current.slug);
+  const related = [1, 2, 3, 4].map((offset) => ordered[(idx + offset) % ordered.length]);
 
   return (
     <section className="bg-[#1C1917] px-6 py-20 sm:py-24">

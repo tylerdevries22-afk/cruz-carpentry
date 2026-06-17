@@ -9,50 +9,34 @@ import { TrustStrip } from "@/components/ui/TrustStrip";
 import { Reveal } from "@/components/ui/Reveal";
 import { ServiceProcess } from "@/components/service/ServiceProcess";
 import { REVEAL_STAGGER } from "@/lib/constants";
+import { getResolvedCopy } from "@/lib/content/source";
+import { renderCopy } from "@/lib/content/render";
 
-const DESCRIPTION =
-  "Cruz Carpentry is a custom carpentry and fine-millwork shop serving the Colorado Front Range — built by hand, in solid wood, to last. Featured on HGTV in 2022 for a dream home in Morrison, Colorado.";
+export async function generateMetadata(): Promise<Metadata> {
+  const { seo } = (await getResolvedCopy()).about;
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: { canonical: "/about" },
+    openGraph: {
+      title: `${seo.title} · Cruz Carpentry`,
+      description: seo.description,
+      url: "/about",
+      type: "website",
+    },
+  };
+}
 
-export const metadata: Metadata = {
-  title: "About",
-  description: DESCRIPTION,
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: "About · Cruz Carpentry",
-    description: DESCRIPTION,
-    url: "/about",
-    type: "website",
-  },
-};
-
-const VALUES = [
-  {
-    title: "Built by hand",
-    body: "Every piece is drawn for your space and built by hand in solid wood — real joinery, not flat-pack parts. It's the difference you feel every time you open a drawer.",
-  },
-  {
-    title: "Fit to the millimeter",
-    body: "Walls are never truly square. We scribe, level, and shim so the finished line reads perfectly straight and the build looks like it was framed in with the house.",
-  },
-  {
-    title: "Built to last",
-    body: "We build the way good carpentry is supposed to age — tighter and more solid with use, not loose and creaky. The kind of work that outlasts the trends around it.",
-  },
-];
-
-export default function AboutPage() {
+export default async function AboutPage() {
+  const copy = (await getResolvedCopy()).about;
   return (
     <>
       <Nav />
       <main id="main" tabIndex={-1}>
         <PageHeader
-          eyebrow="About Cruz Carpentry"
-          title={
-            <>
-              Built by hand, on the <em className="italic">Front Range</em>
-            </>
-          }
-          sub="Custom carpentry and fine millwork for Colorado homes — the cabinetry, staircases, built-ins, and one-off pieces that make a house unmistakably yours."
+          eyebrow={copy.header.eyebrow}
+          title={renderCopy(copy.header.title)}
+          sub={copy.header.sub}
         />
 
         {/* Story */}
@@ -72,31 +56,15 @@ export default function AboutPage() {
             <Reveal delay={0.05}>
               <div>
                 <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#B45309]">
-                  Our Story
+                  {copy.story.eyebrow}
                 </p>
                 <h2 className="mb-6 font-serif text-3xl leading-tight text-[#1C1917] sm:text-4xl">
-                  Carpentry the way it&apos;s <em className="italic">meant to be done</em>
+                  {renderCopy(copy.story.heading)}
                 </h2>
                 <div className="space-y-4 text-[#57534E] font-light leading-relaxed">
-                  <p>
-                    Cruz Carpentry is a custom carpentry and millwork shop serving
-                    homes across the Colorado Front Range. We build the things that
-                    make a house feel like it was made for the people in it —
-                    kitchens and cabinetry, staircases and railings, built-ins,
-                    beams, closets, and the one-off pieces no catalog has a
-                    page for.
-                  </p>
-                  <p>
-                    Every project starts the same way: on-site, listening to how you
-                    live in the space, then drawing and building it by hand in solid
-                    wood. No shortcuts hidden behind the finish — just honest joinery,
-                    a careful fit, and work that&apos;s built to last.
-                  </p>
-                  <p>
-                    From a single fireplace mantel to a whole home of millwork, the
-                    goal never changes: craftsmanship you&apos;ll still be glad you
-                    chose decades from now.
-                  </p>
+                  {copy.story.paragraphs.map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
+                  ))}
                 </div>
                 <TrustStrip className="mt-8 justify-start" />
               </div>
@@ -108,19 +76,16 @@ export default function AboutPage() {
         <section id="hgtv" className="scroll-mt-24 bg-[#1C1917] px-6 py-20 sm:py-28">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="mb-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#CA8A04]">
-              As Featured On
+              {copy.hgtv.eyebrow}
             </p>
             <p className="font-sans text-6xl font-extrabold leading-none tracking-tight text-[#5BB04A] sm:text-7xl">
-              HGTV
+              {copy.hgtv.brand}
             </p>
             <h2 className="mt-8 font-serif text-2xl leading-snug text-white sm:text-3xl">
-              A dream home in <em className="italic">Morrison, Colorado</em>
+              {renderCopy(copy.hgtv.heading)}
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg font-light leading-relaxed text-white/70">
-              In 2022, we were featured on HGTV for a dream home in Morrison,
-              Colorado. The project covered interior trim, custom doors, and three
-              wooden arch beams — wrapped in about two weeks, and the finished home
-              was absolutely gorgeous.
+              {copy.hgtv.body}
             </p>
           </Reveal>
         </section>
@@ -130,14 +95,14 @@ export default function AboutPage() {
           <div className="mx-auto max-w-6xl">
             <Reveal>
               <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#B45309]">
-                What Sets Us Apart
+                {copy.values.eyebrow}
               </p>
               <h2 className="max-w-2xl font-serif text-4xl leading-tight text-[#1C1917] sm:text-5xl">
-                The details you <em className="italic">feel</em>
+                {renderCopy(copy.values.heading)}
               </h2>
             </Reveal>
             <div className="mt-14 grid gap-6 sm:grid-cols-3">
-              {VALUES.map((v, i) => (
+              {copy.values.items.map((v, i) => (
                 <Reveal key={v.title} delay={Math.min(i, 5) * REVEAL_STAGGER}>
                   <div className="h-full rounded-2xl border border-[#E8DDD4] bg-white p-8">
                     <h3 className="mb-3 font-serif text-xl leading-snug text-[#1C1917]">

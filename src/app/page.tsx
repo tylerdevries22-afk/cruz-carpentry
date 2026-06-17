@@ -7,40 +7,43 @@ import { FeaturedWork } from "@/components/FeaturedWork";
 import { EstimateForm } from "@/components/EstimateForm";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
-import { SERVICES } from "@/lib/services";
+import { loadContent } from "@/lib/content/source";
+import { toCardService } from "@/lib/services";
 import { buildBusinessNode } from "@/lib/jsonld";
 import { JsonLd } from "@/components/JsonLd";
 
-const SERVICE_NAMES = SERVICES.map((service) => service.title);
+export default async function Home() {
+  const { services: resolved, copy } = await loadContent();
+  const services = [...resolved].sort((a, b) => a.num.localeCompare(b.num));
+  const serviceNames = services.map((service) => service.title);
 
-// LocalBusiness structured data for local SEO / rich results, extended with the
-// full service catalog. (Address geo + aggregateRating intentionally omitted in
-// buildBusinessNode until the owner supplies real data.)
-const jsonLd = {
-  "@context": "https://schema.org",
-  ...buildBusinessNode(),
-  knowsAbout: SERVICE_NAMES,
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "Custom Carpentry Services",
-    itemListElement: SERVICE_NAMES.map((name) => ({
-      "@type": "Offer",
-      itemOffered: { "@type": "Service", name },
-    })),
-  },
-};
+  // LocalBusiness structured data for local SEO / rich results, extended with the
+  // full service catalog. (Address geo + aggregateRating intentionally omitted in
+  // buildBusinessNode until the owner supplies real data.)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    ...buildBusinessNode(),
+    knowsAbout: serviceNames,
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Custom Carpentry Services",
+      itemListElement: serviceNames.map((name) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name },
+      })),
+    },
+  };
 
-export default function Home() {
   return (
     <>
       <JsonLd data={jsonLd} />
       <Nav />
       <main id="main" tabIndex={-1}>
-        <Hero />
+        <Hero content={copy.home.hero} />
         <LandingPage />
         <ProofBand />
-        <Services />
-        <FeaturedWork />
+        <Services services={services.map(toCardService)} header={copy.home.services} />
+        <FeaturedWork content={copy.home.featured} />
         <EstimateForm />
         <CTA />
       </main>
