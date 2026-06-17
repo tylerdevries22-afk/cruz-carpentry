@@ -10,7 +10,6 @@ import { ServiceIntro } from "@/components/service/ServiceIntro";
 import { ServiceProcess } from "@/components/service/ServiceProcess";
 import { ServiceMaterials } from "@/components/service/ServiceMaterials";
 import { ServiceDetails } from "@/components/service/ServiceDetails";
-import { ServiceShowcase } from "@/components/service/ServiceShowcase";
 import { ServiceFAQ } from "@/components/service/ServiceFAQ";
 import { RelatedServices } from "@/components/service/RelatedServices";
 import { GALLERY_PHOTOS } from "@/components/gallery/photos";
@@ -116,7 +115,6 @@ export default async function ServicePage({
         <ServiceProcess />
         <ServiceMaterials service={service} />
         <ServiceDetails service={service} />
-        <ServiceShowcase service={service} />
         {photos.length > 0 && (
           <Gallery
             photos={photos}
