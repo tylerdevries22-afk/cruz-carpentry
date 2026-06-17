@@ -81,7 +81,7 @@ export type CardService = Omit<Service, "Icon">;
 export const SERVICES: Service[] = [
   {
     slug: "custom-cabinetry",
-    num: "01",
+    num: "08",
     title: "Custom Cabinetry & Kitchens",
     shortTitle: "Cabinetry & Kitchens",
     cardDescription:
@@ -146,7 +146,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "built-in-shelving",
-    num: "02",
+    num: "07",
     title: "Built-In Shelving & Entertainment Centers",
     shortTitle: "Built-In Shelving",
     cardDescription:
@@ -207,7 +207,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "staircases-railings",
-    num: "08",
+    num: "03",
     title: "Staircases & Railings",
     shortTitle: "Staircases & Railings",
     cardDescription:
@@ -269,7 +269,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "trim-molding-wainscoting",
-    num: "05",
+    num: "04",
     title: "Trim, Molding & Wainscoting",
     shortTitle: "Trim & Millwork",
     cardDescription:
@@ -330,7 +330,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "custom-closets",
-    num: "03",
+    num: "13",
     title: "Custom Closets & Wardrobes",
     shortTitle: "Custom Closets",
     cardDescription:
@@ -391,7 +391,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "mudrooms-lockers",
-    num: "04",
+    num: "02",
     title: "Mudrooms, Lockers & Benches",
     shortTitle: "Mudroom & Entryway",
     cardDescription:
@@ -452,7 +452,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "exposed-beams-ceilings",
-    num: "07",
+    num: "05",
     title: "Exposed Beams & Wood Ceilings",
     shortTitle: "Beams & Ceilings",
     cardDescription:
@@ -574,7 +574,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "interior-exterior-doors",
-    num: "09",
+    num: "01",
     title: "Interior & Exterior Doors",
     shortTitle: "Interior & Exterior Doors",
     cardDescription:
@@ -643,13 +643,13 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "custom-woodwork",
-    num: "15",
+    num: "14",
     title: "Custom Woodwork & Specialty Builds",
     shortTitle: "Custom Woodwork",
     cardDescription:
       "Window seats, banquettes, feature walls, and one-off pieces — if you can dream it in wood, we can build it.",
     Icon: SquareIcon,
-    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/woodwork-card.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/custom-woodwork-a.webp",
     heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/custom-woodwork/ai-generated/woodwork-hero.webp",
     tagline: "The builds no catalog has a page for.",
     intro:
@@ -704,7 +704,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "wine-cellars",
-    num: "10",
+    num: "09",
     title: "Wine Cellars & Wine Rooms",
     shortTitle: "Wine Cellars",
     cardDescription:
@@ -765,13 +765,13 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "desks-libraries",
-    num: "12",
+    num: "11",
     title: "Home Offices & Libraries",
     shortTitle: "Offices & Libraries",
     cardDescription:
       "Fitted home offices, built-in desks, and floor-to-ceiling library walls — a study or workspace built around how you work and what you collect.",
     Icon: DeskIcon,
-    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/13.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/18.webp",
     heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/desks-libraries/ai-generated/18.webp",
     tagline: "A room that works as hard as you do.",
     intro:
@@ -830,7 +830,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "cedar-hot-tubs",
-    num: "16",
+    num: "15",
     title: "Cedar Hot Tubs & Surrounds",
     shortTitle: "Cedar Hot Tubs",
     cardDescription:
@@ -891,7 +891,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "home-bars",
-    num: "11",
+    num: "10",
     title: "Home Bars & Butler's Pantries",
     shortTitle: "Home Bars",
     cardDescription:
@@ -952,13 +952,13 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "garage-storage",
-    num: "13",
+    num: "16",
     title: "Garage & Storage Systems",
     shortTitle: "Garage Storage",
     cardDescription:
       "Custom garage cabinetry, workbenches, and whole-home storage systems — built-in organization that turns the garage and utility spaces into the tidiest rooms in the house.",
     Icon: GarageIcon,
-    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/20.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/garage-storage-a.webp",
     heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/garage-storage/ai-generated/20.webp",
     tagline: "Order, built in.",
     intro:
@@ -1013,13 +1013,13 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "beds-frames-nightstands",
-    num: "14",
+    num: "12",
     title: "Beds, Frames & Nightstands",
     shortTitle: "Beds & Nightstands",
     cardDescription:
       "Custom bed frames, headboards, and matching nightstands — from chunky solid-timber frames to refined platform beds, plus built-in bunk and loft beds.",
     Icon: BedFrameIcon,
-    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-timber.webp",
+    cardImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/10.webp",
     heroImage: "https://nkarcozbgtgtcqfhytrx.supabase.co/storage/v1/object/public/what-we-build/beds-frames-nightstands/ai-generated/beds-modern.webp",
     tagline: "The centerpiece of the room you rest in.",
     intro:
