@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Pin the workspace root to THIS app dir. The repo sits nested under
+  // "~/Cruz Carpentry/cruz-carpentry"; without this, Turbopack's lockfile-based
+  // root inference walks up to a parent that has no node_modules, which breaks
+  // CSS/tailwind resolution and stalls the dev server.
+  turbopack: {
+    root: import.meta.dirname,
+  },
   images: {
     // Prefer AVIF (smaller than WebP) with WebP fallback.
     formats: ["image/avif", "image/webp"],
