@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin-auth";
-import { adminLogout } from "@/app/actions/admin";
 import { updateApplicationStatus } from "@/app/actions/careers";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { StatusSelect } from "@/components/admin/StatusSelect";
+import { AdminShell } from "@/components/admin/AdminShell";
 
 export const metadata: Metadata = {
   title: "Admin — Applications",
@@ -81,21 +80,11 @@ export default async function AdminApplicationsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAF7F2] px-4 py-8 sm:px-8">
+    <AdminShell>
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="font-serif text-3xl text-[#1C1917]">Applications</h1>
-            <p className="text-sm text-[#78716C]">{apps.length} most recent</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/admin" className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white">
-              Leads
-            </Link>
-            <form action={adminLogout}>
-              <button className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white">Sign out</button>
-            </form>
-          </div>
+        <div className="mb-6">
+          <h1 className="font-serif text-3xl text-[#1C1917]">Applications</h1>
+          <p className="text-sm text-[#78716C]">{apps.length} most recent</p>
         </div>
 
         {apps.length === 0 ? (
@@ -191,6 +180,6 @@ export default async function AdminApplicationsPage() {
           </ul>
         )}
       </div>
-    </main>
+    </AdminShell>
   );
 }

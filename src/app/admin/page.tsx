@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin-auth";
-import { adminLogout, updateLeadStatus } from "@/app/actions/admin";
+import { updateLeadStatus } from "@/app/actions/admin";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { StatusSelect } from "@/components/admin/StatusSelect";
+import { AdminShell } from "@/components/admin/AdminShell";
 
 export const metadata: Metadata = {
   title: "Admin — Inquiries",
@@ -87,40 +87,19 @@ export default async function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAF7F2] px-4 py-8 sm:px-8">
+    <AdminShell>
       <div className="mx-auto max-w-5xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="font-serif text-3xl text-[#1C1917]">Leads</h1>
-            <p className="text-sm text-[#78716C]">
-              <a href="#inquiries" className="hover:text-[#B45309] hover:underline">
-                {inquiries.length} estimate{inquiries.length === 1 ? "" : "s"}
-              </a>{" "}
-              ·{" "}
-              <a href="#quick-requests" className="hover:text-[#B45309] hover:underline">
-                {leads.length} quick request{leads.length === 1 ? "" : "s"}
-              </a>
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin/applications"
-              className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white"
-            >
-              Applications
-            </Link>
-            <Link
-              href="/admin/rates"
-              className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white"
-            >
-              Rate editor
-            </Link>
-            <form action={adminLogout}>
-              <button className="rounded-full border border-[#D6CCBC] px-4 py-2 text-sm text-[#57534E] hover:bg-white">
-                Sign out
-              </button>
-            </form>
-          </div>
+        <div className="mb-6">
+          <h1 className="font-serif text-3xl text-[#1C1917]">Leads</h1>
+          <p className="text-sm text-[#78716C]">
+            <a href="#inquiries" className="hover:text-[#B45309] hover:underline">
+              {inquiries.length} estimate{inquiries.length === 1 ? "" : "s"}
+            </a>{" "}
+            ·{" "}
+            <a href="#quick-requests" className="hover:text-[#B45309] hover:underline">
+              {leads.length} quick request{leads.length === 1 ? "" : "s"}
+            </a>
+          </p>
         </div>
 
         <h2 id="inquiries" className="mb-3 scroll-mt-6 font-serif text-xl text-[#1C1917]">
@@ -241,6 +220,6 @@ export default async function AdminPage() {
           </ul>
         )}
       </div>
-    </main>
+    </AdminShell>
   );
 }
