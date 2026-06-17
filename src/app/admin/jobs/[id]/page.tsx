@@ -7,6 +7,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { StageTimeline } from "@/components/admin/jobs/StageTimeline";
 import { ShoppingList } from "@/components/admin/jobs/ShoppingList";
 import { JobPhotos } from "@/components/admin/jobs/JobPhotos";
+import { ActivityLog } from "@/components/admin/jobs/ActivityLog";
 import { money, type Job, type JobPayment } from "@/lib/jobs";
 
 export const metadata: Metadata = {
@@ -70,6 +71,13 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             <h1 className="font-serif text-3xl leading-tight text-[#1C1917]">{job.title}</h1>
             <p className="mt-1 text-sm text-[#57534E]">{job.client_name}{job.address ? ` · ${job.address}` : ""}</p>
           </div>
+          <Link
+            href={`/admin/jobs/${job.id}/edit`}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#D6CCBC] bg-white px-4 py-2 text-sm font-medium text-[#1C1917] transition-colors hover:bg-[#F5EEE2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309]"
+          >
+            <svg className="h-4 w-4 text-[#B45309]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            Edit
+          </Link>
         </div>
 
         {/* Pipeline */}
@@ -82,7 +90,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           {/* Main column */}
           <div className="space-y-6 lg:col-span-2">
             <Card title="Photos — before, progress & after">
-              <JobPhotos photos={job.photos ?? []} title={job.title} />
+              <JobPhotos jobId={job.id} photos={job.photos ?? []} title={job.title} />
             </Card>
             <Card title="Materials & shopping list">
               <ShoppingList jobId={job.id} initial={job.materials ?? []} />
@@ -143,16 +151,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </Card>
 
             <Card title="Activity">
-              <ol className="space-y-4">
-                {(job.notes ?? []).map((n, i) => (
-                  <li key={i} className="relative pl-5">
-                    <span className="absolute left-0 top-1.5 h-2 w-2 rounded-full bg-[#B45309]" />
-                    {i < (job.notes ?? []).length - 1 && <span className="absolute left-[3px] top-3.5 h-full w-px bg-[#E7DFD3]" />}
-                    <p className="text-sm text-[#1C1917]">{n.text}</p>
-                    <p className="text-xs text-[#A8A29E]">{fmtDate(n.at)} · {n.author}</p>
-                  </li>
-                ))}
-              </ol>
+              <ActivityLog jobId={job.id} initial={job.notes ?? []} />
             </Card>
           </div>
         </div>
