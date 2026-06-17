@@ -296,6 +296,24 @@ const STEPS = [
   { key: "review", title: "Your preliminary estimate" },
 ] as const;
 
+// Maps a server-returned field error back to the step that owns it, so a
+// submit-time validation failure can return the user to the right place.
+const FIELD_STEP: Record<string, (typeof STEPS)[number]["key"]> = {
+  projectType: "project",
+  tier: "tier",
+  finish: "finish",
+  designStyle: "finish",
+  firstName: "contact",
+  lastName: "contact",
+  phone: "contact",
+  email: "contact",
+  zip: "contact",
+  contactRole: "contact",
+  preferredContact: "contact",
+  permissionToText: "contact",
+  password: "contact",
+};
+
 const money = (n: number) => `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 const num = (s: string): number | undefined => {
   const v = s.trim();
@@ -303,6 +321,15 @@ const num = (s: string): number | undefined => {
   const n = Number(v);
   return Number.isFinite(n) && n >= 0 ? n : undefined;
 };
+
+/** A per-session upload token. Falls back to a random hex/dash string (still
+ *  matching the server's `^[0-9a-f-]{36}$` format) when crypto.randomUUID is
+ *  unavailable, so the token can't collide or be rejected by validation. */
+function genUploadToken(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
+  const hex = Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
 
 const GOLD = "#B45309";
 
@@ -333,15 +360,16 @@ export function EstimateWizard() {
     photos: [],
     company: "",
   });
-  const [uploadToken] = useState(() =>
-    typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-fallback-uuid-0000-000000000000`,
-  );
+  const [uploadToken] = useState(genUploadToken);
   const [range, setRange] = useState<EstimateResult | null>(null);
   const [loadingRange, setLoadingRange] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; message: string; estimate?: EstimateResult } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
+  // Track every object URL we mint for photo previews so we can revoke them on
+  // removal and unmount (otherwise the blobs leak — up to MAX_PHOTOS at a time).
+  const objectUrls = useRef<Set<string>>(new Set());
 
   const set = <K extends keyof WizardData>(k: K, v: WizardData[K]) =>
     setData((d) => ({ ...d, [k]: v }));
@@ -355,11 +383,14 @@ export function EstimateWizard() {
 
   async function handleFiles(fileList: FileList | null) {
     if (!fileList) return;
-    const room = MAX_PHOTOS - data.photos.length;
+    // Only count successfully-added photos toward the cap, so failed uploads
+    // don't lock the user out of adding a good one.
+    const room = MAX_PHOTOS - data.photos.filter((p) => p.status !== "error").length;
     const files = Array.from(fileList).slice(0, Math.max(0, room));
     for (const file of files) {
       const id = crypto.randomUUID();
       const previewUrl = URL.createObjectURL(file);
+      objectUrls.current.add(previewUrl);
       setData((d) => ({ ...d, photos: [...d.photos, { id, previewUrl, label: "", status: "uploading" }] }));
       try {
         const blob = await compressImage(file);
@@ -373,7 +404,22 @@ export function EstimateWizard() {
   const setPhotoLabel = (id: string, label: string) =>
     setData((d) => ({ ...d, photos: d.photos.map((p) => (p.id === id ? { ...p, label } : p)) }));
   const removePhoto = (id: string) =>
-    setData((d) => ({ ...d, photos: d.photos.filter((p) => p.id !== id) }));
+    setData((d) => {
+      const target = d.photos.find((p) => p.id === id);
+      if (target?.previewUrl) {
+        URL.revokeObjectURL(target.previewUrl);
+        objectUrls.current.delete(target.previewUrl);
+      }
+      return { ...d, photos: d.photos.filter((p) => p.id !== id) };
+    });
+
+  // Revoke any outstanding preview object URLs when the wizard unmounts.
+  useEffect(() => {
+    const urls = objectUrls.current;
+    return () => {
+      for (const url of urls) URL.revokeObjectURL(url);
+    };
+  }, []);
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -459,10 +505,26 @@ export function EstimateWizard() {
 
   async function handleSubmit() {
     setSubmitting(true);
-    const res = await submitInquiry({ ...buildInput(), ...contactPayload() });
+    let res: Awaited<ReturnType<typeof submitInquiry>>;
+    try {
+      res = await submitInquiry({ ...buildInput(), ...contactPayload() });
+    } catch {
+      res = { ok: false, message: "Something went wrong submitting your request. Please try again." };
+    }
     setSubmitting(false);
     setResult(res);
     if (res.estimate) setRange(res.estimate);
+    // Surface server-side validation errors: highlight the offending fields and
+    // jump back to the earliest step that owns one — otherwise a submit failure
+    // with no top-level message would look like nothing happened.
+    if (!res.ok && res.fieldErrors) {
+      setErrors(res.fieldErrors);
+      const target = Object.keys(res.fieldErrors)
+        .map((f) => STEPS.findIndex((s) => s.key === FIELD_STEP[f]))
+        .filter((i) => i >= 0)
+        .sort((a, b) => a - b)[0];
+      if (target !== undefined) setStep(target);
+    }
   }
   function contactPayload() {
     return {
@@ -478,6 +540,7 @@ export function EstimateWizard() {
       photos: data.photos.flatMap((p) =>
         p.status === "done" && p.path ? [{ path: p.path, label: p.label || undefined }] : [],
       ),
+      uploadToken,
       company: data.company,
     };
   }
@@ -673,7 +736,7 @@ export function EstimateWizard() {
                 multiple
                 capture="environment"
                 className="sr-only"
-                disabled={data.photos.length >= MAX_PHOTOS}
+                disabled={data.photos.filter((p) => p.status !== "error").length >= MAX_PHOTOS}
                 onChange={(e) => {
                   void handleFiles(e.target.files);
                   e.target.value = "";

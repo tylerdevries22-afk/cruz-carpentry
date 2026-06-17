@@ -70,22 +70,9 @@ const HARDWARE: Record<Tier, TierHardware> = {
   signature: { hingeEach: 7.5, slidePair: 28, pullEach: 22, drawerBoxStock: 55, shelfPinSet: 1.6 },
 };
 
-export function getTierMaterials(tier: Tier): TierMaterials {
-  return MATERIALS[tier];
-}
-
-export function getTierHardware(tier: Tier): TierHardware {
-  return HARDWARE[tier];
-}
-
 /** Buy-cost → sell price for one rate row, before market adjustment. */
 export function sellCost(row: RateRow): number {
   return row.unitCost * (1 + row.markupPct / 100) * row.wasteFactor;
-}
-
-/** Oldest verification date across the seeded table (drives a staleness warning). */
-export function oldestVerified(): string {
-  return VERIFIED;
 }
 
 /**

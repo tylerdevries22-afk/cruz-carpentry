@@ -27,13 +27,21 @@ export function hashPassword(password: string): string {
   return `${salt.toString("hex")}:${hash.toString("hex")}`;
 }
 
+// A throwaway salt:hash used to equalize timing when there is no real stored
+// hash (account missing, or exists with no password set), so an attacker can't
+// distinguish those states from a wrong password by response time.
+const DUMMY_HASH = `${"0".repeat(32)}:${"0".repeat(128)}`;
+
 export function verifyPassword(password: string, stored: string | null | undefined): boolean {
-  if (!stored) return false;
-  const [saltHex, hashHex] = stored.split(":");
-  if (!saltHex || !hashHex) return false;
+  const hasReal =
+    typeof stored === "string" && stored.includes(":") && stored.split(":").every(Boolean);
+  // Always run scrypt — against a dummy hash when there's no real one — so the
+  // work performed is constant regardless of whether the account/password exists.
+  const [saltHex, hashHex] = (hasReal ? (stored as string) : DUMMY_HASH).split(":");
   const expected = Buffer.from(hashHex, "hex");
   const actual = scryptSync(password, Buffer.from(saltHex, "hex"), expected.length);
-  return expected.length === actual.length && timingSafeEqual(expected, actual);
+  const match = expected.length === actual.length && timingSafeEqual(expected, actual);
+  return hasReal && match;
 }
 
 function sign(value: string): string {

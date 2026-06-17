@@ -5,7 +5,7 @@ import { createBooking } from "@/app/actions/account";
 
 export function BookingForm({ inquiryId }: { inquiryId: string }) {
   const [date, setDate] = useState("");
-  const [window, setWindow] = useState("");
+  const [timeWindow, setTimeWindow] = useState("");
   const [notes, setNotes] = useState("");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, start] = useTransition();
@@ -29,8 +29,8 @@ export function BookingForm({ inquiryId }: { inquiryId: string }) {
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-[#57534E]">Preferred time</span>
           <select
-            value={window}
-            onChange={(e) => setWindow(e.target.value)}
+            value={timeWindow}
+            onChange={(e) => setTimeWindow(e.target.value)}
             className="w-full rounded-lg border border-[#D6CCBC] bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#B45309]"
           >
             <option value="">Any time</option>
@@ -53,8 +53,12 @@ export function BookingForm({ inquiryId }: { inquiryId: string }) {
         disabled={pending}
         onClick={() =>
           start(async () => {
-            const r = await createBooking(inquiryId, date, window, notes);
-            setMsg(r.ok ? { ok: true, text: "" } : { ok: false, text: r.error ?? "Failed." });
+            try {
+              const r = await createBooking(inquiryId, date, timeWindow, notes);
+              setMsg(r.ok ? { ok: true, text: "" } : { ok: false, text: r.error ?? "Failed." });
+            } catch {
+              setMsg({ ok: false, text: "Something went wrong — please try again." });
+            }
           })
         }
         className="rounded-full bg-[#B45309] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#92400E] disabled:opacity-60"

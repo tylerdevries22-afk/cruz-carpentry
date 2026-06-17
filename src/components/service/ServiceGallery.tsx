@@ -16,9 +16,18 @@ export function ServiceGallery({ images, title }: { images: string[]; title: str
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
   const railRef = useRef<HTMLDivElement>(null);
+  // Remember the tile that opened the lightbox so focus can return to it on
+  // close (WCAG 2.4.3), instead of being lost to <body>.
+  const triggerRef = useRef<HTMLElement | null>(null);
 
-  const open = useCallback((i: number) => setLightbox(i), []);
-  const close = useCallback(() => setLightbox(null), []);
+  const open = useCallback((i: number) => {
+    triggerRef.current = document.activeElement as HTMLElement | null;
+    setLightbox(i);
+  }, []);
+  const close = useCallback(() => {
+    setLightbox(null);
+    triggerRef.current?.focus();
+  }, []);
   const total = images.length;
 
   // Track the mobile carousel index from scroll position.
@@ -223,10 +232,11 @@ function Lightbox({
 }) {
   const total = images.length;
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const prev = useCallback(() => onIndex((index - 1 + total) % total), [index, total, onIndex]);
   const next = useCallback(() => onIndex((index + 1) % total), [index, total, onIndex]);
 
-  // Scroll-lock + keyboard + initial focus.
+  // Scroll-lock + keyboard + initial focus + focus trap.
   useEffect(() => {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -235,6 +245,20 @@ function Lightbox({
       if (e.key === "Escape") onClose();
       else if (e.key === "ArrowLeft") prev();
       else if (e.key === "ArrowRight") next();
+      else if (e.key === "Tab") {
+        // Trap focus within the dialog's controls (WCAG 2.4.3 / modal pattern).
+        const focusables = dialogRef.current?.querySelectorAll("button");
+        if (!focusables || focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => {
@@ -245,6 +269,7 @@ function Lightbox({
 
   return (
     <motion.div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={`${title} photos`}

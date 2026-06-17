@@ -235,6 +235,12 @@ export const inquirySubmitSchema = estimateInputSchema.extend({
   preferredContact: z.enum(PREFERRED_CONTACT).optional(),
   permissionToText: z.boolean().optional(),
   photos: z.array(photoSchema).max(12).optional(),
+  /**
+   * Per-session upload token. Every photo path must be prefixed with it so a
+   * submission can't reference another homeowner's uploaded photos (IDOR).
+   * Required by the server whenever `photos` is non-empty.
+   */
+  uploadToken: z.string().regex(/^[0-9a-f-]{36}$/i, "Invalid session.").optional(),
   /** Optional account password (set in the wizard to enable portal login). */
   password: z
     .string()

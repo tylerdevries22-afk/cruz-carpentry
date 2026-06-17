@@ -23,6 +23,9 @@ const dateOrNull = (v: FormDataEntryValue | null) => {
 /** Build the editable core columns from a job form (create + edit share this). */
 function coreFields(fd: FormData) {
   const stage = str(fd.get("stage"), 20);
+  // "On hold" is orthogonal to the pipeline stage; when set it wins, otherwise
+  // status is derived from the stage (done → complete, else active).
+  const onHold = fd.get("on_hold") === "on";
   return {
     title: str(fd.get("title"), 160),
     client_name: str(fd.get("client_name"), 120),
@@ -31,7 +34,7 @@ function coreFields(fd: FormData) {
     address: str(fd.get("address"), 200) || null,
     project_type: str(fd.get("project_type"), 80) || "Custom Woodwork",
     stage: ((STAGE_KEYS as string[]).includes(stage) ? stage : "consult") as StageKey,
-    status: stage === "done" ? "complete" : "active",
+    status: onHold ? "on_hold" : stage === "done" ? "complete" : "active",
     start_date: dateOrNull(fd.get("start_date")),
     target_date: dateOrNull(fd.get("target_date")),
     budget_quoted: numOrNull(fd.get("budget_quoted")),
@@ -74,13 +77,16 @@ export async function deleteJob(id: string): Promise<void> {
   redirect("/admin/jobs");
 }
 
-/** Move a job to a pipeline stage (admin only). Marks complete at "done". */
+/** Move a job to a pipeline stage (admin only). Marks complete at "done", but
+ *  preserves an "on hold" job's status so the timeline doesn't silently resume it. */
 export async function setJobStage(id: string, stage: string): Promise<{ ok: boolean }> {
   if (!(await isAdmin())) return { ok: false };
   if (!(STAGE_KEYS as string[]).includes(stage)) return { ok: false };
   const supabase = getServiceSupabase();
   if (!supabase) return { ok: false };
-  const status = stage === "done" ? "complete" : "active";
+  const { data: cur } = await supabase.from("jobs").select("status").eq("id", id).maybeSingle();
+  const onHold = (cur as { status?: string } | null)?.status === "on_hold";
+  const status = onHold ? "on_hold" : stage === "done" ? "complete" : "active";
   const { error } = await supabase
     .from("jobs")
     .update({ stage: stage as StageKey, status, updated_at: new Date().toISOString() })
@@ -123,7 +129,7 @@ export async function removeMaterial(jobId: string, materialId: string) {
 export async function addNote(jobId: string, text: string): Promise<{ ok: boolean; note: JobNote | null }> {
   const t = text.trim().slice(0, 1000);
   if (t.length < 1) return { ok: false, note: null };
-  const note: JobNote = { at: new Date().toISOString().slice(0, 10), text: t, author: "Cruz" };
+  const note: JobNote = { at: new Date().toISOString(), text: t, author: "Cruz" };
   const r = await patchJob<JobNote>(jobId, "notes", (arr) => [note, ...arr]);
   return { ok: r.ok, note: r.ok ? note : null };
 }

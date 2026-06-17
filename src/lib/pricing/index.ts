@@ -23,6 +23,15 @@ export async function priceProject(
     opts?.market ? Promise.resolve(opts.market) : getMarketFactor(),
   ]);
   const result = estimate(input, market.factor, snapshot);
+  // The engine stamps a "supplied" MarketInfo using the factor we passed in; we
+  // overwrite it with the real provenance. Guard the invariant so the persisted
+  // est_market.factor can never silently disagree with the factor actually
+  // applied to the wood rows.
+  if (result.market.factor !== market.factor) {
+    console.warn(
+      `[pricing] market factor drift — applied ${result.market.factor}, recording ${market.factor}`,
+    );
+  }
   return { ...result, market };
 }
 

@@ -9,8 +9,8 @@ import {
   verifyPassword,
 } from "@/lib/admin-auth";
 import { getClientIp } from "@/lib/request-ip";
-import { recordHitAndCheckLimit } from "@/lib/rate-limit";
-import { getServiceSupabase } from "@/lib/supabase/server";
+import { recordHitAndCheckLimit, isOverSupabaseRateLimit } from "@/lib/rate-limit";
+import { getServiceSupabase, isServiceConfigured } from "@/lib/supabase/server";
 
 export interface AdminLoginState {
   error?: string;
@@ -32,8 +32,16 @@ export async function adminLogin(
   formData: FormData,
 ): Promise<AdminLoginState> {
   const ip = await getClientIp();
-  if (recordHitAndCheckLimit(ip)) {
-    return { error: "Too many attempts — please wait a few minutes." };
+  const tooMany: AdminLoginState = { error: "Too many attempts — please wait a few minutes." };
+  // Brute-force gate: L1 per-instance, plus the shared Supabase limiter keyed to
+  // the login namespace so the cap holds across instances. Fail CLOSED — a
+  // limiter outage must not lift throttling on the admin login.
+  if (recordHitAndCheckLimit(`admin-login:${ip}`)) return tooMany;
+  if (isServiceConfigured()) {
+    const supabase = getServiceSupabase();
+    if (supabase && (await isOverSupabaseRateLimit(supabase, `admin-login:${ip}`, { failClosed: true }))) {
+      return tooMany;
+    }
   }
   if (!isAdminConfigured()) {
     return { error: "Admin access is not configured on this environment." };
@@ -82,6 +90,31 @@ export async function updateLeadStatus(
   return { ok: !error };
 }
 
+const UNSAFE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
+/**
+ * Recursively validate a pricing override: every leaf must be a finite number
+ * in [0, 1e7], objects may nest, and no key may be prototype-polluting. Returns
+ * an error string on the first problem, or null when the whole tree is valid.
+ */
+function validateOverrideTree(node: unknown, path = ""): string | null {
+  if (typeof node === "number") {
+    if (!Number.isFinite(node) || node < 0 || node > 10_000_000) {
+      return `"${path || "value"}" must be a number between 0 and 10,000,000.`;
+    }
+    return null;
+  }
+  if (typeof node !== "object" || node === null || Array.isArray(node)) {
+    return `"${path || "value"}" must be a number or an object of numbers.`;
+  }
+  for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
+    if (UNSAFE_KEYS.has(k)) return `Disallowed key "${k}".`;
+    const err = validateOverrideTree(v, path ? `${path}.${k}` : k);
+    if (err) return err;
+  }
+  return null;
+}
+
 /**
  * Save a new active pricing_config override (a partial RateSnapshot merged over
  * the in-code seed). Append-only: deactivates the current active row and
@@ -106,6 +139,11 @@ export async function saveRateOverrides(
       return { ok: false, error: `Unknown top-level key "${k}". Use materials, hardware, or labor.` };
     }
   }
+  // Validate the whole tree: leaves must be finite, sane numbers and no key may
+  // be prototype-polluting — a hostile/typo'd payload is deep-merged into the
+  // live engine and would otherwise corrupt or crash every public estimate.
+  const valueError = validateOverrideTree(parsed);
+  if (valueError) return { ok: false, error: valueError };
   const supabase = getServiceSupabase();
   if (!supabase) return { ok: false, error: "Not configured." };
   const { data: latest } = await supabase

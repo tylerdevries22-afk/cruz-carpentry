@@ -37,12 +37,18 @@ export function recordHitAndCheckLimit(ip: string): boolean {
 /**
  * Shared L2 limiter backed by Supabase (the `check_rate_limit` RPC), so the cap
  * holds across all serverless instances. Records the hit and returns true if the
- * key is now over the limit. **Fails open** (returns false) if the check errors,
- * so a limiter outage never blocks a real lead — the honeypot + L1 remain.
+ * key is now over the limit.
+ *
+ * On error the behaviour is caller-chosen:
+ * - **Fail open** (default): return false so a limiter outage never blocks a
+ *   real lead — the honeypot + L1 remain. Use for public lead/contact forms.
+ * - **Fail closed** (`failClosed: true`): return true so a limiter outage can't
+ *   be used to lift the cap on a sensitive endpoint. Use for auth/login.
  */
 export async function isOverSupabaseRateLimit(
   supabase: SupabaseClient,
   key: string,
+  opts: { failClosed?: boolean } = {},
 ): Promise<boolean> {
   try {
     return await withRetry(
@@ -59,9 +65,10 @@ export async function isOverSupabaseRateLimit(
     );
   } catch (error) {
     const code = (error as { code?: string } | null)?.code;
+    const mode = opts.failClosed ? "failing closed" : "failing open";
     console.error(
-      `[rate-limit] shared check failed (code=${code ?? "?"}) — failing open`,
+      `[rate-limit] shared check failed (code=${code ?? "?"}) — ${mode}`,
     );
-    return false;
+    return opts.failClosed === true;
   }
 }

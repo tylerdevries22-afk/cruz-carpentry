@@ -41,8 +41,11 @@ export function JobPhotos({ jobId, photos: initial, title }: { jobId: string; ph
   };
   const remove = (id: string) => {
     const prev = photos;
+    setErr("");
     setPhotos((p) => p.filter((x) => x.id !== id));
-    void removePhoto(jobId, id).then((r) => { if (!r.ok) setPhotos(prev); });
+    void removePhoto(jobId, id)
+      .then((r) => { if (!r.ok) { setPhotos(prev); setErr("Couldn't remove that photo — please try again."); } })
+      .catch(() => { setPhotos(prev); setErr("Couldn't remove that photo — please try again."); });
   };
 
   return (

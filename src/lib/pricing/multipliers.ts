@@ -25,14 +25,6 @@ export const TIER_MARGIN: Record<Tier, number> = {
   premium: 0.2,
   signature: 0.25,
 };
-export const RUSH_MARGIN_EXTRA = 0.05;
-
-/** Premium-anchored tier multiplier used by the engine roll-up. */
-export const TIER_ENGINE_MULTIPLIER: Record<Tier, number> = {
-  essential: 0.667,
-  premium: 1.0,
-  signature: 1.6,
-};
 
 /** Tier billable labor rates ($/hr) by activity (Part A §A4). */
 export const LABOR_RATE: Record<"shop" | "install" | "finish" | "design", Record<Tier, number>> = {

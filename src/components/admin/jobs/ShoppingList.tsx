@@ -12,24 +12,35 @@ const input = "w-full rounded-lg border border-[#D6CCBC] bg-white px-2.5 py-2 te
 export function ShoppingList({ jobId, initial }: { jobId: string; initial: JobMaterial[] }) {
   const [items, setItems] = useState<JobMaterial[]>(initial);
   const [adding, setAdding] = useState(false);
+  const [err, setErr] = useState("");
   const [, start] = useTransition();
+  const SAVE_FAILED = "Couldn't save — please try again.";
 
   const toggle = (id: string) => {
+    setErr("");
     setItems((p) => p.map((m) => (m.id === id ? { ...m, purchased: !m.purchased } : m)));
     start(async () => {
-      const r = await toggleMaterial(jobId, id);
-      if (!r.ok) setItems((p) => p.map((m) => (m.id === id ? { ...m, purchased: !m.purchased } : m)));
+      const r = await toggleMaterial(jobId, id).catch(() => ({ ok: false }));
+      if (!r.ok) {
+        setItems((p) => p.map((m) => (m.id === id ? { ...m, purchased: !m.purchased } : m)));
+        setErr(SAVE_FAILED);
+      }
     });
   };
   const remove = (id: string) => {
+    setErr("");
     const prev = items;
     setItems((p) => p.filter((m) => m.id !== id));
     start(async () => {
-      const r = await removeMaterial(jobId, id);
-      if (!r.ok) setItems(prev);
+      const r = await removeMaterial(jobId, id).catch(() => ({ ok: false }));
+      if (!r.ok) {
+        setItems(prev);
+        setErr(SAVE_FAILED);
+      }
     });
   };
   const add = (fd: FormData) => {
+    setErr("");
     const m = {
       name: String(fd.get("name") ?? "").trim(),
       category: String(fd.get("category") ?? "Other"),
@@ -41,10 +52,12 @@ export function ShoppingList({ jobId, initial }: { jobId: string; initial: JobMa
     };
     if (m.name.length < 1) return;
     start(async () => {
-      const r = await addMaterial(jobId, m);
+      const r = await addMaterial(jobId, m).catch(() => ({ ok: false, item: undefined }));
       if (r.ok && r.item) {
         setItems((p) => [...p, r.item!]);
         setAdding(false);
+      } else {
+        setErr(SAVE_FAILED);
       }
     });
   };
@@ -63,6 +76,7 @@ export function ShoppingList({ jobId, initial }: { jobId: string; initial: JobMa
         </span>
         <span className="text-sm font-semibold text-[#1C1917]">{money(total)} total</span>
       </div>
+      {err && <p role="alert" className="mb-3 text-sm text-[#B91C1C]">{err}</p>}
       <div className="mb-5 h-1.5 overflow-hidden rounded-full bg-[#E2D6C4]">
         <div className="h-full rounded-full bg-[#B45309] transition-[width] duration-300" style={{ width: `${total > 0 ? (got / total) * 100 : 0}%` }} />
       </div>

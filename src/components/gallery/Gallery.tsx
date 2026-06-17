@@ -182,7 +182,6 @@ function Lightbox({
           height={photo.height}
           className="max-h-[80vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
           sizes="92vw"
-          priority
         />
         <figcaption className="mt-4 text-center">
           <p id="lightbox-caption" className="text-white/85 text-sm font-light">{photo.alt}</p>
@@ -275,6 +274,7 @@ export function Gallery({
 
       {/* Decorative ghost numeral */}
       <motion.div
+        aria-hidden="true"
         className="absolute left-0 top-1/2 -translate-y-1/2 text-[20rem] font-serif italic
                    text-[#1C1917]/[0.03] leading-none select-none pointer-events-none"
         style={{ y: reduced ? 0 : accentY }}

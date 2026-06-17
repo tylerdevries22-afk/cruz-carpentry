@@ -73,6 +73,11 @@ export default function RootLayout({
       className={`${bodoni.variable} ${jost.variable}`}
     >
       <body>
+        {/* Warm the connection to Supabase Storage — nearly all LCP-critical
+            media (hero poster, wood-story + service hero images) is served from
+            this cross-origin host, so pay DNS+TLS once, up front. */}
+        <link rel="preconnect" href="https://nkarcozbgtgtcqfhytrx.supabase.co" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://nkarcozbgtgtcqfhytrx.supabase.co" />
         {/* Prioritize the hero poster (LCP) so it paints before the video loads. */}
         <link
           rel="preload"

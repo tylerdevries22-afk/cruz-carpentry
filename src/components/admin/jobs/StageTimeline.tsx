@@ -11,6 +11,7 @@ import { setJobStage } from "@/app/actions/jobs";
  */
 export function StageTimeline({ jobId, initialStage }: { jobId: string; initialStage: StageKey }) {
   const [stage, setStage] = useState<StageKey>(initialStage);
+  const [err, setErr] = useState(false);
   const [pending, start] = useTransition();
   const idx = STAGE_KEYS.indexOf(stage);
   const fillPct = (idx / (STAGE_KEYS.length - 1)) * 100;
@@ -18,10 +19,14 @@ export function StageTimeline({ jobId, initialStage }: { jobId: string; initialS
   const set = (s: StageKey) => {
     if (s === stage) return;
     const prev = stage;
+    setErr(false);
     setStage(s);
     start(async () => {
-      const r = await setJobStage(jobId, s);
-      if (!r.ok) setStage(prev);
+      const r = await setJobStage(jobId, s).catch(() => ({ ok: false }));
+      if (!r.ok) {
+        setStage(prev);
+        setErr(true);
+      }
     });
   };
 
@@ -69,8 +74,12 @@ export function StageTimeline({ jobId, initialStage }: { jobId: string; initialS
           })}
         </ol>
       </div>
-      <p className="mt-4 text-xs text-[#A8A29E]">
-        {pending ? "Saving…" : "Click a stage to update where this project stands."}
+      <p className={`mt-4 text-xs ${err ? "text-[#B91C1C]" : "text-[#A8A29E]"}`} role={err ? "alert" : undefined}>
+        {err
+          ? "Couldn't save the stage — please try again."
+          : pending
+            ? "Saving…"
+            : "Click a stage to update where this project stands."}
       </p>
     </div>
   );

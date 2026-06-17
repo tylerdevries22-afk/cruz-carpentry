@@ -1,24 +1,13 @@
 import type { NextConfig } from "next";
 
-// Gallery/video assets are content-stable, so serve them immutable for a year.
-const longCache = [
-  { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-];
-
-// Card/wood/image assets are content-stable but their filenames are reused when
-// art is re-graded, so cache aggressively but allow background revalidation
-// rather than locking a stale frame for a year.
-const mediumCache = [
-  {
-    key: "Cache-Control",
-    value: "public, max-age=86400, stale-while-revalidate=2592000",
-  },
-];
-
 const nextConfig: NextConfig = {
   images: {
     // Prefer AVIF (smaller than WebP) with WebP fallback.
     formats: ["image/avif", "image/webp"],
+    // Allow-list the quality levels used at call sites (Next 16 requires opting
+    // into any non-default quality). Full-bleed decorative backgrounds can drop
+    // to 55–60 with no visible loss; 75 stays the default for content imagery.
+    qualities: [55, 60, 75],
     // What-We-Build media is served from the public Supabase Storage bucket.
     remotePatterns: [
       {
@@ -32,15 +21,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["framer-motion"],
   },
-  async headers() {
-    return [
-      { source: "/videos/:path*", headers: longCache },
-      { source: "/gallery/:path*", headers: longCache },
-      { source: "/cards/:path*", headers: mediumCache },
-      { source: "/wood/:path*", headers: mediumCache },
-      { source: "/images/:path*", headers: mediumCache },
-    ];
-  },
+  // Note: all gallery/wood/card media is now served from Supabase Storage (which
+  // sets its own long-lived cache headers), so no custom headers() for local
+  // /public asset paths are needed.
   // Service pages that were merged into others — redirect so old links/SEO don't 404.
   async redirects() {
     return [

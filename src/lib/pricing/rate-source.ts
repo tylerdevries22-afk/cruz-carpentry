@@ -17,11 +17,15 @@ function isObj(v: unknown): v is Json {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 
-/** Deep-merge a partial override onto a base; override leaves win. */
+const UNSAFE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
+/** Deep-merge a partial override onto a base; override leaves win. Skips
+ *  prototype-polluting keys so a hostile override can't corrupt Object.prototype. */
 function deepMerge<T>(base: T, override: unknown): T {
   if (!isObj(override)) return base;
   const out: Json = { ...(base as unknown as Json) };
   for (const [k, v] of Object.entries(override)) {
+    if (UNSAFE_KEYS.has(k)) continue;
     out[k] = isObj(v) && isObj(out[k]) ? deepMerge(out[k], v) : v;
   }
   return out as unknown as T;

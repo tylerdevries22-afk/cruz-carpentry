@@ -58,6 +58,16 @@ export function JobForm({ action, job, submitLabel }: { action: Action; job?: Jo
 
       <Field label="Cover image URL" name="cover_image" defaultValue={job?.cover_image} placeholder="https://… (optional)" />
 
+      <label className="flex items-center gap-2.5 text-sm text-[#1C1917]">
+        <input
+          type="checkbox"
+          name="on_hold"
+          defaultChecked={job?.status === "on_hold"}
+          className="h-4 w-4 rounded border-[#C2B6A6] text-[#B45309] focus:ring-[#CA8A04]/30"
+        />
+        Put this job on hold (pauses it without changing the stage)
+      </label>
+
       <div className="flex items-center gap-3 pt-2">
         <button type="submit" disabled={pending} className="rounded-full bg-[#B45309] px-7 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#92400E] disabled:opacity-60">
           {pending ? "Saving…" : submitLabel}

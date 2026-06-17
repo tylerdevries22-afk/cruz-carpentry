@@ -22,12 +22,15 @@ const CONTACT_FALLBACK = `If it keeps happening, call us at ${PHONE}.`;
  * service-role client. Called directly (typed object) from the client form.
  */
 export async function submitApplication(payload: unknown): Promise<ApplicationResult> {
-  const parsed = applicationSchema.safeParse(payload);
-
-  // Honeypot — pretend success without persisting.
-  if (parsed.success && parsed.data.company && parsed.data.company.length > 0) {
+  // Honeypot — a non-empty `company` means a bot. Check the RAW payload BEFORE
+  // schema validation: the schema enforces `company` is empty, so a post-parse
+  // check could never fire (it'd fail validation first). Pretend success.
+  const honeypot = (payload as { company?: unknown } | null)?.company;
+  if (typeof honeypot === "string" && honeypot.length > 0) {
     return { ok: true, message: "Thanks! We've received your application." };
   }
+
+  const parsed = applicationSchema.safeParse(payload);
 
   const ip = await getClientIp();
   const tooMany: ApplicationResult = {

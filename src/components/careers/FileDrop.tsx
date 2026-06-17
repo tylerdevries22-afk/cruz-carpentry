@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 export interface UploadedFile {
   path: string;
@@ -103,6 +103,15 @@ export function FileDrop({
   const [announce, setAnnounce] = useState("");
   const hintId = useId();
   const isImage = kind === "photo";
+  // Track minted preview object URLs so they can be revoked on remove/replace
+  // and unmount (otherwise each previewed photo leaks its blob).
+  const objectUrls = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    const urls = objectUrls.current;
+    return () => {
+      for (const url of urls) URL.revokeObjectURL(url);
+    };
+  }, []);
 
   const sync = useCallback(
     (next: Item[]) => {
@@ -119,14 +128,26 @@ export function FileDrop({
       setItems((prev) => {
         const room = max - prev.filter((i) => !i.error).length;
         const accepted = list.slice(0, Math.max(0, room));
-        const newItems: Item[] = accepted.map((f) => ({
-          localId: `${f.name}-${f.size}-${Math.round(f.lastModified)}`,
-          name: f.name,
-          bytes: f.size,
-          progress: 0,
-          previewUrl: isImage ? URL.createObjectURL(f) : undefined,
-        }));
-        // single-file kinds replace the previous file
+        const newItems: Item[] = accepted.map((f) => {
+          const previewUrl = isImage ? URL.createObjectURL(f) : undefined;
+          if (previewUrl) objectUrls.current.add(previewUrl);
+          return {
+            localId: `${f.name}-${f.size}-${Math.round(f.lastModified)}`,
+            name: f.name,
+            bytes: f.size,
+            progress: 0,
+            previewUrl,
+          };
+        });
+        // single-file kinds replace the previous file — revoke the old preview.
+        if (!multiple) {
+          for (const p of prev) {
+            if (p.previewUrl) {
+              URL.revokeObjectURL(p.previewUrl);
+              objectUrls.current.delete(p.previewUrl);
+            }
+          }
+        }
         const base = multiple ? prev : [];
         const merged = [...base, ...newItems];
 
@@ -158,6 +179,11 @@ export function FileDrop({
   );
 
   const remove = (localId: string) => {
+    const target = items.find((i) => i.localId === localId);
+    if (target?.previewUrl) {
+      URL.revokeObjectURL(target.previewUrl);
+      objectUrls.current.delete(target.previewUrl);
+    }
     const next = items.filter((i) => i.localId !== localId);
     sync(next);
     setAnnounce("File removed.");

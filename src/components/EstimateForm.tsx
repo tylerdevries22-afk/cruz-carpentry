@@ -95,9 +95,10 @@ export function EstimateForm({
             animate={reduced ? undefined : { opacity: 1, y: 0 }}
             exit={reduced ? undefined : { opacity: 0, y: -8 }}
             transition={{ duration: 0.32, ease: EASE }}
-            id={`quote-panel-${mode}`}
+            id="quote-panel"
             role="tabpanel"
             aria-labelledby={`quote-tab-${mode}`}
+            tabIndex={0}
           >
             {mode === "quick" ? (
               <QuickRequestForm defaultProjectType={defaultProjectType} />
@@ -117,10 +118,29 @@ function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => voi
     { id: "quick", label: "Quick request", hint: "Send a quick message" },
     { id: "estimate", label: "Instant estimate", hint: "Price range in minutes" },
   ];
+  const tabRefs = useRef<Record<Mode, HTMLButtonElement | null>>({ quick: null, estimate: null });
+
+  // APG tablist keyboard support: arrows/Home/End move selection and focus.
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const order = options.map((o) => o.id);
+    const i = order.indexOf(mode);
+    let next: Mode | null = null;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = order[(i + 1) % order.length];
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = order[(i - 1 + order.length) % order.length];
+    else if (e.key === "Home") next = order[0];
+    else if (e.key === "End") next = order[order.length - 1];
+    if (next) {
+      e.preventDefault();
+      onChange(next);
+      tabRefs.current[next]?.focus();
+    }
+  };
+
   return (
     <div
       role="tablist"
       aria-label="Choose how to request a quote"
+      onKeyDown={onKeyDown}
       className="mx-auto mb-9 grid max-w-md grid-cols-2 gap-1.5 rounded-2xl border border-[#E2D7C6] bg-[#EDE3D3] p-1.5"
     >
       {options.map((opt) => {
@@ -131,8 +151,10 @@ function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => voi
             type="button"
             role="tab"
             id={`quote-tab-${opt.id}`}
+            ref={(el) => { tabRefs.current[opt.id] = el; }}
             aria-selected={active}
-            aria-controls={`quote-panel-${opt.id}`}
+            aria-controls="quote-panel"
+            tabIndex={active ? 0 : -1}
             onClick={() => onChange(opt.id)}
             className={`flex flex-col items-center rounded-xl px-3 py-2.5 text-center transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-1 focus-visible:ring-offset-[#EDE3D3] ${
               active

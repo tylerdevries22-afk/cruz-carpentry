@@ -27,12 +27,15 @@ const CONTACT_FALLBACK = `Please call us at ${PHONE}.`;
  * the range. Called directly (typed object) from the client wizard.
  */
 export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
-  const parsed = inquirySubmitSchema.safeParse(payload);
-
-  // Honeypot — pretend success without persisting.
-  if (parsed.success && parsed.data.company && parsed.data.company.length > 0) {
+  // Honeypot — a non-empty `company` means a bot. Check the RAW payload BEFORE
+  // schema validation: the schema enforces `company` is empty, so a post-parse
+  // check could never fire (it'd fail validation first). Pretend success.
+  const honeypot = (payload as { company?: unknown } | null)?.company;
+  if (typeof honeypot === "string" && honeypot.length > 0) {
     return { ok: true, message: "Thanks! We'll be in touch shortly." };
   }
+
+  const parsed = inquirySubmitSchema.safeParse(payload);
 
   const ip = await getClientIp();
   const tooMany: InquiryResult = {
@@ -53,6 +56,16 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
   }
 
   const data = parsed.data;
+
+  // Bind every referenced photo to THIS session's upload token so a payload
+  // can't reference another homeowner's uploaded photos (IDOR). Paths are
+  // `${uploadToken}/${photoId}.${ext}`; reject if any path isn't ours.
+  if (data.photos && data.photos.length > 0) {
+    const prefix = data.uploadToken ? `${data.uploadToken}/` : null;
+    if (!prefix || data.photos.some((p) => !p.path.startsWith(prefix))) {
+      return { ok: false, message: "Your photos didn't match this session — please re-attach them." };
+    }
+  }
 
   let estimate: EstimateResult;
   try {
@@ -87,32 +100,45 @@ export async function submitInquiry(payload: unknown): Promise<InquiryResult> {
   if (data.email) {
     const email = data.email.toLowerCase();
     try {
-      const { data: existing } = await supabase
-        .from("customers")
-        .select("id, password_hash")
-        .eq("email", email)
-        .maybeSingle();
-      if (existing) {
-        customerId = (existing as { id: string }).id;
-        if (data.password && !(existing as { password_hash?: string }).password_hash) {
-          await supabase
+      await withRetry(
+        async () => {
+          const { data: existing, error: readErr } = await supabase
             .from("customers")
-            .update({ password_hash: hashPassword(data.password), updated_at: new Date().toISOString() })
-            .eq("id", customerId);
-        }
-      } else {
-        const { data: created } = await supabase
-          .from("customers")
-          .insert({
-            email,
-            full_name: `${data.firstName} ${data.lastName}`.trim(),
-            phone: data.phone,
-            password_hash: data.password ? hashPassword(data.password) : null,
-          })
-          .select("id")
-          .single();
-        if (created) customerId = (created as { id: string }).id;
-      }
+            .select("id, password_hash")
+            .eq("email", email)
+            .maybeSingle();
+          if (readErr) throw readErr;
+          if (existing) {
+            customerId = (existing as { id: string }).id;
+            if (data.password && !(existing as { password_hash?: string }).password_hash) {
+              const { error: updErr } = await supabase
+                .from("customers")
+                .update({ password_hash: hashPassword(data.password), updated_at: new Date().toISOString() })
+                .eq("id", customerId);
+              if (updErr) throw updErr;
+            }
+          } else {
+            const { data: created, error: insErr } = await supabase
+              .from("customers")
+              .insert({
+                email,
+                full_name: `${data.firstName} ${data.lastName}`.trim(),
+                phone: data.phone,
+                password_hash: data.password ? hashPassword(data.password) : null,
+              })
+              .select("id")
+              .single();
+            if (insErr) throw insErr;
+            customerId = (created as { id: string } | null)?.id ?? null;
+            if (!customerId) {
+              // Observable signal: the account was created but we couldn't link
+              // it, so the homeowner's portal login won't see this inquiry.
+              console.warn("[inquiry] customer insert returned no id — inquiry will be unlinked to the new account");
+            }
+          }
+        },
+        { retries: 1, delayMs: 400, shouldRetry: (e) => !isPermanentDbError(e) },
+      );
     } catch (error) {
       // Non-fatal: still record the inquiry even if account upsert fails.
       console.error(`[inquiry] customer upsert failed: ${(error as { message?: string })?.message ?? "?"}`);

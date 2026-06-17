@@ -1,8 +1,8 @@
 "use server";
 
-import { headers } from "next/headers";
 import { PHONE } from "@/lib/constants";
 import { parseEstimate, type EstimateField } from "@/lib/estimate-schema";
+import { getClientIp } from "@/lib/request-ip";
 import { withRetry, isPermanentDbError } from "@/lib/retry";
 import { recordHitAndCheckLimit, isOverSupabaseRateLimit } from "@/lib/rate-limit";
 import { getServiceSupabase, isServiceConfigured } from "@/lib/supabase/server";
@@ -20,16 +20,6 @@ export const initialEstimateState: EstimateState = {
 };
 
 const CONTACT_FALLBACK = `Please call us at ${PHONE}.`;
-
-async function getClientIp(): Promise<string> {
-  const h = await headers();
-  // Prefer headers set by the platform edge over the client-spoofable leftmost
-  // `x-forwarded-for` hop.
-  const platformIp =
-    h.get("x-real-ip") || h.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
-  if (platformIp) return platformIp;
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-}
 
 /** Read a FormData field as a string; absent keys (`null`) become "". */
 function formField(formData: FormData, key: string): string {
