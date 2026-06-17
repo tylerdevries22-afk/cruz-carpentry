@@ -230,67 +230,83 @@ bg()
 tracked(M, H - 70, "02 · YOUR THREE OPTIONS", SANSB, 8, GREEN, 2.2)
 txt(M, H - 100, "Pick what fits. Keep what you want.", DISP, 23, INK)
 para(M, H - 120,
-     "From a simple business card to the full platform — your call, no pressure. Every option is "
-     "yours to own, with a $100 deposit already credited.",
+     "Each plan is a simple monthly — A $49, B $99, C $299 — plus a one-time build you can pay once "
+     "or roll into a 6- or 12-month plan that drops to the base rate after. Your $100 deposit is "
+     "already credited.",
      SERIF, 11, SOFT, width=W - 2 * M - 6, leading=15)
 
-def option_block(y, h, letter_, name, tagline, bullets, was, price, due, monthly,
-                 badge=None, accent=LINE, highlight=False):
+def price_mo(cx, y, amount, color, big=30, small=12):
+    wa = c.stringWidth(amount, DISP, big)
+    ws = c.stringWidth("/mo", SANS, small)
+    x0 = cx - (wa + 2 + ws) / 2
+    setf(color); c.setFont(DISP, big); c.drawString(x0, y, amount)
+    setf(SOFT); c.setFont(SANS, small); c.drawString(x0 + wa + 2, y + 2, "/mo")
+
+def option_block(y, h, letter_, name, tagline, bullets, monthly, monthly_note,
+                 build_once, plan6, plan12, base_mo, badge=None, highlight=False,
+                 monthly_color=None):
     border = GREEN if highlight else (GOLD if badge == "BEST VALUE" else LINE)
-    lw = 1.6 if (highlight or badge) else 1
+    lw = 1.7 if (highlight or badge) else 1
     rrect(M, y, W - 2 * M, h, 14, fill=PAPER, stroke=border, lw=lw)
-    # left text zone
-    lx = M + 22
-    # letter badge
-    setf(GREEN if highlight else INK)
-    c.circle(lx + 9, y + h - 24, 12, fill=1, stroke=0)
-    txt(lx + 9, y + h - 28, letter_, DISP, 13, PAPER, align="center")
-    txt(lx + 30, y + h - 20, name, DISP, 16, INK)
-    txt(lx + 30, y + h - 34, tagline, DISPI, 10, SOFT)
-    # badge pill
+    # badge straddling the top edge (left side, clear of the price panel)
     if badge:
-        bw = c.stringWidth(badge, SANSB, 7) + 18
+        bw = measure_tracked(badge, SANSB, 7, 1.1) + 24
         bc = GREEN if highlight else GOLD
-        rrect(W - M - 22 - bw, y + h - 26, bw, 16, 8, fill=bc, stroke=None)
-        tracked(W - M - 22 - bw + 9, y + h - 21, badge, SANSB, 7, PAPER, 1.0)
-    # bullets (two columns inside left zone)
-    by0 = y + h - 52
-    colw = (W - 2 * M - 200) / 2
+        bx = M + 26
+        rrect(bx, y + h - 8, bw, 16, 8, fill=bc, stroke=None)
+        tracked(bx + 12, y + h - 3, badge, SANSB, 7, PAPER, 1.1)
+    lx = M + 22
+    head_y = y + h - (32 if badge else 22)
+    setf(GREEN if highlight else INK)
+    c.circle(lx + 9, head_y - 4, 12, fill=1, stroke=0)
+    txt(lx + 9, head_y - 8, letter_, DISP, 13, PAPER, align="center")
+    txt(lx + 30, head_y, name, DISP, 16, INK)
+    txt(lx + 30, head_y - 14, tagline, DISPI, 10, SOFT)
+    # bullets, two columns
+    by0 = head_y - 34
+    colw = (W - 2 * M - 215) / 2
+    half = (len(bullets) + 1) // 2
     for i, b in enumerate(bullets):
-        cx = lx + (0 if i < (len(bullets) + 1) // 2 else colw + 10)
-        ci = i if i < (len(bullets) + 1) // 2 else i - (len(bullets) + 1) // 2
-        yy = by0 - ci * 16
+        cx = lx + (0 if i < half else colw + 8)
+        ci = i if i < half else i - half
+        yy = by0 - ci * 15.5
         new = b.endswith("|NEW")
         b2 = b.replace("|NEW", "")
-        check(cx, yy, GREEN if not new else GOLD)
-        txt(cx + 12, yy, b2, SANS, 8.3, INK)
+        check(cx, yy, GREEN if not new else GOLD, 8)
+        txt(cx + 12, yy, b2, SANS, 8.2, INK)
         if new:
-            txt(cx + 12 + c.stringWidth(b2, SANS, 8.3) + 5, yy, "NEW", SANSB, 6.5, GOLD)
-    # price panel (right)
-    px = W - M - 168
-    sets(LINE); c.setLineWidth(1); c.line(px - 6, y + 14, px - 6, y + h - 14)
-    pcx = px + 78
-    if was:
-        wtxt = f"was {was}"
-        txt(pcx, y + h - 30, wtxt, SANS, 9, FAINT, align="center")
-        wsx = pcx - c.stringWidth(wtxt, SANS, 9) / 2
-        hline(wsx, wsx + c.stringWidth(wtxt, SANS, 9), y + h - 27, FAINT, 0.8)
-    txt(pcx, y + h - 58, price, DISP, 30, GREEN if highlight else INK, align="center")
-    txt(pcx, y + h - 70, "one-time", SANS, 7.5, FAINT, align="center")
-    rrect(px, y + 40, 156, 22, 8, fill=FILL, stroke=None)
-    txt(pcx, y + 47, due, SANSB, 11, INK, align="center")
-    txt(pcx, y + 22, monthly, SANS, 8.2, SOFT, align="center")
-    return
+            txt(cx + 12 + c.stringWidth(b2, SANS, 8.2) + 5, yy, "INCL.", SANSB, 6.3, GOLD)
+    # right price panel
+    pw = 176
+    px = W - M - pw
+    sets(LINE); c.setLineWidth(1); c.line(px - 8, y + 14, px - 8, y + h - 16)
+    pcx = px + pw / 2
+    mc = monthly_color or (GREEN if highlight else INK)
+    price_mo(pcx, y + h - 36, monthly, mc, big=30, small=12)
+    txt(pcx, y + h - 50, monthly_note, SANS, 7.2, SOFT, align="center")
+    hline(px, px + pw, y + h - 60, LINE, 0.6)
+    tracked(pcx, y + h - 73, "START IT YOUR WAY", SANSB, 6, FAINT, 1.4, align="center")
+    rows = [("Pay build once", build_once),
+            ("6-month plan", plan6),
+            ("12-month plan", plan12)]
+    ry = y + h - 87
+    for lab, val in rows:
+        txt(px, ry, lab, SANS, 7.6, SOFT)
+        txt(px + pw, ry, val, SANSB, 8, INK, align="right")
+        ry -= 12.5
+    para(px, ry, f"Plans step down to {base_mo}/mo once the build is paid off.",
+         SANS, 6.6, GREEN, width=pw, leading=8)
 
-gap = 12
-top = H - 152
-h1, h2, h3 = 118, 168, 150
+top = H - 158
+gap = 16
+h1, h2, h3 = 150, 172, 172
 y1 = top - h1
 option_block(y1, h1, "A", "Just the Landing Page", "The original agreement.",
     ["Animated one-page home", "Sharp on phone & desktop",
      "Your photos placed", "Launch + domain + 30-day support",
      "You own the code outright"],
-    None, "$500", "$400 due after deposit", "or $50 / mo × 8 months")
+    "$49", "hosting, care & edits",
+    "$400", "$116/mo", "$82/mo", "$49")
 
 y2 = y1 - gap - h2
 option_block(y2, h2, "B", "The Professional Site", "Everything public-facing.",
@@ -298,23 +314,25 @@ option_block(y2, h2, "B", "The Professional Site", "Everything public-facing.",
      "43-photo filterable gallery", "About · FAQ · Contact · 18-city areas",
      "Instant Estimate → leads to inbox", "Careers portal → résumés to inbox",
      "Full Google SEO + structured data", "Spam-proof secure backend"],
-    "$7,200", "$1,900", "$1,800 due after deposit", "or $150 / mo × 12 months",
+    "$99", "platform, hosting & care",
+    "$1,800", "$399/mo", "$249/mo", "$99",
     badge="MOST POPULAR", highlight=True)
 
 y3 = y2 - gap - h3
-option_block(y3, h3, "C", "The Complete Platform", "The whole machine, plus more.",
-    ["Everything in the Professional Site", "Customer logins — clients track projects",
-     "Admin dashboard — lead CRM + hiring", "Live pricing rate editor",
+option_block(y3, h3, "C", "The Complete Platform", "The whole machine — hiring included.",
+    ["Everything in the Professional Site", "Customer logins & booking portal",
+     "Admin dashboard — lead CRM", "Done-for-you Managed Hiring|NEW",
      "Full Spanish version of the site|NEW", "Project materials shopping list|NEW"],
-    "$10,800", "$2,600", "$2,500 due after deposit", "or $210 / mo × 12 months",
-    badge="BEST VALUE")
+    "$299", "platform + we run your hiring",
+    "$2,500", "$716/mo", "$508/mo", "$299",
+    badge="BEST VALUE", monthly_color=GOLD)
 
-# care strip
+# all-plans-include strip
 cs = y3 - 30
 rrect(M, cs - 2, W - 2 * M, 24, 8, fill=GREENBG, stroke=GREEN, lw=0.8)
-txt(M + 16, cs + 5, "+  $49 / mo Website + Care on any option", SANSB, 9.5, GREEND)
-txt(W - M - 16, cs + 5, "hosting · backups · edits · your GoDaddy domain, managed",
-    SANS, 8, GREEND, align="right")
+txt(M + 16, cs + 5, "Every plan includes hosting, backups, edits & your domain — managed for you.",
+    SANSB, 8.8, GREEND)
+txt(W - M - 16, cs + 5, "Cancel anytime · 30 days’ notice", SANS, 8, GREEND, align="right")
 footer("PROPOSAL  ·  PAGE 3 OF 8")
 c.showPage()
 
@@ -345,7 +363,7 @@ for i, b in enumerate(["A “We’re Hiring” page that sells the job",
 mx = M + (W - 2 * M - 14) / 2 + 14
 rrect(mx, iy, (W - 2 * M - 14) / 2, 130, 12, fill=INK, stroke=None)
 mxi = mx + 18
-tracked(mxi, iy + 108, "FLAGSHIP GROWTH SERVICE  ·  OPTIONAL", SANSB, 7, (0.99, 0.84, 0.45), 1.4)
+tracked(mxi, iy + 108, "INCLUDED IN OPTION C  ·  ADD-ON FOR A & B", SANSB, 7, (0.99, 0.84, 0.45), 1.4)
 txt(mxi, iy + 88, "Managed Hiring", DISP, 15, CREAM)
 txt(mx + (W - 2 * M - 14) / 2 - 18, iy + 90, "$299/mo", DISP, 17, (0.99, 0.84, 0.45), align="right")
 for i, b in enumerate(["I post your openings to Indeed, Facebook & local boards",
@@ -368,9 +386,10 @@ para(M + 20, py + 22,
 ry = py - 96
 txt(M, ry + 60, "The math isn’t close.", DISP, 16, INK)
 para(M, ry + 38,
-     "The full hiring service runs $3,588 a year. One reliable carpenter lets you take on tens of "
-     "thousands of dollars in work you’re currently turning away — so it pays for itself many times "
-     "over with a single good hire. That’s why it’s the one service that actually moves the needle.",
+     "On its own, Managed Hiring is $299/mo — yet Option C bundles the entire platform with it for "
+     "that same $299. One reliable carpenter lets you take on tens of thousands of dollars in work "
+     "you’re currently turning away, so it pays for itself many times over with a single good hire. "
+     "That’s why Option C is the one that actually moves the needle.",
      SERIF, 11, SOFT, width=W - 2 * M - 6, leading=16)
 footer("PROPOSAL  ·  PAGE 4 OF 8")
 c.showPage()
@@ -379,7 +398,7 @@ c.showPage()
 # INVOICE PAGES 5-7
 # =====================================================================
 def invoice(page_no, inv_id, opt_title, opt_sub, line_items, value_label, your_price,
-            balance, monthly, recommended=False):
+            balance, base_mo, mo_note, plan6, plan12, recommended=False):
     bg()
     # masthead
     tracked(M, H - 64, "INVOICE", SANSB, 9, GREEN, 3.0)
@@ -437,23 +456,35 @@ def invoice(page_no, inv_id, opt_title, opt_sub, line_items, value_label, your_p
     trow(by - 16, "Your price (one-time)", your_price)
     trow(by - 32, "Deposit already paid", "– $100.00", color=GREEN)
     hline(lab_x, tot_x, by - 42, LINE, 1)
-    # balance due bar
+    # one-time build balance bar
     rrect(lab_x - 12, by - 78, (tot_x - lab_x) + 24, 30, 8, fill=INK, stroke=None)
-    txt(lab_x, by - 68, "Balance due", SANSB, 11, CREAM)
+    txt(lab_x, by - 68, "Build balance due", SANSB, 11, CREAM)
     txt(tot_x, by - 69, balance, DISP, 16, (0.99, 0.84, 0.45), align="right")
-    txt(tot_x, by - 96, monthly, SANS, 9, SOFT, align="right")
 
-    # care + next steps
-    cy = by - 142
-    rrect(M, cy, W - 2 * M, 30, 8, fill=GREENBG, stroke=GREEN, lw=0.8)
-    txt(M + 16, cy + 11, "+  $49 / mo Website + Care", SANSB, 9.5, GREEND)
-    txt(W - M - 16, cy + 11, "hosting · backups · edits · GoDaddy domain managed on Vercel",
-        SANS, 8, GREEND, align="right")
+    # ongoing + financing panel (full width)
+    panel_top = by - 84
+    ph = 72
+    rrect(M, panel_top - ph, W - 2 * M, ph, 10, fill=GREENBG, stroke=GREEN, lw=0.9)
+    lxp = M + 20
+    tracked(lxp, panel_top - 17, "THEN ONGOING — EVERY MONTH", SANSB, 6.5, GREEND, 1.3)
+    txt(lxp, panel_top - 43, base_mo + "/mo", DISP, 24, GREEND)
+    txt(lxp, panel_top - 58, mo_note, SANS, 8, GREEND)
+    midx = M + (W - 2 * M) * 0.47
+    sets(GREEN); c.setLineWidth(0.8); c.line(midx, panel_top - 14, midx, panel_top - ph + 14)
+    rxp = midx + 22
+    tracked(rxp, panel_top - 17, "OR FINANCE THE BUILD — NO UPFRONT", SANSB, 6.5, GREEND, 1.1)
+    txt(rxp, panel_top - 35, "6-month plan", SANS, 8.5, GREEND)
+    txt(W - M - 20, panel_top - 35, plan6, SANSB, 9.5, GREEND, align="right")
+    txt(rxp, panel_top - 51, "12-month plan", SANS, 8.5, GREEND)
+    txt(W - M - 20, panel_top - 51, plan12, SANSB, 9.5, GREEND, align="right")
+    txt(rxp, panel_top - 64, "then drops to " + base_mo + "/mo · $100 deposit credited",
+        SANS, 7, GREEND)
 
-    ny = cy - 22
+    ny = panel_top - ph - 20
     para(M, ny,
-         "Pay by bank transfer, check, or card. Cancel any monthly plan with 30 days’ notice — no "
-         "lock-in, ever. Prices held through July 17, 2026. Questions? Call or text 720-708-0567.",
+         "Pay the build by bank transfer, check, or card — or roll it into a plan above. Every plan "
+         "includes hosting, backups, edits & your GoDaddy domain. Cancel with 30 days’ notice — no "
+         "lock-in. Prices held through July 17, 2026. Questions? Call or text 720-708-0567.",
          SERIF, 9.5, SOFT, width=W - 2 * M - 6, leading=13)
     footer(f"INVOICE {inv_id}  ·  PAGE {page_no} OF 8")
     c.showPage()
@@ -467,7 +498,7 @@ invoice(5, "INV-CRUZ-A", "Option A — Just the Landing Page",
          ("Launch, domain setup & 30-day support", "Included"),
          ("Full ownership of the code", "Included")],
         ("Project total", "$500.00"), "$500.00",
-        "$400.00", "or $50 / mo × 8 months ($400)")
+        "$400.00", "$49", "hosting, care & edits", "$116/mo", "$82/mo")
 
 # Invoice B
 invoice(6, "INV-CRUZ-B", "Option B — The Professional Site",
@@ -481,20 +512,21 @@ invoice(6, "INV-CRUZ-B", "Option B — The Professional Site",
          ("Full Google SEO + structured data + social cards", "Included"),
          ("Secure backend, spam defense & rate-limiting", "Included")],
         ("Bundle fair value", "$7,200.00"), "$1,900.00",
-        "$1,800.00", "or $150 / mo × 12 months ($1,800)", recommended=True)
+        "$1,800.00", "$99", "platform, hosting & care", "$399/mo", "$249/mo",
+        recommended=True)
 
 # Invoice C
 invoice(7, "INV-CRUZ-C", "Option C — The Complete Platform",
-        "The whole machine, plus a bilingual reach.",
+        "The whole machine — hiring included.",
         [("Everything in the Professional Site", "Included"),
-         ("Customer accounts + login (clients track projects)", "Included"),
+         ("Customer accounts + login + booking portal", "Included"),
          ("Admin dashboard — lead CRM + applicant review", "Included"),
+         ("Done-for-you Managed Hiring + 60-day promise", "Included"),
          ("Live pricing rate editor", "Included"),
-         ("Consultation booking portal", "Included"),
          ("Full Spanish version of the entire site", "New"),
          ("Project materials shopping list (auto cut/material list)", "New")],
         ("Bundle fair value", "$10,800.00"), "$2,600.00",
-        "$2,500.00", "or $210 / mo × 12 months ($2,520)")
+        "$2,500.00", "$299", "platform + Managed Hiring included", "$716/mo", "$508/mo")
 
 # =====================================================================
 # PAGE 8 — HOW TO SAY YES
@@ -507,7 +539,7 @@ header("04", "NEXT STEPS",
 
 steps = [("1", "Pick A, B or C", "Text the letter to 720-708-0567, or sign below. The $100 deposit is already credited."),
          ("2", "I finish & launch it", "I build, host on Vercel, and point your CustomCarpentryColorado.com domain — fast."),
-         ("3", "Live & cared for", "It goes live, I keep it running for $49/mo, and you add Managed Hiring whenever the crew problem bites.")]
+         ("3", "Live & cared for", "It goes live and I keep it running for your monthly — hosting, backups & edits all handled.")]
 sy = H - 296
 sw = (W - 2 * M - 28) / 3
 for i, (n, t, d) in enumerate(steps):
@@ -519,14 +551,15 @@ for i, (n, t, d) in enumerate(steps):
     para(x + 16, sy + 46, d, SANS, 8.6, SOFT, width=sw - 32, leading=12)
 
 # recommendation callout
-ry = sy - 96
-rrect(M, ry, W - 2 * M, 78, 12, fill=INK, stroke=None)
-tracked(M + 22, ry + 56, "MY HONEST RECOMMENDATION", SANSB, 7.5, (0.99, 0.84, 0.45), 1.8)
-para(M + 22, ry + 40,
-     "Go with Option B — it’s the whole public platform for $1,800, the best balance of value and "
-     "cost. If hiring is truly your #1 problem, Option C plus Managed Hiring is the package that fixes "
-     "it: the admin CRM and Spanish site widen who can find and work for you.",
-     SERIF, 10.5, CREAM, width=W - 2 * M - 44, leading=15)
+ry = sy - 110
+rrect(M, ry, W - 2 * M, 92, 12, fill=INK, stroke=None)
+tracked(M + 22, ry + 72, "MY HONEST RECOMMENDATION", SANSB, 7.5, (0.99, 0.84, 0.45), 1.8)
+para(M + 22, ry + 55,
+     "Go with Option B at $99/mo — the whole public platform, the best balance of value and cost. But "
+     "if hiring is truly your #1 problem, Option C is the move: at $299/mo it bundles done-for-you "
+     "Managed Hiring (a $299/mo service on its own) with the entire platform, admin CRM and Spanish "
+     "site — the same price as hiring alone, everything else free.",
+     SERIF, 10.2, CREAM, width=W - 2 * M - 44, leading=14.5)
 
 # signature
 gy = ry - 70
