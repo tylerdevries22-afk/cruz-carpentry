@@ -81,7 +81,7 @@ export type CardService = Omit<Service, "Icon">;
 export const SERVICES: Service[] = [
   {
     slug: "custom-cabinetry",
-    num: "08",
+    num: "09",
     title: "Custom Cabinetry & Kitchens",
     shortTitle: "Cabinetry & Kitchens",
     cardDescription:
@@ -146,7 +146,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "built-in-shelving",
-    num: "07",
+    num: "08",
     title: "Built-In Shelving & Entertainment Centers",
     shortTitle: "Built-In Shelving",
     cardDescription:
@@ -207,7 +207,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "staircases-railings",
-    num: "03",
+    num: "04",
     title: "Staircases & Railings",
     shortTitle: "Staircases & Railings",
     cardDescription:
@@ -269,7 +269,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "trim-molding-wainscoting",
-    num: "04",
+    num: "05",
     title: "Trim, Molding & Wainscoting",
     shortTitle: "Trim & Millwork",
     cardDescription:
@@ -330,7 +330,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "custom-closets",
-    num: "13",
+    num: "14",
     title: "Custom Closets & Wardrobes",
     shortTitle: "Custom Closets",
     cardDescription:
@@ -452,7 +452,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "exposed-beams-ceilings",
-    num: "05",
+    num: "06",
     title: "Exposed Beams & Wood Ceilings",
     shortTitle: "Beams & Ceilings",
     cardDescription:
@@ -513,7 +513,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "fireplace-mantels",
-    num: "06",
+    num: "07",
     title: "Fireplace Mantels & Surrounds",
     shortTitle: "Fireplace Mantel",
     cardDescription:
@@ -643,7 +643,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "custom-woodwork",
-    num: "14",
+    num: "03",
     title: "Custom Woodwork & Specialty Builds",
     shortTitle: "Custom Woodwork",
     cardDescription:
@@ -704,7 +704,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "wine-cellars",
-    num: "09",
+    num: "10",
     title: "Wine Cellars & Wine Rooms",
     shortTitle: "Wine Cellars",
     cardDescription:
@@ -765,7 +765,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "desks-libraries",
-    num: "11",
+    num: "12",
     title: "Home Offices & Libraries",
     shortTitle: "Offices & Libraries",
     cardDescription:
@@ -891,7 +891,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "home-bars",
-    num: "10",
+    num: "11",
     title: "Home Bars & Butler's Pantries",
     shortTitle: "Home Bars",
     cardDescription:
@@ -1013,7 +1013,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "beds-frames-nightstands",
-    num: "12",
+    num: "13",
     title: "Beds, Frames & Nightstands",
     shortTitle: "Beds & Nightstands",
     cardDescription:
