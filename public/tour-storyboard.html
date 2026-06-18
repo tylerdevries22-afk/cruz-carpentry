@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Mountain House — Carpentry Walkthrough Storyboard</title>
+<style>
+  :root{ --bg:#141009; --panel:#1d1812; --line:#33291c; --ink:#f3ece0; --muted:#b8a98f; --gold:#c8a24a; --steel:#9fb0bd; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:var(--bg); color:var(--ink); font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .serif{ font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; }
+  header.top{ padding:54px 0 30px; border-bottom:1px solid var(--line); }
+  .eyebrow{ letter-spacing:.34em; text-transform:uppercase; font-size:12px; color:var(--gold); }
+  h1{ font-size:46px; font-weight:500; margin:14px 0 16px; letter-spacing:.5px; }
+  h1 em{ font-style:italic; color:var(--gold); }
+  .lede{ color:var(--muted); max-width:760px; font-size:16px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  .chip{ border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-size:12.5px; color:var(--muted); }
+  .chip b{ color:var(--ink); font-weight:500; }
+  .bookend{ display:flex; align-items:center; gap:18px; padding:26px 0; }
+  .tc{ font-variant-numeric:tabular-nums; color:var(--gold); font-size:13px; letter-spacing:.08em; min-width:54px; }
+  .bookend .serif{ font-size:22px; } .bookend p{ color:var(--muted); font-size:14px; }
+  .room{ display:grid; grid-template-columns:118px 1fr; gap:22px; padding:30px 0; border-top:1px solid var(--line); }
+  .rail .num{ font-family:Georgia,serif; font-size:40px; color:var(--gold); line-height:1; }
+  .rail .zone{ text-transform:uppercase; letter-spacing:.18em; font-size:10.5px; color:var(--steel); margin-top:10px; }
+  .rail .rtime{ font-variant-numeric:tabular-nums; color:var(--muted); font-size:13px; margin-top:8px; }
+  .rail .trans{ color:var(--muted); font-size:12px; margin-top:14px; border-left:2px solid var(--line); padding-left:8px; }
+  .rtitle{ font-size:21px; font-weight:500; margin-bottom:4px; }
+  .shots{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 16px; }
+  .shot{ background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .shot img{ display:block; width:100%; aspect-ratio:16/9; object-fit:cover; background:#0e0b07; }
+  .cap{ display:flex; justify-content:space-between; gap:8px; padding:9px 11px; font-size:12px; }
+  .cap .k{ color:var(--steel); text-transform:uppercase; letter-spacing:.12em; font-size:10px; }
+  .cap .mv{ color:var(--muted); }
+  .cap .t{ color:var(--gold); font-variant-numeric:tabular-nums; }
+  .callout{ display:grid; grid-template-columns:1fr auto; gap:16px; align-items:start; background:#191309; border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .headline{ font-size:18px; color:var(--ink); }
+  .tagline{ color:var(--muted); font-size:13.5px; margin-top:4px; }
+  .tech{ text-align:right; max-width:330px; }
+  .tech .lab{ text-transform:uppercase; letter-spacing:.18em; font-size:9.5px; color:var(--steel); }
+  .tech .spec{ color:var(--gold); font-size:13px; margin-top:4px; line-height:1.5; }
+  footer{ border-top:1px solid var(--line); padding:34px 0 70px; color:var(--muted); font-size:13px; }
+  @media(max-width:760px){ .room{ grid-template-columns:1fr; } .shots{ grid-template-columns:1fr; } .callout{ grid-template-columns:1fr; } .tech{ text-align:left; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Cruz Carpentry · Scroll-driven tour storyboard</div>
+  <h1 class="serif">The <em>Mountain House</em> Walkthrough</h1>
+  <p class="lede">A scroll-scrubbed cinematic walk through one luxury mountain home — front door to garage — where every stop spotlights the carpentry. Each room plays as two beats: an establishing shot, then a macro of the joinery, with an on-screen craft callout. Reveal copy and links drive to each service page.</p>
+  <div class="chips">
+    <span class="chip"><b>16</b> rooms</span>
+    <span class="chip"><b>32</b> shots · establishing + macro</span>
+    <span class="chip">~<b>90s</b> · a callout per room</span>
+    <span class="chip">Warm mountain-modern · golden hour</span>
+    <span class="chip">Destination: <b>/tour</b></span>
+  </div>
+</div></header>
+
+<div class="wrap" id="board"></div>
+
+<footer><div class="wrap" style="padding:0">
+  Storyboard v1 · 16 establishing + 16 macro frames generated to one locked art direction (white oak · walnut · stone · steel · glass, golden-hour). Next phase: animate each frame (image-to-video, slow camera moves), stitch + encode for the scroll-scrub, build the <b>/tour</b> page.
+</div></footer>
+
+<script>
+const B="https://d8j0ntlcm91z4.cloudfront.net/user_3D3MEtAX01pZpQOs0rFsCYonJsf/hf_20260618_";
+const U=(ts,id)=>`${B}${ts}_${id}_min.webp`;
+const rooms=[
+ ["01","Arrival","Interior & Exterior Doors","181513","5bb2cdbb-3205-4091-9d66-917cd9135e91","193402","55872ef3-eb72-4f4b-a951-d136729f388a","The first thing they touch","Rift-sawn white oak · frame-and-panel · concealed steel pivot","A well-made door announces itself every time you touch it.","Push in through the opening door","Rack-focus to the pivot joinery","0:04","Threshold cut → foyer"],
+ ["02","Main floor","Mudrooms, Lockers & Benches","181515","78561a8c-b492-453a-ba7b-1135063f60d1","193405","755fc70b-d62a-4d91-a36d-af7f0e3e3d7c","A place for everything, built in","Walnut casework · hand-cut dovetail cubbies · soft-close drawers","Where the chaos of the day gets put in its place.","Dolly along the lockers","Push to a dovetailed drawer corner","0:09","Pan back into the gallery"],
+ ["03","Main floor","Custom Woodwork & Specialty Builds","181520","b5e8e01b-3a0c-469a-98c6-004a31d73d04","193408","ce976265-5497-48c4-8a30-449f72137764","The build no catalog has a page for","Steam-bent white-oak slats · continuous grain-match · floating walnut console","The builds no catalog has a page for.","Track past the curved slat wall","Macro to the chamfered slat ends","0:14","Glide toward the stair"],
+ ["04","Main floor","Staircases & Railings","181522","c4fcc68b-aa45-4bbc-b52e-a454fabfa7ee","193411","d996c070-a332-45dc-9c55-804b23fec8f4","The spine of the house","Solid white-oak treads · housed in blackened-steel stringer · floating cantilever","The spine of the house — structural, and always in view.","Crane up the flight","Macro to a tread-in-steel joint","0:19","Down the gallery hall"],
+ ["05","Main floor","Trim, Molding & Wainscoting","181525","f2c4423f-9f2e-4474-ad4e-c3477a714bb1","193414","d99570ba-21bb-44dc-baf3-6cc6dc406b26","The details that make a house a home","White-oak wainscoting · mitered frame-and-panel · shadow-line reveals","The details that turn a builder-grade box into a home.","Glide down the hall, light raking","Macro to a mitered corner reveal","0:24","Into the great room"],
+ ["06","Great room","Exposed Beams & Wood Ceilings","181528","2d6336d0-8ed7-4b79-b048-311b96555647","193416","3d9337d7-ddff-44cf-8870-34d03e0516dd","The fifth wall, finished in wood","Exposed timber · mortise-and-tenon · tongue-and-groove oak decking","Look up — the fifth wall, finished in wood.","Tilt up to the beams","Macro to a pegged tenon joint","0:29","Down to the hearth"],
+ ["07","Great room","Fireplace Mantels & Surrounds","181537","f3411099-4747-4e39-9194-d97380955bc3","193429","4684dd67-5cab-4c45-aca7-2e649522e172","The piece the room gathers around","Live-edge black walnut · hand-finished · floating steel-pin mount","The piece the whole room gathers around.","Settle toward the hearth","Macro along the live edge","0:34","Pan to the built-ins"],
+ ["08","Great room","Built-In Shelving & Entertainment","181540","7e51b3ba-c6d7-4dc8-b769-67291010854a","193432","a3cc91e0-b522-4871-964a-89dc35fe6add","Storage that becomes architecture","Grain-matched walnut · frameless casework · integrated lighting","Storage that becomes architecture.","Lateral pan along the wall","Macro to a door-and-shelf reveal","0:39","Into the kitchen"],
+ ["09","Kitchen","Custom Cabinetry & Kitchens","181619","cf0608d4-f681-4e55-85c3-18455e4cb506","193436","606381ae-8cd4-46be-8b9f-68e0f4aa9eb7","The hardest-working room, built to last","White-oak & walnut · inset doors · dovetailed drawers · solid-wood hood","The hardest-working room in the house, built to outlast the mortgage.","Glide along the island","Macro to a dovetailed drawer box","0:44","Descend the stair"],
+ ["10","Lower level","Wine Cellars & Wine Rooms","181544","1c31fd09-9cc9-42f3-8e73-2d34d0c6998f","193438","39d3a084-390c-4d53-8b04-677452a683ca","A room that honors what it holds","Walnut racking · angled bottle cradles · mortise-and-tenon frame","A room that honors what it holds.","Descend, push into the glass room","Macro to a bottle-cradle joint","0:49","To the bar"],
+ ["11","Lower level","Home Bars & Butler's Pantries","181548","24b858fc-2815-49ae-9116-525a8e8ea2f6","193441","0f713fca-70ea-4408-983a-d603aff248bc","Where the party finds its center","Walnut millwork · waterfall miter · brass rail · backlit shelves","Where the party finds its center.","Swing to the lit back-bar","Macro to the waterfall miter","0:54","Into the study"],
+ ["12","Lower level","Home Offices & Libraries","181550","d49143c9-c23b-4192-b4a4-4dfb5ff6487b","193444","1e04d306-ba0c-4224-82f8-4fcf7b10ecdb","A room that works as hard as you do","Floor-to-ceiling walnut casework · rolling ladder · solid-wood desk","A room that works as hard as you do.","Dolly to the desk","Macro to a dado shelf joint","0:59","Ascend the stair"],
+ ["13","Upper level","Beds, Frames & Nightstands","181553","52c612f1-a5a1-4307-a5fd-cfcbcf9d2f6a","193501","0b1c85eb-b074-4435-be6c-9ad3486d6bc6","The centerpiece of the room you rest in","Solid walnut platform · slatted headboard · pinned corner joinery","The centerpiece of the room you rest in.","Ascend, reveal the bed","Macro to a pinned frame corner","1:04","Through to the closet"],
+ ["14","Upper level","Custom Closets & Wardrobes","181606","a41e93d9-2407-4d1f-8ab0-20e3b2dc134c","193504","9863e6f2-1404-4ebe-8711-a1868430bf6f","Where the day begins","White-oak & walnut wardrobes · dovetailed drawers · glass-front uppers","A room you greet yourself in every morning.","Dolly to the island","Macro to a dovetailed drawer front","1:09","Out to the deck"],
+ ["15","Outside","Cedar Hot Tubs & Surrounds","181611","61448e60-069b-4c22-bbfd-a49f5d6e28ab","193507","878dcf07-dec6-4b17-a5d6-bbdd3b16a7e3","Cedar, built for water and weather","Western red cedar · tongue-and-groove staving · chamfered edges · marine finish","Soak under the Front Range sky.","Lateral glide across the cedar siding","Macro to a T&G chamfered joint","1:14","To the garage"],
+ ["16","Outside","Garage & Storage Systems","181614","0eb2f39f-036e-4834-b53b-7fb24e84e65f","193510","9ae721d3-a9a9-431b-a734-467a1c661d41","Order, built in","Walnut & oak storage · slat-wall system · solid-wood workbench","Order, built in.","Move into the bay","Macro to a cabinet-and-slatwall joint","1:19","Drone-rise → outro"],
+];
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const board=document.getElementById("board");
+board.insertAdjacentHTML("beforeend",`<div class="bookend"><span class="tc">0:00</span><div><div class="serif">Intro — the approach</div><p>Golden-hour push up the drive through pines to the lit front door. Title: “Cruz Carpentry — a walk through the work.”</p></div></div>`);
+for(const r of rooms){
+ const [num,zone,title,e,ei,d,di,head,tech,tag,cE,cD,tc,tr]=r;
+ board.insertAdjacentHTML("beforeend",`
+ <section class="room">
+   <div class="rail"><div class="num serif">${num}</div><div class="zone">${esc(zone)}</div><div class="rtime">${tc}</div><div class="trans">${esc(tr)}</div></div>
+   <div>
+     <div class="rtitle">${esc(title)}</div>
+     <div class="shots">
+       <div class="shot"><img src="/tour-frames/${num}_est.webp" alt="${esc(title)} establishing"><div class="cap"><span class="mv"><span class="k">Wide</span> · ${esc(cE)}</span><span class="t">${tc}</span></div></div>
+       <div class="shot"><img src="/tour-frames/${num}_det.webp" alt="${esc(title)} detail"><div class="cap"><span class="mv"><span class="k">Macro</span> · ${esc(cD)}</span><span class="t">park</span></div></div>
+     </div>
+     <div class="callout"><div><div class="headline serif">${esc(head)}</div><div class="tagline">“${esc(tag)}”</div></div><div class="tech"><div class="lab">The carpentry</div><div class="spec">${esc(tech)}</div></div></div>
+   </div>
+ </section>`);
+}
+board.insertAdjacentHTML("beforeend",`<div class="bookend"><span class="tc">1:24</span><div><div class="serif">Outro — built by hand</div><p>Drone-rise off the home at dusk. End card + CTA: “Built by hand on the Front Range — request a free estimate.” → /estimate.</p></div></div>`);
+</script>
+</body>
+</html>

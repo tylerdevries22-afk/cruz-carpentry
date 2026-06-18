@@ -9,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages: { path: string; priority: number }[] = [
     { path: "", priority: 1 },
     { path: "/services", priority: 0.9 },
+    { path: "/tour", priority: 0.8 },
     { path: "/estimate", priority: 0.9 },
     { path: "/gallery", priority: 0.8 },
     { path: "/about", priority: 0.7 },
