@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CTA } from "@/components/CTA";
-import { TourExperience } from "@/components/tour/TourExperience";
+import { TourFilm } from "@/components/tour/TourFilm";
 import { TOUR_ROOMS } from "@/lib/tour";
 
 const DESCRIPTION =
@@ -25,7 +25,7 @@ export default function TourPage() {
     <>
       <Nav />
       <main id="main" tabIndex={-1} className="bg-[#16130f]">
-        <TourExperience rooms={TOUR_ROOMS} />
+        <TourFilm rooms={TOUR_ROOMS} />
         <CTA />
       </main>
       <Footer />
