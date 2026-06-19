@@ -112,10 +112,29 @@ const LABELS: Record<string, string> = {
   other: "Other",
 };
 
-const TIER_INFO: Record<Tier, { name: string; blurb: string; recommended?: boolean }> = {
-  essential: { name: "Essential", blurb: "Functional & budget-conscious — paint-grade materials, standard hardware." },
-  premium: { name: "Premium", blurb: "Best balance of design, quality & value — cabinet-grade wood, soft-close.", recommended: true },
-  signature: { name: "Signature", blurb: "Luxury hardwoods, premium hardware, furniture-grade finish, white-glove." },
+const TIER_INFO: Record<
+  Tier,
+  { name: string; price: string; tagline: string; points: string[]; recommended?: boolean }
+> = {
+  essential: {
+    name: "Essential",
+    price: "$",
+    tagline: "Budget-conscious",
+    points: ["Paint-grade materials", "Standard hardware", "Clean, functional build"],
+  },
+  premium: {
+    name: "Premium",
+    price: "$$",
+    tagline: "Best balance of quality & value",
+    points: ["Cabinet-grade wood", "Soft-close hardware", "Designer-level finish"],
+    recommended: true,
+  },
+  signature: {
+    name: "Signature",
+    price: "$$$",
+    tagline: "Top-tier, white-glove",
+    points: ["Luxury hardwoods", "Premium hardware", "Furniture-grade finish"],
+  },
 };
 
 const FINISH_CHOICES = [
@@ -513,12 +532,27 @@ export function EstimateWizard() {
               const active = data.tier === t;
               return (
                 <button key={t} type="button" aria-pressed={active} onClick={() => set("tier", t)}
-                  className={`rounded-xl border p-5 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="font-serif text-lg text-[#1C1917]">{info.name}</span>
-                    {info.recommended && <span className="rounded-full bg-[#B45309] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">Recommended</span>}
+                  className={`flex flex-col rounded-xl border p-5 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-serif text-xl text-[#1C1917]">{info.name}</span>
+                    <span className="font-serif text-lg tracking-tight text-[#B45309]" aria-hidden="true">{info.price}</span>
                   </div>
-                  <p className="mt-2 text-sm font-light leading-relaxed text-[#57534E]">{info.blurb}</p>
+                  {info.recommended ? (
+                    <span className="mt-1.5 self-start rounded-full bg-[#B45309] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">Recommended</span>
+                  ) : (
+                    <span className="mt-1.5 text-xs font-medium uppercase tracking-wide text-[#A8A29E]">{info.tagline}</span>
+                  )}
+                  {info.recommended && <span className="mt-1.5 text-xs font-medium uppercase tracking-wide text-[#A8A29E]">{info.tagline}</span>}
+                  <ul className="mt-3 space-y-1.5 border-t border-[#EFE7DA] pt-3">
+                    {info.points.map((p) => (
+                      <li key={p} className="flex items-start gap-2 text-sm text-[#57534E]">
+                        <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B45309]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} aria-hidden="true">
+                          <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span>{p}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </button>
               );
             })}
