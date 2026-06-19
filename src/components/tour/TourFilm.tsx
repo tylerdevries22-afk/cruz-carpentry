@@ -20,51 +20,71 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
 
   const trackRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null); // gold fill, written directly
   const rafRef = useRef<number | null>(null);
   const snapTimer = useRef<number | null>(null);
   const snappingUntil = useRef(0);
+  const seeking = useRef(false); // throttle: one in-flight seek at a time
 
+  // These drive low-frequency UI (header copy, active orb). They are only set
+  // when they actually change, so the component re-renders ~16×/film, not 60×/s.
   const [activeRoom, setActiveRoom] = useState(0); // index into marks
   const [inRoom, setInRoom] = useState(false); // currently within a room segment?
   const [atOpening, setAtOpening] = useState(true);
-  const [progress, setProgress] = useState(0); // 0..1 over whole film
 
   const trackHeightPx = total * PX_PER_SEC;
 
-  // Drive a single <video> from scroll position via rAF (no clip swapping → no flash).
+  // Drive a single <video> from scroll position via rAF. Two things keep this
+  // buttery: (1) the master is all-intra (every frame a keyframe), so seeks are
+  // instant; (2) we throttle to ONE in-flight seek and ease toward the target,
+  // and write the progress bar straight to the DOM — no per-frame React state.
   useEffect(() => {
     if (reduced) return;
+    const v = videoRef.current;
+    if (!v) return;
     let running = true;
+    let shown = 0; // eased video time we are converging toward
+
+    const onSeeked = () => { seeking.current = false; };
+    v.addEventListener("seeked", onSeeked);
+
     const tick = () => {
       if (!running) return;
       const track = trackRef.current;
-      const v = videoRef.current;
-      if (track && v) {
+      if (track) {
         const rect = track.getBoundingClientRect();
         const scrolled = Math.min(Math.max(-rect.top, 0), trackHeightPx);
         const p = trackHeightPx > 0 ? scrolled / trackHeightPx : 0;
-        const t = p * total;
+        const target = p * total;
 
-        if (v.readyState >= 1 && Math.abs(v.currentTime - t) > SEEK_EPS) {
-          try { v.currentTime = Math.min(t, total - 0.05); } catch { /* not seekable yet */ }
+        // Ease the displayed time toward the scroll target so fast flicks glide
+        // instead of snapping frame-to-frame.
+        shown += (target - shown) * 0.2;
+        if (Math.abs(target - shown) < 0.004) shown = target;
+
+        // One seek in flight at a time — prevents the seek backlog that stutters.
+        if (!seeking.current && v.readyState >= 2 && Math.abs(v.currentTime - shown) > SEEK_EPS) {
+          seeking.current = true;
+          try { v.currentTime = Math.min(shown, total - 0.05); } catch { seeking.current = false; }
         }
 
-        // active room = nearest mark; inRoom = within its segment span
+        if (progressRef.current) progressRef.current.style.width = `${p * 100}%`;
+
+        // low-frequency UI: nearest room + whether we're inside it
         let nearest = 0;
         let best = Infinity;
         for (let k = 0; k < marks.length; k++) {
-          const d = Math.abs(marks[k].midTime - t);
+          const d = Math.abs(marks[k].midTime - target);
           if (d < best) { best = d; nearest = k; }
         }
         const m = marks[nearest];
-        const within = t >= m.startTime - 0.15 && t <= m.endTime + 0.15;
+        const within = target >= m.startTime - 0.35 && target <= m.endTime + 0.35;
         setActiveRoom((prev) => (prev !== nearest ? nearest : prev));
         setInRoom((prev) => (prev !== within ? within : prev));
         setAtOpening((prev) => {
-          const next = t < (marks[0]?.startTime ?? 0) - 0.3;
+          const next = target < (marks[0]?.startTime ?? 0) - 0.3;
           return prev !== next ? next : prev;
         });
-        setProgress(p);
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -72,6 +92,7 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
     return () => {
       running = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      v.removeEventListener("seeked", onSeeked);
     };
   }, [reduced, trackHeightPx, total, marks]);
 
@@ -160,7 +181,7 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)] [will-change:transform]"
           />
 
           {/* opening title — only over the opening segment */}
@@ -212,8 +233,9 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
             <div className="relative mx-auto h-9 max-w-5xl">
               <div className="absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-white/20" />
               <div
+                ref={progressRef}
                 className="absolute left-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-[#CA8A04]"
-                style={{ width: `${progress * 100}%` }}
+                style={{ width: "0%" }}
               />
               {marks.map((m, i) => {
                 const isActive = i === activeRoom;
