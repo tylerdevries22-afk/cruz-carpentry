@@ -62,6 +62,8 @@ export interface RoomMark {
   segmentIndex: number;
   /** Global time (s) at the START of the room segment. */
   startTime: number;
+  /** Global time (s) at the END of the room segment. */
+  endTime: number;
   /** Global time (s) at the MIDDLE of the room segment (snap target). */
   midTime: number;
   /** Position along the whole film as a 0–1 fraction (for the orb rail). */
@@ -95,11 +97,13 @@ export function buildTimeline(rooms: TourRoom[] = TOUR_ROOMS): FilmTimeline {
       const room = rooms.find((r) => r.num === seg.roomNum);
       if (!room) return;
       const startTime = offsets[i];
+      const endTime = startTime + seg.duration;
       const midTime = startTime + seg.duration / 2;
       marks.push({
         room,
         segmentIndex: i,
         startTime,
+        endTime,
         midTime,
         fraction: midTime / total,
       });

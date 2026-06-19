@@ -8,85 +8,62 @@ import { buildTimeline } from "@/lib/tour-film";
 
 /** px of scroll per second of film — controls scrub speed / page length. */
 const PX_PER_SEC = 90;
-/** how close (px) the active video must be seekable before we seek. */
-const SEEK_EPS = 0.015;
+/** only seek when the target differs by more than this (s). */
+const SEEK_EPS = 0.02;
 /** ms of scroll-silence before the hybrid snap settles on a room. */
 const SNAP_IDLE_MS = 220;
 
 export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
   const reduced = useReducedMotion() ?? false;
   const timeline = useMemo(() => buildTimeline(rooms), [rooms]);
-  const { segments, offsets, total, rooms: marks } = timeline;
+  const { total, rooms: marks } = timeline;
 
   const trackRef = useRef<HTMLDivElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const rafRef = useRef<number | null>(null);
   const snapTimer = useRef<number | null>(null);
   const snappingUntil = useRef(0);
 
-  // active segment index drives which <video>s are mounted (a small window)
-  const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
   const [activeRoom, setActiveRoom] = useState(0); // index into marks
+  const [inRoom, setInRoom] = useState(false); // currently within a room segment?
+  const [atOpening, setAtOpening] = useState(true);
   const [progress, setProgress] = useState(0); // 0..1 over whole film
-  const [openRoom, setOpenRoom] = useState<number | null>(null); // marks index
 
   const trackHeightPx = total * PX_PER_SEC;
 
-  const segmentAtTime = useCallback(
-    (t: number) => {
-      // last segment whose offset <= t
-      let i = 0;
-      for (let k = 0; k < segments.length; k++) {
-        if (offsets[k] <= t) i = k;
-        else break;
-      }
-      return i;
-    },
-    [segments, offsets],
-  );
-
-  // Drive the film from scroll position via rAF (decoupled from scroll events).
+  // Drive a single <video> from scroll position via rAF (no clip swapping → no flash).
   useEffect(() => {
     if (reduced) return;
     let running = true;
-
     const tick = () => {
       if (!running) return;
       const track = trackRef.current;
-      if (track) {
+      const v = videoRef.current;
+      if (track && v) {
         const rect = track.getBoundingClientRect();
-        const scrolled = Math.min(
-          Math.max(-rect.top, 0),
-          trackHeightPx,
-        );
+        const scrolled = Math.min(Math.max(-rect.top, 0), trackHeightPx);
         const p = trackHeightPx > 0 ? scrolled / trackHeightPx : 0;
         const t = p * total;
 
-        const segIdx = segmentAtTime(t);
-        const local = t - offsets[segIdx];
-
-        if (segIdx !== activeRef.current) {
-          activeRef.current = segIdx;
-          setActive(segIdx);
+        if (v.readyState >= 1 && Math.abs(v.currentTime - t) > SEEK_EPS) {
+          try { v.currentTime = Math.min(t, total - 0.05); } catch { /* not seekable yet */ }
         }
 
-        const v = videoRefs.current[segIdx];
-        if (v && v.readyState >= 1) {
-          const target = Math.min(local, (segments[segIdx].duration || 0) - 0.05);
-          if (Math.abs(v.currentTime - target) > SEEK_EPS) {
-            try { v.currentTime = target; } catch { /* not seekable yet */ }
-          }
-        }
-
-        // nearest room mark (for rail highlight)
+        // active room = nearest mark; inRoom = within its segment span
         let nearest = 0;
         let best = Infinity;
         for (let k = 0; k < marks.length; k++) {
           const d = Math.abs(marks[k].midTime - t);
           if (d < best) { best = d; nearest = k; }
         }
+        const m = marks[nearest];
+        const within = t >= m.startTime - 0.15 && t <= m.endTime + 0.15;
         setActiveRoom((prev) => (prev !== nearest ? nearest : prev));
+        setInRoom((prev) => (prev !== within ? within : prev));
+        setAtOpening((prev) => {
+          const next = t < (marks[0]?.startTime ?? 0) - 0.3;
+          return prev !== next ? next : prev;
+        });
         setProgress(p);
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -96,17 +73,16 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
       running = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [reduced, trackHeightPx, total, offsets, segments, marks, segmentAtTime]);
+  }, [reduced, trackHeightPx, total, marks]);
 
   // Smoothly scroll the page so the film reaches a given global time.
   const scrollToTime = useCallback(
-    (t: number, smooth = true) => {
+    (t: number) => {
       const track = trackRef.current;
       if (!track) return;
       const top = window.scrollY + track.getBoundingClientRect().top;
-      const y = top + (t / total) * trackHeightPx;
       snappingUntil.current = Date.now() + 900;
-      window.scrollTo({ top: y, behavior: smooth ? "smooth" : "auto" });
+      window.scrollTo({ top: top + (t / total) * trackHeightPx, behavior: "smooth" });
     },
     [total, trackHeightPx],
   );
@@ -118,21 +94,19 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
       if (snapTimer.current) window.clearTimeout(snapTimer.current);
       snapTimer.current = window.setTimeout(() => {
         if (Date.now() < snappingUntil.current) return;
-        if (openRoom !== null) return;
         const track = trackRef.current;
         if (!track) return;
         const rect = track.getBoundingClientRect();
         const scrolled = Math.min(Math.max(-rect.top, 0), trackHeightPx);
-        const t = (scrolled / trackHeightPx) * total;
-        // only snap while inside the film
         if (scrolled <= 0 || scrolled >= trackHeightPx) return;
+        const t = (scrolled / trackHeightPx) * total;
         let nearest = marks[0];
         let best = Infinity;
-        for (const m of marks) {
-          const d = Math.abs(m.midTime - t);
-          if (d < best) { best = d; nearest = m; }
+        for (const mm of marks) {
+          const d = Math.abs(mm.midTime - t);
+          if (d < best) { best = d; nearest = mm; }
         }
-        if (Math.abs(nearest.midTime - t) > 0.25) scrollToTime(nearest.midTime);
+        if (Math.abs(nearest.midTime - t) > 0.3) scrollToTime(nearest.midTime);
       }, SNAP_IDLE_MS);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -140,17 +114,9 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
       window.removeEventListener("scroll", onScroll);
       if (snapTimer.current) window.clearTimeout(snapTimer.current);
     };
-  }, [reduced, marks, total, trackHeightPx, scrollToTime, openRoom]);
+  }, [reduced, marks, total, trackHeightPx, scrollToTime]);
 
-  const openMark = useCallback(
-    (i: number) => {
-      setOpenRoom(i);
-      scrollToTime(marks[i].midTime);
-    },
-    [marks, scrollToTime],
-  );
-
-  // ---- Reduced motion: play the concatenated master film with controls ----
+  // ---- Reduced motion: play the master film with controls ----
   if (reduced) {
     return (
       <section className="px-6 py-[12vh]">
@@ -164,7 +130,7 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
           <video
             className="mt-8 w-full rounded-2xl border border-[#2a241c]"
             src="/tour-film/master.mp4"
-            poster="/tour-frames/01_est.webp"
+            poster="/tour-film/poster.jpg"
             controls
             playsInline
             preload="metadata"
@@ -180,31 +146,27 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
     );
   }
 
-  const windowHas = (i: number) => Math.abs(i - active) <= 1;
+  const room = marks[activeRoom]?.room;
 
   return (
     <section aria-label="Cruz Carpentry video tour">
-      {/* tall track gives the scroll runway; the stage pins inside it */}
       <div ref={trackRef} style={{ height: `${trackHeightPx}px` }} className="relative">
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-          {/* stacked segment videos — only a small window is mounted with a src */}
-          {segments.map((seg, i) => (
-            <video
-              key={i}
-              ref={(el) => { videoRefs.current[i] = el; }}
-              src={windowHas(i) ? seg.src : undefined}
-              muted
-              playsInline
-              preload={windowHas(i) ? "auto" : "none"}
-              className="absolute inset-0 h-full w-full object-cover transition-opacity duration-200"
-              style={{ opacity: i === active ? 1 : 0 }}
-            />
-          ))}
+          {/* single continuous film — scrubbed by scroll */}
+          <video
+            ref={videoRef}
+            src="/tour-film/master.mp4"
+            poster="/tour-film/poster.jpg"
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
 
-          {/* opening title (fades out once past the opening segment) */}
+          {/* opening title — only over the opening segment */}
           <div
             className="pointer-events-none absolute inset-x-0 top-[18vh] z-10 text-center transition-opacity duration-500"
-            style={{ opacity: active === 0 ? 1 : 0 }}
+            style={{ opacity: atOpening ? 1 : 0 }}
           >
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#CA8A04]">
               Cruz Carpentry · the tour
@@ -217,55 +179,37 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
             </p>
           </div>
 
-          {/* current room label (top-left) */}
-          {marks[activeRoom] && (
-            <div className="pointer-events-none absolute left-6 top-6 z-10 transition-opacity duration-300"
-                 style={{ opacity: active === 0 ? 0 : 1 }}>
-              <div className="font-serif text-3xl leading-none text-[#CA8A04] drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
-                {marks[activeRoom].room.num}
+          {/* auto-revealing room header + details — fades in within a room,
+              out during the travel connectors */}
+          {room && (
+            <div
+              className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/90 via-black/45 to-transparent px-[7vw] pb-[16vh] pt-[10vh] transition-all duration-500"
+              style={{
+                opacity: inRoom && !atOpening ? 1 : 0,
+                transform: inRoom && !atOpening ? "translateY(0)" : "translateY(24px)",
+              }}
+            >
+              <div className="text-[0.8rem] uppercase tracking-[0.24em] text-[#CA8A04]">
+                {room.num} · {room.zone}
               </div>
-              <div className="mt-1 font-serif text-lg text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
-                {marks[activeRoom].room.title}
-              </div>
-            </div>
-          )}
-
-          {/* detail overlay for an opened room */}
-          {openRoom !== null && marks[openRoom] && (
-            <div className="absolute inset-0 z-30 flex items-end bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-              <div className="w-full px-[8vw] pb-[14vh] pt-[7vh]">
-                <div className="text-[0.8rem] uppercase tracking-[0.24em] text-[#CA8A04]">
-                  {marks[openRoom].room.num} · {marks[openRoom].room.zone}
-                </div>
-                <h2 className="mt-2 font-serif text-3xl text-[#efe7da] sm:text-5xl">
-                  {marks[openRoom].room.title}
-                </h2>
-                <p className="mt-2 max-w-[42ch] leading-relaxed text-[#a89a86]">
-                  {marks[openRoom].room.caption}
-                </p>
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <Link
-                    href="/estimate"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#B45309] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                  >
-                    Request an estimate &rarr;
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => setOpenRoom(null)}
-                    className="rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                  >
-                    Keep watching
-                  </button>
-                </div>
-              </div>
+              <h2 className="mt-2 font-serif text-3xl text-[#efe7da] sm:text-5xl drop-shadow-[0_2px_14px_rgba(0,0,0,0.8)]">
+                {room.title}
+              </h2>
+              <p className="mt-2 max-w-[42ch] leading-relaxed text-[#cabfae]">
+                {room.caption}
+              </p>
+              <Link
+                href="/estimate"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#B45309] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              >
+                Request an estimate &rarr;
+              </Link>
             </div>
           )}
 
           {/* orb timeline rail */}
-          <div className="absolute inset-x-0 bottom-0 z-20 px-5 pb-5 pt-10 bg-gradient-to-t from-black/70 to-transparent">
+          <div className="absolute inset-x-0 bottom-0 z-20 px-5 pb-5 pt-10">
             <div className="relative mx-auto h-9 max-w-5xl">
-              {/* progress track */}
               <div className="absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-white/20" />
               <div
                 className="absolute left-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-[#CA8A04]"
@@ -277,7 +221,7 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
                   <button
                     key={m.room.num}
                     type="button"
-                    onClick={() => openMark(i)}
+                    onClick={() => scrollToTime(m.midTime)}
                     aria-label={`Jump to ${m.room.title}`}
                     className="group absolute top-1/2 -translate-x-1/2 -translate-y-1/2 p-1.5 focus:outline-none"
                     style={{ left: `${m.fraction * 100}%` }}
