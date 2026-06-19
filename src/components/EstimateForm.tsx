@@ -58,7 +58,9 @@ export function EstimateForm({
   /** Pre-selects the quick form's "Project type" dropdown (service pages). */
   defaultProjectType?: string;
 } = {}) {
-  const [mode, setMode] = useState<Mode>("quick");
+  // Instant estimate is the default — most visitors want a price range, and it's
+  // the higher-intent path. The quick message form is one tap away.
+  const [mode, setMode] = useState<Mode>("estimate");
   const reduced = useReducedMotion();
 
   return (

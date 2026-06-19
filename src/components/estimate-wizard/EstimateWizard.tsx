@@ -5,25 +5,10 @@ import Image from "next/image";
 import type { EstimateResult } from "@/lib/pricing/types";
 import { submitInquiry } from "@/app/actions/inquiry";
 import { SERVICES } from "@/lib/services";
-import {
-  ACCESS_LEVELS,
-  BUDGET_BANDS,
-  COMPLEXITIES,
-  CONTACT_ROLES,
-  DESIGN_STYLES,
-  EXISTING_CONDITIONS,
-  FINISHES,
-  PHOTO_LABELS,
-  PREFERRED_CONTACT,
-  PRIORITIES,
-  PROJECT_GOALS,
-  PROJECT_TYPES,
-  TIERS,
-  TIMELINES,
-} from "@/lib/wizard-schema";
+import { PROJECT_TYPES, TIERS, BUDGET_BANDS, PHOTO_LABELS } from "@/lib/wizard-schema";
+import { presetsFor, type PresetArea, type PresetSize } from "@/lib/wizard-presets";
 
 type Tier = (typeof TIERS)[number];
-type Priority = (typeof PRIORITIES)[number];
 
 interface PhotoItem {
   id: string;
@@ -35,8 +20,7 @@ interface PhotoItem {
 
 const MAX_PHOTOS = 10;
 
-// Each project-type key → the homepage "What We Build" card image, so the
-// "What are we building?" tiles show the same thumbnail as the home page.
+// Each project-type key → the homepage "What We Build" card image.
 const PROJECT_TYPE_SLUG: Record<string, string> = {
   custom_cabinetry: "custom-cabinetry",
   built_in_shelving: "built-in-shelving",
@@ -55,9 +39,7 @@ const PROJECT_TYPE_SLUG: Record<string, string> = {
   custom_woodwork: "custom-woodwork",
   cedar_hot_tubs: "cedar-hot-tubs",
 };
-const SLUG_IMAGE: Record<string, string> = Object.fromEntries(
-  SERVICES.map((s) => [s.slug, s.cardImage]),
-);
+const SLUG_IMAGE: Record<string, string> = Object.fromEntries(SERVICES.map((s) => [s.slug, s.cardImage]));
 const PROJECT_TYPE_IMAGE: Record<string, string> = Object.fromEntries(
   Object.entries(PROJECT_TYPE_SLUG)
     .map(([key, slug]) => [key, SLUG_IMAGE[slug]])
@@ -94,7 +76,6 @@ async function uploadPhoto(blob: Blob, uploadToken: string): Promise<string> {
 }
 
 const LABELS: Record<string, string> = {
-  // project types — mirror the "What We Build" service categories
   custom_cabinetry: "Custom cabinetry & kitchens",
   built_in_shelving: "Built-in shelving & media",
   custom_closets: "Custom closets & wardrobes",
@@ -111,41 +92,7 @@ const LABELS: Record<string, string> = {
   beds_frames: "Beds, frames & nightstands",
   custom_woodwork: "Custom woodwork & specialty",
   cedar_hot_tubs: "Cedar hot tubs & surrounds",
-  other: "Other",
-  not_sure: "I'm not sure",
-  // finishes
-  raw_unfinished: "Raw / unfinished",
-  primed: "Primed only",
-  painted: "Painted",
-  stained: "Stained",
-  clear_coated: "Clear-coated",
-  color_matched: "Color-matched",
-  stain_matched: "Stain-matched",
-  distressed_rustic: "Distressed / rustic",
-  high_gloss: "High-gloss",
-  matte: "Matte",
-  satin: "Satin",
-  luxury_furniture_grade: "Furniture-grade",
-  // styles
-  modern: "Modern",
-  minimal: "Minimal",
-  traditional: "Traditional",
-  transitional: "Transitional",
-  rustic: "Rustic",
-  farmhouse: "Farmhouse",
-  craftsman: "Craftsman",
-  scandinavian: "Scandinavian",
-  industrial: "Industrial",
-  luxury_architectural: "Luxury / architectural",
-  match_existing: "Match existing",
-  // timelines
-  flexible: "Flexible — best value",
-  standard: "Standard",
-  asap: "As soon as possible",
-  rush_priority: "Rush / priority",
-  fixed_deadline: "Fixed deadline",
-  event_move_in: "Event / move-in date",
-  emergency_repair: "Emergency repair",
+  not_sure: "I'm not sure yet",
   // budgets
   under_1k: "Under $1,000",
   "1k_2_5k": "$1,000–$2,500",
@@ -153,26 +100,7 @@ const LABELS: Record<string, string> = {
   "5k_10k": "$5,000–$10,000",
   "10k_25k": "$10,000–$25,000",
   "25k_plus": "$25,000+",
-  unsure: "I don't know yet",
-  // complexity / access
-  simple: "Simple",
-  moderate: "Moderate",
-  complex: "Complex",
-  very_complex: "Very complex",
-  easy: "Easy access",
-  hard: "Tight access",
-  // roles
-  homeowner: "Homeowner",
-  renter: "Renter",
-  property_manager: "Property manager",
-  designer: "Designer",
-  contractor: "Contractor",
-  realtor: "Realtor",
-  investor: "Investor",
-  // contact method
-  phone: "Phone call",
-  text: "Text",
-  email: "Email",
+  unsure: "Not sure yet",
   // photo labels
   wide_room: "Wide room",
   straight_on: "Straight-on",
@@ -181,36 +109,7 @@ const LABELS: Record<string, string> = {
   obstruction: "Obstruction",
   inspiration: "Inspiration",
   sketch: "Sketch",
-  // goals
-  add_storage: "Add storage",
-  improve_appearance: "Improve appearance",
-  increase_home_value: "Increase home value",
-  replace_damaged_old: "Replace old / damaged",
-  luxury_focal_point: "Luxury focal point",
-  prepare_for_sale: "Prepare for sale",
-  improve_organization: "Get organized",
-  match_existing_style: "Match existing style",
-  solve_functional_problem: "Solve a problem",
-  // existing conditions
-  demolition_removal_needed: "Demolition / removal needed",
-  existing_built_ins_to_remove: "Existing built-ins to remove",
-  wall_flat_level_unknown: "Walls may be uneven",
-  outlets_switches_in_area: "Outlets / switches in area",
-  vents_pipes_in_area: "Vents / pipes in area",
-  baseboards_trim_in_area: "Baseboards / trim in area",
-  windows_doors_in_area: "Windows / doors in area",
-  radiators_hvac_in_area: "Radiators / HVAC in area",
-  electrical_work_needed: "Electrical work needed",
-  drywall_repair_needed: "Drywall repair needed",
-  painting_staining_needed: "Painting / staining needed",
-  match_existing_wood_trim: "Match existing wood / trim",
-  home_occupied: "Home occupied during work",
-  pets_or_children: "Pets or children present",
-  parking_loading_restrictions: "Parking / loading limits",
-  stairs_elevator_access: "Stairs / elevator access",
-  condo_hoa_commercial_rules: "Condo / HOA / commercial rules",
-  dust_control_required: "Dust control required",
-  floor_furniture_protection: "Protect floors / furniture",
+  other: "Other",
 };
 
 const TIER_INFO: Record<Tier, { name: string; blurb: string; recommended?: boolean }> = {
@@ -219,22 +118,37 @@ const TIER_INFO: Record<Tier, { name: string; blurb: string; recommended?: boole
   signature: { name: "Signature", blurb: "Luxury hardwoods, premium hardware, furniture-grade finish, white-glove." },
 };
 
-const PRIORITY_INFO: Record<Priority, { name: string; blurb: string }> = {
-  balanced: { name: "Balanced", blurb: "Recommended — a smart balance of price, quality & timeline." },
-  price_quality: { name: "Best price + quality", blurb: "I'm flexible on timeline." },
-  fast_quality: { name: "Fast + quality", blurb: "I understand this may carry rush pricing." },
-  price_fast: { name: "Best price + fast", blurb: "I understand scope/materials may be simplified." },
-};
+const FINISH_CHOICES = [
+  { value: "painted", name: "Painted", sub: "Smooth paint-grade — clean, classic" },
+  { value: "stained", name: "Stained", sub: "Natural wood grain, stained tone" },
+  { value: "clear_coated", name: "Clear / natural", sub: "Clear-coated, true wood look" },
+  { value: "color_matched", name: "Matched", sub: "Color/stain matched to existing" },
+  { value: "luxury_furniture_grade", name: "Furniture-grade", sub: "Hand-finished, the richest finish" },
+  { value: "raw_unfinished", name: "Raw / unfinished", sub: "We build; you finish" },
+] as const;
 
-const BUDGET_MAX: Record<string, number | null> = {
-  under_1k: 1000,
-  "1k_2_5k": 2500,
-  "2_5k_5k": 5000,
-  "5k_10k": 10000,
-  "10k_25k": 25000,
-  "25k_plus": null,
-  unsure: null,
+const TIMING_CHOICES = [
+  { value: "flex", name: "I'm flexible", sub: "Best value — we batch it efficiently", priority: "price_quality", timeline: "flexible" },
+  { value: "standard", name: "Standard", sub: "A normal lead time works", priority: "balanced", timeline: "standard" },
+  { value: "soon", name: "I need it soon", sub: "May carry rush pricing", priority: "fast_quality", timeline: "asap" },
+] as const;
+type Timing = (typeof TIMING_CHOICES)[number]["value"];
+
+// Base complexity per project type; the "intricate detailing" toggle bumps it up.
+const BASE_COMPLEXITY: Record<string, "simple" | "moderate" | "complex"> = {
+  trim_wainscoting: "simple",
+  garage_storage: "simple",
+  interior_exterior_doors: "simple",
+  staircases_railings: "complex",
+  wine_cellars: "complex",
+  cedar_hot_tubs: "complex",
+  custom_woodwork: "complex",
 };
+const COMPLEXITY_LADDER = ["simple", "moderate", "complex", "very_complex"] as const;
+function bumpComplexity(base: "simple" | "moderate" | "complex", bump: boolean): string {
+  const i = COMPLEXITY_LADDER.indexOf(base);
+  return COMPLEXITY_LADDER[Math.min(i + (bump ? 1 : 0), COMPLEXITY_LADDER.length - 1)];
+}
 
 interface AreaInput {
   label: string;
@@ -247,71 +161,49 @@ interface AreaInput {
   numDrawers: string;
 }
 const emptyArea = (): AreaInput => ({
-  label: "",
-  widthIn: "",
-  heightIn: "",
-  depthIn: "",
-  linearFeet: "",
-  numShelves: "",
-  numDoors: "",
-  numDrawers: "",
+  label: "", widthIn: "", heightIn: "", depthIn: "", linearFeet: "", numShelves: "", numDoors: "", numDrawers: "",
 });
+const presetToArea = (p: PresetArea): AreaInput => ({ ...emptyArea(), ...p });
 
 interface WizardData {
   projectType: string;
   tier: Tier;
+  sizePreset: PresetSize | "";
   areas: AreaInput[];
   finish: string;
-  designStyle: string;
-  complexity: (typeof COMPLEXITIES)[number];
-  access: (typeof ACCESS_LEVELS)[number];
-  timeline: string;
-  priority: Priority;
+  timing: Timing;
+  removal: boolean;
+  matchExisting: boolean;
+  intricate: boolean;
+  tightAccess: boolean;
   budgetBand: string;
-  goals: string[];
-  conditions: string[];
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  zip: string;
-  contactRole: string;
-  preferredContact: string;
   permissionToText: boolean;
-  password: string;
   photos: PhotoItem[];
   company: string;
 }
 
 const STEPS = [
   { key: "project", title: "What are we building?" },
-  { key: "goal", title: "What's the goal?" },
+  { key: "size", title: "How big is it?" },
   { key: "tier", title: "Choose a quality level" },
-  { key: "measure", title: "Rough measurements" },
-  { key: "photos", title: "Add photos" },
-  { key: "conditions", title: "Site conditions" },
-  { key: "finish", title: "Finish & style" },
-  { key: "priority", title: "What matters most?" },
+  { key: "finish", title: "Pick a finish" },
+  { key: "details", title: "A few details" },
   { key: "contact", title: "Your details" },
-  { key: "review", title: "Your preliminary estimate" },
+  { key: "review", title: "Your instant estimate" },
 ] as const;
 
-// Maps a server-returned field error back to the step that owns it, so a
-// submit-time validation failure can return the user to the right place.
 const FIELD_STEP: Record<string, (typeof STEPS)[number]["key"]> = {
   projectType: "project",
   tier: "tier",
   finish: "finish",
-  designStyle: "finish",
   firstName: "contact",
   lastName: "contact",
   phone: "contact",
   email: "contact",
-  zip: "contact",
-  contactRole: "contact",
-  preferredContact: "contact",
-  permissionToText: "contact",
-  password: "contact",
 };
 
 const money = (n: number) => `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
@@ -322,9 +214,10 @@ const num = (s: string): number | undefined => {
   return Number.isFinite(n) && n >= 0 ? n : undefined;
 };
 
-/** A per-session upload token. Falls back to a random hex/dash string (still
- *  matching the server's `^[0-9a-f-]{36}$` format) when crypto.randomUUID is
- *  unavailable, so the token can't collide or be rejected by validation. */
+const BUDGET_MAX: Record<string, number | null> = {
+  under_1k: 1000, "1k_2_5k": 2500, "2_5k_5k": 5000, "5k_10k": 10000, "10k_25k": 25000, "25k_plus": null, unsure: null,
+};
+
 function genUploadToken(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
   const hex = Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
@@ -338,25 +231,20 @@ export function EstimateWizard() {
   const [data, setData] = useState<WizardData>({
     projectType: "",
     tier: "premium",
+    sizePreset: "",
     areas: [emptyArea()],
     finish: "",
-    designStyle: "",
-    complexity: "moderate",
-    access: "easy",
-    timeline: "",
-    priority: "balanced",
+    timing: "standard",
+    removal: false,
+    matchExisting: false,
+    intricate: false,
+    tightAccess: false,
     budgetBand: "",
-    goals: [],
-    conditions: [],
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    zip: "",
-    contactRole: "",
-    preferredContact: "",
     permissionToText: false,
-    password: "",
     photos: [],
     company: "",
   });
@@ -364,27 +252,22 @@ export function EstimateWizard() {
   const [range, setRange] = useState<EstimateResult | null>(null);
   const [loadingRange, setLoadingRange] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; message: string; estimate?: EstimateResult } | null>(null);
+  const [result, setResult] = useState<{ ok: boolean; message: string; estimate?: EstimateResult; fieldErrors?: Record<string, string> } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const headingRef = useRef<HTMLHeadingElement>(null);
-  // Track every object URL we mint for photo previews so we can revoke them on
-  // removal and unmount (otherwise the blobs leak — up to MAX_PHOTOS at a time).
   const objectUrls = useRef<Set<string>>(new Set());
 
-  const set = <K extends keyof WizardData>(k: K, v: WizardData[K]) =>
-    setData((d) => ({ ...d, [k]: v }));
+  const set = <K extends keyof WizardData>(k: K, v: WizardData[K]) => setData((d) => ({ ...d, [k]: v }));
   const setArea = (i: number, k: keyof AreaInput, v: string) =>
-    setData((d) => ({ ...d, areas: d.areas.map((a, j) => (j === i ? { ...a, [k]: v } : a)) }));
-  const toggle = (field: "goals" | "conditions", v: string) =>
-    setData((d) => ({
-      ...d,
-      [field]: d[field].includes(v) ? d[field].filter((x) => x !== v) : [...d[field], v],
-    }));
+    setData((d) => ({ ...d, sizePreset: "", areas: d.areas.map((a, j) => (j === i ? { ...a, [k]: v } : a)) }));
+
+  function applyPreset(size: PresetSize) {
+    const opt = presetsFor(data.projectType)[size];
+    setData((d) => ({ ...d, sizePreset: size, areas: [presetToArea(opt.area)] }));
+  }
 
   async function handleFiles(fileList: FileList | null) {
     if (!fileList) return;
-    // Only count successfully-added photos toward the cap, so failed uploads
-    // don't lock the user out of adding a good one.
     const room = MAX_PHOTOS - data.photos.filter((p) => p.status !== "error").length;
     const files = Array.from(fileList).slice(0, Math.max(0, room));
     for (const file of files) {
@@ -413,17 +296,11 @@ export function EstimateWizard() {
       return { ...d, photos: d.photos.filter((p) => p.id !== id) };
     });
 
-  // Revoke any outstanding preview object URLs when the wizard unmounts.
   useEffect(() => {
     const urls = objectUrls.current;
-    return () => {
-      for (const url of urls) URL.revokeObjectURL(url);
-    };
+    return () => { for (const url of urls) URL.revokeObjectURL(url); };
   }, []);
-
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, [step]);
+  useEffect(() => { headingRef.current?.focus(); }, [step]);
 
   function buildInput() {
     const areas = data.areas
@@ -438,27 +315,24 @@ export function EstimateWizard() {
         numDrawers: num(a.numDrawers),
       }))
       .filter((a) =>
-        [a.widthIn, a.heightIn, a.depthIn, a.linearFeet, a.numShelves, a.numDoors, a.numDrawers].some(
-          (v) => v !== undefined,
-        ),
+        [a.widthIn, a.heightIn, a.depthIn, a.linearFeet, a.numShelves, a.numDoors, a.numDrawers].some((v) => v !== undefined),
       );
+    const timing = TIMING_CHOICES.find((t) => t.value === data.timing) ?? TIMING_CHOICES[1];
+    const base = BASE_COMPLEXITY[data.projectType] ?? "moderate";
     return {
       projectType: data.projectType,
       tier: data.tier,
       areas,
       finish: data.finish,
-      designStyle: data.designStyle || undefined,
-      complexity: data.complexity,
-      access: data.access,
-      timeline: data.timeline || undefined,
-      priority: data.priority,
+      complexity: bumpComplexity(base, data.intricate),
+      access: data.tightAccess ? "hard" : "easy",
+      demolition: data.removal,
+      timeline: timing.timeline,
+      priority: timing.priority,
       budgetBand: data.budgetBand || undefined,
-      goals: data.goals,
-      conditions: data.conditions,
-      demolition: data.conditions.includes("demolition_removal_needed"),
       risk: {
-        matchExisting: data.conditions.includes("match_existing_wood_trim"),
-        unknownWallCondition: data.conditions.includes("wall_flat_level_unknown"),
+        matchExisting: data.matchExisting,
+        tightTimeline: data.timing === "soon",
         lowPhotoQuality: data.photos.filter((p) => p.status === "done").length === 0,
       },
     };
@@ -476,7 +350,7 @@ export function EstimateWizard() {
       const json = await res.json();
       if (json.ok) setRange(json.estimate as EstimateResult);
     } catch {
-      /* leave range null; the page still allows submit */
+      /* leave range null */
     } finally {
       setLoadingRange(false);
     }
@@ -503,6 +377,21 @@ export function EstimateWizard() {
   }
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
+  function contactPayload() {
+    return {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email || undefined,
+      phone: data.phone,
+      permissionToText: data.permissionToText,
+      photos: data.photos.flatMap((p) =>
+        p.status === "done" && p.path ? [{ path: p.path, label: p.label || undefined }] : [],
+      ),
+      uploadToken,
+      company: data.company,
+    };
+  }
+
   async function handleSubmit() {
     setSubmitting(true);
     let res: Awaited<ReturnType<typeof submitInquiry>>;
@@ -514,9 +403,6 @@ export function EstimateWizard() {
     setSubmitting(false);
     setResult(res);
     if (res.estimate) setRange(res.estimate);
-    // Surface server-side validation errors: highlight the offending fields and
-    // jump back to the earliest step that owns one — otherwise a submit failure
-    // with no top-level message would look like nothing happened.
     if (!res.ok && res.fieldErrors) {
       setErrors(res.fieldErrors);
       const target = Object.keys(res.fieldErrors)
@@ -525,24 +411,6 @@ export function EstimateWizard() {
         .sort((a, b) => a - b)[0];
       if (target !== undefined) setStep(target);
     }
-  }
-  function contactPayload() {
-    return {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email || undefined,
-      phone: data.phone,
-      zip: data.zip || undefined,
-      contactRole: data.contactRole || undefined,
-      preferredContact: data.preferredContact || undefined,
-      permissionToText: data.permissionToText,
-      password: data.password || undefined,
-      photos: data.photos.flatMap((p) =>
-        p.status === "done" && p.path ? [{ path: p.path, label: p.label || undefined }] : [],
-      ),
-      uploadToken,
-      company: data.company,
-    };
   }
 
   // ---- Success screen ----
@@ -555,9 +423,7 @@ export function EstimateWizard() {
         {range && (
           <div className="mt-6 rounded-xl bg-[#FAF7F2] p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#57534E]">Preliminary range</p>
-            <p className="mt-1 font-serif text-3xl text-[#1C1917]">
-              {money(range.low)} – {money(range.high)}
-            </p>
+            <p className="mt-1 font-serif text-3xl text-[#1C1917]">{money(range.low)} – {money(range.high)}</p>
             <p className="mt-1 text-sm text-[#78716C]">{range.confidence} confidence · not a quote</p>
           </div>
         )}
@@ -570,22 +436,18 @@ export function EstimateWizard() {
   }
 
   const current = STEPS[step].key;
+  const presets = presetsFor(data.projectType);
 
   return (
     <div className="rounded-2xl border border-[#E7DFD3] bg-white p-6 shadow-sm sm:p-8">
       {/* progress */}
       <div className="mb-6">
         <div className="flex items-center justify-between text-xs text-[#78716C]">
-          <span aria-live="polite">
-            Step {step + 1} of {STEPS.length}
-          </span>
+          <span aria-live="polite">Step {step + 1} of {STEPS.length}</span>
           <span>{STEPS[step].title}</span>
         </div>
         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#EFE7DA]">
-          <div
-            className="h-full rounded-full bg-[#B45309] transition-[width] duration-300"
-            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-          />
+          <div className="h-full rounded-full bg-[#B45309] transition-[width] duration-300" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
         </div>
       </div>
 
@@ -595,61 +457,52 @@ export function EstimateWizard() {
 
       <div className="mt-6">
         {current === "project" && (
-          <Cards
-            options={PROJECT_TYPES.filter((p) => p !== "other")}
-            value={data.projectType}
-            onChange={(v) => set("projectType", v)}
-            error={errors.projectType}
-            images={PROJECT_TYPE_IMAGE}
-          />
+          <Cards options={PROJECT_TYPES.filter((p) => p !== "other" && p !== "not_sure")} value={data.projectType} onChange={(v) => set("projectType", v)} error={errors.projectType} images={PROJECT_TYPE_IMAGE} />
         )}
 
-        {current === "goal" && (
-          <div>
-            <p className="mb-4 text-sm font-light text-[#57534E]">What are you hoping to accomplish? Pick any that apply.</p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {PROJECT_GOALS.filter((g) => g !== "other").map((g) => {
-                const active = data.goals.includes(g);
+        {current === "size" && (
+          <div className="space-y-6">
+            <p className="text-sm font-light text-[#57534E]">Pick the closest size — no measuring needed. It gives you an instant range; we confirm everything on site.</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {(["sm", "md", "lg"] as PresetSize[]).map((s) => {
+                const opt = presets[s];
+                const active = data.sizePreset === s;
                 return (
-                  <button
-                    key={g}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => toggle("goals", g)}
-                    className={`rounded-xl border px-4 py-3.5 text-left text-sm transition ${active ? "border-[#B45309] bg-[#FBF4EC] font-medium ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
-                  >
-                    {LABELS[g] ?? g}
+                  <button key={s} type="button" aria-pressed={active} onClick={() => applyPreset(s)}
+                    className={`rounded-xl border p-4 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
+                    <span className="font-medium text-[#1C1917]">{s === "sm" ? "Small" : s === "md" ? "Medium" : "Large"}</span>
+                    <p className="mt-1 text-sm font-light leading-snug text-[#57534E]">{opt.sub}</p>
                   </button>
                 );
               })}
             </div>
-          </div>
-        )}
 
-        {current === "conditions" && (
-          <div>
-            <p className="mb-4 text-sm font-light text-[#57534E]">
-              Check anything that applies at the site — it helps us scope accurately. All optional.
-            </p>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {EXISTING_CONDITIONS.map((c) => {
-                const active = data.conditions.includes(c);
-                return (
-                  <label
-                    key={c}
-                    className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition ${active ? "border-[#B45309] bg-[#FBF4EC]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={active}
-                      onChange={() => toggle("conditions", c)}
-                      className="h-4 w-4 rounded border-[#C9BCA8] text-[#B45309]"
-                    />
-                    <span className="text-[#57534E]">{LABELS[c] ?? c}</span>
-                  </label>
-                );
-              })}
-            </div>
+            <details className="rounded-xl border border-[#E7DFD3] p-4">
+              <summary className="cursor-pointer text-sm font-medium text-[#B45309]">Enter exact measurements instead</summary>
+              <p className="mt-3 text-xs font-light text-[#78716C]">Rough numbers in inches are fine. Add a section for each wall or built-in.</p>
+              <div className="mt-3 space-y-4">
+                {data.areas.map((a, i) => (
+                  <fieldset key={i} className="rounded-xl border border-[#E7DFD3] p-4">
+                    <legend className="px-1 text-sm font-medium text-[#1C1917]">Area {i + 1}</legend>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                      <Field label="Width (in)" value={a.widthIn} onChange={(v) => setArea(i, "widthIn", v)} />
+                      <Field label="Height (in)" value={a.heightIn} onChange={(v) => setArea(i, "heightIn", v)} />
+                      <Field label="Depth (in)" value={a.depthIn} onChange={(v) => setArea(i, "depthIn", v)} />
+                      <Field label="Linear feet" value={a.linearFeet} onChange={(v) => setArea(i, "linearFeet", v)} />
+                      <Field label="# Shelves" value={a.numShelves} onChange={(v) => setArea(i, "numShelves", v)} />
+                      <Field label="# Doors" value={a.numDoors} onChange={(v) => setArea(i, "numDoors", v)} />
+                      <Field label="# Drawers" value={a.numDrawers} onChange={(v) => setArea(i, "numDrawers", v)} />
+                    </div>
+                    {data.areas.length > 1 && (
+                      <button type="button" onClick={() => set("areas", data.areas.filter((_, j) => j !== i))} className="mt-3 text-xs font-medium text-[#B45309] hover:underline">Remove area</button>
+                    )}
+                  </fieldset>
+                ))}
+                <button type="button" onClick={() => set("areas", [...data.areas, emptyArea()])} className="text-sm font-medium text-[#B45309] hover:underline">+ Add another area</button>
+              </div>
+            </details>
+
+            <PhotoUploader photos={data.photos} onFiles={handleFiles} onLabel={setPhotoLabel} onRemove={removePhoto} />
           </div>
         )}
 
@@ -659,20 +512,11 @@ export function EstimateWizard() {
               const info = TIER_INFO[t];
               const active = data.tier === t;
               return (
-                <button
-                  key={t}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => set("tier", t)}
-                  className={`rounded-xl border p-5 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
-                >
+                <button key={t} type="button" aria-pressed={active} onClick={() => set("tier", t)}
+                  className={`rounded-xl border p-5 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
                   <div className="flex items-center justify-between">
                     <span className="font-serif text-lg text-[#1C1917]">{info.name}</span>
-                    {info.recommended && (
-                      <span className="rounded-full bg-[#B45309] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
-                        Recommended
-                      </span>
-                    )}
+                    {info.recommended && <span className="rounded-full bg-[#B45309] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">Recommended</span>}
                   </div>
                   <p className="mt-2 text-sm font-light leading-relaxed text-[#57534E]">{info.blurb}</p>
                 </button>
@@ -681,145 +525,51 @@ export function EstimateWizard() {
           </div>
         )}
 
-        {current === "measure" && (
-          <div className="space-y-6">
-            <p className="text-sm font-light text-[#57534E]">
-              Rough numbers are fine — estimates are optional and you can skip any field. We confirm everything on
-              site. Add a section for each wall or built-in.
-            </p>
-            {data.areas.map((a, i) => (
-              <fieldset key={i} className="rounded-xl border border-[#E7DFD3] p-4">
-                <legend className="px-1 text-sm font-medium text-[#1C1917]">Area {i + 1}</legend>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  <Field label="Width (in)" value={a.widthIn} onChange={(v) => setArea(i, "widthIn", v)} />
-                  <Field label="Height (in)" value={a.heightIn} onChange={(v) => setArea(i, "heightIn", v)} />
-                  <Field label="Depth (in)" value={a.depthIn} onChange={(v) => setArea(i, "depthIn", v)} />
-                  <Field label="Linear feet" value={a.linearFeet} onChange={(v) => setArea(i, "linearFeet", v)} />
-                  <Field label="# Shelves" value={a.numShelves} onChange={(v) => setArea(i, "numShelves", v)} />
-                  <Field label="# Doors" value={a.numDoors} onChange={(v) => setArea(i, "numDoors", v)} />
-                  <Field label="# Drawers" value={a.numDrawers} onChange={(v) => setArea(i, "numDrawers", v)} />
-                </div>
-                {data.areas.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => set("areas", data.areas.filter((_, j) => j !== i))}
-                    className="mt-3 text-xs font-medium text-[#B45309] hover:underline"
-                  >
-                    Remove area
-                  </button>
-                )}
-              </fieldset>
-            ))}
-            <button
-              type="button"
-              onClick={() => set("areas", [...data.areas, emptyArea()])}
-              className="text-sm font-medium text-[#B45309] hover:underline"
-            >
-              + Add another area
-            </button>
-          </div>
-        )}
-
-        {current === "photos" && (
-          <div className="space-y-5">
-            <p className="text-sm font-light text-[#57534E]">
-              Optional, but photos sharpen your estimate and let us scope without a wasted trip. Helpful shots: a
-              wide view of the room, the wall straight-on, a close-up of existing trim/cabinets, and anything in
-              the way (outlets, vents, pipes). Up to {MAX_PHOTOS}.
-            </p>
-            <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#D6CCBC] bg-[#FAF7F2] px-6 py-8 text-center transition hover:border-[#B45309]">
-              <span className="text-sm font-medium text-[#1C1917]">Tap to add photos</span>
-              <span className="mt-1 text-xs text-[#78716C]">or take one with your camera</span>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                capture="environment"
-                className="sr-only"
-                disabled={data.photos.filter((p) => p.status !== "error").length >= MAX_PHOTOS}
-                onChange={(e) => {
-                  void handleFiles(e.target.files);
-                  e.target.value = "";
-                }}
-              />
-            </label>
-            {data.photos.length > 0 && (
-              <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {data.photos.map((p) => (
-                  <li key={p.id} className="overflow-hidden rounded-xl border border-[#E7DFD3]">
-                    <div className="relative aspect-[4/3] bg-[#EFE7DA]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.previewUrl} alt="Project photo preview" className="h-full w-full object-cover" />
-                      {p.status !== "done" && (
-                        <span className={`absolute inset-0 flex items-center justify-center text-xs font-medium ${p.status === "error" ? "bg-[#B91C1C]/70 text-white" : "bg-black/40 text-white"}`}>
-                          {p.status === "error" ? "Upload failed" : "Uploading…"}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 p-2">
-                      <select
-                        value={p.label}
-                        onChange={(e) => setPhotoLabel(p.id, e.target.value)}
-                        aria-label="Photo type"
-                        className="w-full rounded border border-[#E7DFD3] bg-white px-1.5 py-1 text-[11px] text-[#57534E] outline-none focus:ring-1 focus:ring-[#B45309]"
-                      >
-                        <option value="">Label…</option>
-                        {PHOTO_LABELS.map((l) => (
-                          <option key={l} value={l}>
-                            {LABELS[l] ?? l}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        type="button"
-                        onClick={() => removePhoto(p.id)}
-                        aria-label="Remove photo"
-                        className="shrink-0 rounded px-1.5 py-1 text-xs text-[#B45309] hover:underline"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-
         {current === "finish" && (
-          <div className="space-y-6">
-            <SelectField label="Finish" value={data.finish} onChange={(v) => set("finish", v)} options={[...FINISHES]} error={errors.finish} />
-            <SelectField label="Style (optional)" value={data.designStyle} onChange={(v) => set("designStyle", v)} options={[...DESIGN_STYLES]} />
-            <SelectField label="Complexity" value={data.complexity} onChange={(v) => set("complexity", v as WizardData["complexity"])} options={[...COMPLEXITIES]} />
-            <SelectField label="Access at the site" value={data.access} onChange={(v) => set("access", v as WizardData["access"])} options={[...ACCESS_LEVELS]} />
-          </div>
-        )}
-
-        {current === "priority" && (
-          <div className="space-y-6">
-            <p className="text-sm font-light text-[#57534E]">
-              Every custom project balances price, quality, and time. You can optimize for two; the third usually
-              adjusts.
-            </p>
+          <div>
             <div className="grid gap-3 sm:grid-cols-2">
-              {PRIORITIES.map((p) => {
-                const info = PRIORITY_INFO[p];
-                const active = data.priority === p;
+              {FINISH_CHOICES.map((f) => {
+                const active = data.finish === f.value;
                 return (
-                  <button
-                    key={p}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => set("priority", p)}
-                    className={`rounded-xl border p-4 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
-                  >
-                    <span className="font-medium text-[#1C1917]">{info.name}</span>
-                    <p className="mt-1 text-sm font-light text-[#57534E]">{info.blurb}</p>
+                  <button key={f.value} type="button" aria-pressed={active} onClick={() => set("finish", f.value)}
+                    className={`rounded-xl border p-4 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
+                    <span className="font-medium text-[#1C1917]">{f.name}</span>
+                    <p className="mt-1 text-sm font-light text-[#57534E]">{f.sub}</p>
                   </button>
                 );
               })}
             </div>
-            <SelectField label="Timeline (optional)" value={data.timeline} onChange={(v) => set("timeline", v)} options={[...TIMELINES]} />
+            {errors.finish && <p className="mt-2 text-sm text-[#B91C1C]">{errors.finish}</p>}
+          </div>
+        )}
+
+        {current === "details" && (
+          <div className="space-y-8">
+            <div>
+              <p className="mb-3 text-sm font-medium text-[#1C1917]">Timeline</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {TIMING_CHOICES.map((t) => {
+                  const active = data.timing === t.value;
+                  return (
+                    <button key={t.value} type="button" aria-pressed={active} onClick={() => set("timing", t.value)}
+                      className={`rounded-xl border p-4 text-left transition ${active ? "border-[#B45309] bg-[#FBF4EC] ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
+                      <span className="font-medium text-[#1C1917]">{t.name}</span>
+                      <p className="mt-1 text-sm font-light text-[#57534E]">{t.sub}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div>
+              <p className="mb-1 text-sm font-medium text-[#1C1917]">Anything else that applies?</p>
+              <p className="mb-3 text-xs font-light text-[#78716C]">Optional — these sharpen your estimate.</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Toggle label="Remove / demo existing first" checked={data.removal} onChange={(v) => set("removal", v)} />
+                <Toggle label="Match existing wood / trim" checked={data.matchExisting} onChange={(v) => set("matchExisting", v)} />
+                <Toggle label="Intricate / curved detailing" checked={data.intricate} onChange={(v) => set("intricate", v)} />
+                <Toggle label="Stairs or tight access" checked={data.tightAccess} onChange={(v) => set("tightAccess", v)} />
+              </div>
+            </div>
           </div>
         )}
 
@@ -830,37 +580,14 @@ export function EstimateWizard() {
               <Field label="Last name" value={data.lastName} onChange={(v) => set("lastName", v)} error={errors.lastName} autoComplete="family-name" />
               <Field label="Phone" value={data.phone} onChange={(v) => set("phone", v)} error={errors.phone} type="tel" autoComplete="tel" />
               <Field label="Email (optional)" value={data.email} onChange={(v) => set("email", v)} type="email" autoComplete="email" />
-              <Field label="ZIP (optional)" value={data.zip} onChange={(v) => set("zip", v)} autoComplete="postal-code" />
-              <SelectField label="You are… (optional)" value={data.contactRole} onChange={(v) => set("contactRole", v)} options={[...CONTACT_ROLES]} />
-              <SelectField label="Preferred contact (optional)" value={data.preferredContact} onChange={(v) => set("preferredContact", v)} options={[...PREFERRED_CONTACT]} />
               <SelectField label="Budget range (optional)" value={data.budgetBand} onChange={(v) => set("budgetBand", v)} options={[...BUDGET_BANDS]} />
             </div>
             <label className="flex items-center gap-2 text-sm text-[#57534E]">
               <input type="checkbox" checked={data.permissionToText} onChange={(e) => set("permissionToText", e.target.checked)} className="h-4 w-4 rounded border-[#C9BCA8] text-[#B45309]" />
               You can text me about my project.
             </label>
-            <div className="rounded-lg bg-[#FAF7F2] p-4">
-              <Field
-                label="Create a password to track your project (optional)"
-                value={data.password}
-                onChange={(v) => set("password", v)}
-                type="password"
-                error={errors.password}
-              />
-              <p className="mt-1 text-xs text-[#78716C]">
-                Optional — set one to log in later and follow your estimate &amp; status. Min 8 characters.
-              </p>
-            </div>
             {/* honeypot */}
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              value={data.company}
-              onChange={(e) => set("company", e.target.value)}
-              className="absolute left-[-9999px] h-0 w-0 opacity-0"
-            />
+            <input type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" value={data.company} onChange={(e) => set("company", e.target.value)} className="absolute left-[-9999px] h-0 w-0 opacity-0" />
           </div>
         )}
 
@@ -872,70 +599,35 @@ export function EstimateWizard() {
               ) : range ? (
                 <>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#57534E]">Preliminary range</p>
-                  <p className="mt-1 font-serif text-4xl text-[#1C1917]">
-                    {money(range.low)} – {money(range.high)}
-                  </p>
-                  <p className="mt-1 text-sm text-[#78716C]">
-                    {range.confidence} confidence
-                    {range.market.stale ? " · baseline material costs" : " · live material costs"}
-                  </p>
+                  <p className="mt-1 font-serif text-4xl text-[#1C1917]">{money(range.low)} – {money(range.high)}</p>
+                  <p className="mt-1 text-sm text-[#78716C]">{range.confidence} confidence{range.market.stale ? " · baseline material costs" : " · live material costs"}</p>
                   {data.budgetBand && BUDGET_MAX[data.budgetBand] !== null && range.point > (BUDGET_MAX[data.budgetBand] as number) && (
-                    <p className="mt-3 text-xs leading-relaxed text-[#B45309]">
-                      This is above your selected budget. We can simplify the design, choose budget-friendly
-                      materials, or adjust the range — we&apos;ll still review your project and recommend options.
-                    </p>
+                    <p className="mt-3 text-xs leading-relaxed text-[#B45309]">This is above your selected budget. We can simplify the design, choose budget-friendly materials, or adjust the range — we&apos;ll still review your project and recommend options.</p>
                   )}
                 </>
               ) : (
-                <p className="text-sm text-[#78716C]">
-                  Add a few measurements for an instant range, or submit and we&apos;ll price it for you.
-                </p>
+                <p className="text-sm text-[#78716C]">Pick a size for an instant range, or submit and we&apos;ll price it for you.</p>
               )}
             </div>
             <ul className="space-y-1 text-sm text-[#57534E]">
               <li><strong className="text-[#1C1917]">Project:</strong> {LABELS[data.projectType] ?? "—"} · {TIER_INFO[data.tier].name}</li>
-              <li><strong className="text-[#1C1917]">Finish:</strong> {LABELS[data.finish] ?? "—"}{data.designStyle ? ` · ${LABELS[data.designStyle]}` : ""}</li>
-              <li><strong className="text-[#1C1917]">Priority:</strong> {PRIORITY_INFO[data.priority].name}{data.timeline ? ` · ${LABELS[data.timeline]}` : ""}</li>
+              <li><strong className="text-[#1C1917]">Finish:</strong> {FINISH_CHOICES.find((f) => f.value === data.finish)?.name ?? "—"}</li>
+              <li><strong className="text-[#1C1917]">Timeline:</strong> {TIMING_CHOICES.find((t) => t.value === data.timing)?.name}</li>
               <li><strong className="text-[#1C1917]">Contact:</strong> {data.firstName} {data.lastName} · {data.phone}</li>
             </ul>
-            <p className="text-xs leading-relaxed text-[#78716C]">
-              Based on your submitted measurements, materials, finish, and timeline, similar projects typically fall
-              within this preliminary range. Final pricing requires professional review, confirmed measurements,
-              site conditions, material availability, and final design approval. This is not a guaranteed quote.
-            </p>
-            {result && !result.ok && (
-              <p className="text-sm text-[#B91C1C]">{result.message}</p>
-            )}
+            <p className="text-xs leading-relaxed text-[#78716C]">Based on your size, materials, finish, and timeline, similar projects typically fall within this preliminary range. Final pricing requires professional review, confirmed measurements, site conditions, material availability, and final design approval. This is not a guaranteed quote.</p>
+            {result && !result.ok && <p className="text-sm text-[#B91C1C]">{result.message}</p>}
           </div>
         )}
       </div>
 
       {/* nav */}
       <div className="mt-8 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={back}
-          disabled={step === 0}
-          className="text-sm font-medium text-[#78716C] disabled:opacity-0"
-        >
-          ← Back
-        </button>
+        <button type="button" onClick={back} disabled={step === 0} className="text-sm font-medium text-[#78716C] disabled:opacity-0">← Back</button>
         {current !== "review" ? (
-          <button
-            type="button"
-            onClick={next}
-            className="rounded-full bg-[#B45309] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#9A4708] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-2"
-          >
-            Continue
-          </button>
+          <button type="button" onClick={next} className="rounded-full bg-[#B45309] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#9A4708] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-2">Continue</button>
         ) : (
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="rounded-full bg-[#B45309] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#9A4708] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-2"
-            style={{ outlineColor: GOLD }}
-          >
+          <button type="button" onClick={handleSubmit} disabled={submitting} className="rounded-full bg-[#B45309] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#9A4708] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309] focus-visible:ring-offset-2" style={{ outlineColor: GOLD }}>
             {submitting ? "Submitting…" : "Request My Free Estimate"}
           </button>
         )}
@@ -946,18 +638,69 @@ export function EstimateWizard() {
 
 // ---- small presentational helpers -----------------------------------------
 
+function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3.5 py-3 text-sm transition ${checked ? "border-[#B45309] bg-[#FBF4EC]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4 rounded border-[#C9BCA8] text-[#B45309]" />
+      <span className="text-[#1C1917]">{label}</span>
+    </label>
+  );
+}
+
+function PhotoUploader({
+  photos, onFiles, onLabel, onRemove,
+}: {
+  photos: PhotoItem[];
+  onFiles: (f: FileList | null) => void;
+  onLabel: (id: string, label: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm font-light text-[#57534E]">Optional — a couple of photos make your estimate sharper and save a wasted trip.</p>
+      <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#D6CCBC] bg-[#FAF7F2] px-6 py-7 text-center transition hover:border-[#B45309]">
+        <span className="text-sm font-medium text-[#1C1917]">Tap to add photos</span>
+        <span className="mt-1 text-xs text-[#78716C]">or take one with your camera</span>
+        <input type="file" accept="image/*" multiple capture="environment" className="sr-only"
+          disabled={photos.filter((p) => p.status !== "error").length >= MAX_PHOTOS}
+          onChange={(e) => { void onFiles(e.target.files); e.target.value = ""; }} />
+      </label>
+      {photos.length > 0 && (
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {photos.map((p) => (
+            <li key={p.id} className="overflow-hidden rounded-xl border border-[#E7DFD3]">
+              <div className="relative aspect-[4/3] bg-[#EFE7DA]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.previewUrl} alt="Project photo preview" className="h-full w-full object-cover" />
+                {p.status !== "done" && (
+                  <span className={`absolute inset-0 flex items-center justify-center text-xs font-medium ${p.status === "error" ? "bg-[#B91C1C]/70 text-white" : "bg-black/40 text-white"}`}>
+                    {p.status === "error" ? "Upload failed" : "Uploading…"}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 p-2">
+                <select value={p.label} onChange={(e) => onLabel(p.id, e.target.value)} aria-label="Photo type"
+                  className="w-full rounded border border-[#E7DFD3] bg-white px-1.5 py-1 text-[11px] text-[#57534E] outline-none focus:ring-1 focus:ring-[#B45309]">
+                  <option value="">Label…</option>
+                  {PHOTO_LABELS.map((l) => (<option key={l} value={l}>{LABELS[l] ?? l}</option>))}
+                </select>
+                <button type="button" onClick={() => onRemove(p.id)} aria-label="Remove photo" className="shrink-0 rounded px-1.5 py-1 text-xs text-[#B45309] hover:underline">✕</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function Cards({
-  options,
-  value,
-  onChange,
-  error,
-  images,
+  options, value, onChange, error, images,
 }: {
   options: readonly string[];
   value: string;
   onChange: (v: string) => void;
   error?: string;
-  /** Optional per-option thumbnail (e.g. the homepage card image). */
   images?: Record<string, string>;
 }) {
   return (
@@ -966,46 +709,24 @@ function Cards({
         {options.map((o) => {
           const active = value === o;
           const img = images?.[o];
-          // Photo-backed tile — same footprint as the plain button (the image is
-          // absolutely positioned, so it doesn't change the button's height).
           if (img) {
             return (
-              <button
-                key={o}
-                type="button"
-                aria-pressed={active}
-                onClick={() => onChange(o)}
-                className={`group relative flex items-end overflow-hidden rounded-xl border px-4 py-4 text-left text-sm transition ${active ? "border-[#B45309] ring-2 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
-              >
-                <Image
-                  src={img}
-                  alt=""
-                  fill
-                  sizes="(max-width:640px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              <button key={o} type="button" aria-pressed={active} onClick={() => onChange(o)}
+                className={`group relative flex items-end overflow-hidden rounded-xl border px-4 py-4 text-left text-sm transition ${active ? "border-[#B45309] ring-2 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
+                <Image src={img} alt="" fill sizes="(max-width:640px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10" />
-                <span className="relative z-10 font-medium leading-snug text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
-                  {LABELS[o] ?? o}
-                </span>
+                <span className="relative z-10 font-medium leading-snug text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">{LABELS[o] ?? o}</span>
                 {active && (
                   <span className="absolute right-2 top-2 z-10 grid h-5 w-5 place-items-center rounded-full bg-[#B45309] text-white shadow">
-                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} aria-hidden="true">
-                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} aria-hidden="true"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </span>
                 )}
               </button>
             );
           }
           return (
-            <button
-              key={o}
-              type="button"
-              aria-pressed={active}
-              onClick={() => onChange(o)}
-              className={`rounded-xl border px-4 py-4 text-left text-sm transition ${active ? "border-[#B45309] bg-[#FBF4EC] font-medium ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}
-            >
+            <button key={o} type="button" aria-pressed={active} onClick={() => onChange(o)}
+              className={`rounded-xl border px-4 py-4 text-left text-sm transition ${active ? "border-[#B45309] bg-[#FBF4EC] font-medium ring-1 ring-[#B45309]" : "border-[#E7DFD3] hover:border-[#C9BCA8]"}`}>
               {LABELS[o] ?? o}
             </button>
           );
@@ -1017,12 +738,7 @@ function Cards({
 }
 
 function Field({
-  label,
-  value,
-  onChange,
-  error,
-  type = "text",
-  autoComplete,
+  label, value, onChange, error, type = "text", autoComplete,
 }: {
   label: string;
   value: string;
@@ -1036,7 +752,7 @@ function Field({
       <span className="mb-1 block text-xs font-medium text-[#57534E]">{label}</span>
       <input
         type={type}
-        inputMode={type === "tel" ? "tel" : ["Width (in)", "Height (in)"].includes(label) ? "numeric" : undefined}
+        inputMode={type === "tel" ? "tel" : ["Width (in)", "Height (in)", "Depth (in)", "Linear feet", "# Shelves", "# Doors", "# Drawers"].includes(label) ? "numeric" : undefined}
         value={value}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
@@ -1049,11 +765,7 @@ function Field({
 }
 
 function SelectField({
-  label,
-  value,
-  onChange,
-  options,
-  error,
+  label, value, onChange, options, error,
 }: {
   label: string;
   value: string;
@@ -1064,18 +776,10 @@ function SelectField({
   return (
     <label className="block">
       <span className="mb-1 block text-xs font-medium text-[#57534E]">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-invalid={error ? true : undefined}
-        className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#1C1917] outline-none focus:ring-2 focus:ring-[#B45309] ${error ? "border-[#B91C1C]" : "border-[#D6CCBC]"}`}
-      >
+      <select value={value} onChange={(e) => onChange(e.target.value)} aria-invalid={error ? true : undefined}
+        className={`w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-[#1C1917] outline-none focus:ring-2 focus:ring-[#B45309] ${error ? "border-[#B91C1C]" : "border-[#D6CCBC]"}`}>
         <option value="">Select…</option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {LABELS[o] ?? o}
-          </option>
-        ))}
+        {options.map((o) => (<option key={o} value={o}>{LABELS[o] ?? o}</option>))}
       </select>
       {error && <span className="mt-1 block text-xs text-[#B91C1C]">{error}</span>}
     </label>
