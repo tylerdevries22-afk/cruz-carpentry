@@ -22,14 +22,16 @@ const SNAP_MAX_DIST = 0.9;
 /** safety: forget an in-flight seek whose `seeked` event never arrived (ms). */
 const SEEK_TIMEOUT_MS = 350;
 /** seconds of extra scroll after the film ends that holds the last frame, so the
- *  final build (room 16, the garage) dwells on screen before the page releases to
- *  the CTA instead of whipping out of view. */
-const END_HOLD = 3;
-/** how early (s) a build's heading appears before its segment starts, and how long
- *  (s) it lingers after the segment ends. The generous trailing hold keeps the
- *  heading + buttons up through the finished-piece reveal so they read long enough. */
-const HEADER_LEAD = 0.4;
-const HEADER_TRAIL = 1.1;
+ *  final build (room 16, the garage) finishes assembling and its heading dwells on
+ *  screen before the page releases to the CTA instead of whipping out of view. */
+const END_HOLD = 4;
+/** every build's heading + buttons stay on screen for this many seconds of film —
+ *  identical for all 16 so they read for the same length of time. */
+const HEADER_SPAN = 7;
+/** the opening "scroll to begin" title shows only for this first sliver of scroll;
+ *  the instant you scroll past it the first build's heading takes over, so the
+ *  Interior & Exterior Doors heading is up as soon as the animation starts. */
+const OPENING_TITLE_S = 0.5;
 
 const DESKTOP_SRC = "/tour-film/master.mp4";
 const MOBILE_SRC = "/tour-film/master-mobile.mp4";
@@ -150,11 +152,20 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
           if (d < best) { best = d; nearest = kk; }
         }
         const m = marks[nearest];
-        const within = shown >= m.startTime - HEADER_LEAD && shown <= m.endTime + HEADER_TRAIL;
+        // Uniform HEADER_SPAN window for every build so all 16 read for the same
+        // length of time. The first build is pinned to the start of the scroll
+        // (over the opening door footage) so its heading appears the instant you
+        // begin; the last build's window runs past the film end into END_HOLD
+        // (shown clamps at `total`), so the garage finishes assembling with its
+        // heading still up.
+        const within =
+          nearest === 0
+            ? shown >= OPENING_TITLE_S && shown <= OPENING_TITLE_S + HEADER_SPAN
+            : Math.abs(shown - m.midTime) <= HEADER_SPAN / 2;
         setActiveRoom((prev) => (prev !== nearest ? nearest : prev));
         setInRoom((prev) => (prev !== within ? within : prev));
         setAtOpening((prev) => {
-          const next = shown < (marks[0]?.startTime ?? 0) - 0.3;
+          const next = shown < OPENING_TITLE_S;
           return prev !== next ? next : prev;
         });
       }
