@@ -32,6 +32,14 @@ const ROOM_DURATION = 5;
 const TRAVEL_DURATION = 4;
 const OPENING_DURATION = 5;
 
+/**
+ * Seconds of crossfade dissolve between every clip in the master. The encoder
+ * (scripts that rebuild master.mp4) overlaps each boundary by this much, so the
+ * timeline below must subtract the same overlap or scroll→time would drift off
+ * the picture. MUST stay in sync with the value passed to ffmpeg's xfade.
+ */
+export const CROSSFADE = 0.5;
+
 /** Build the ordered segment list from the room data. */
 export function buildFilmSegments(rooms: TourRoom[] = TOUR_ROOMS): FilmSegment[] {
   const segments: FilmSegment[] = [
@@ -83,13 +91,15 @@ export interface FilmTimeline {
 /** Pre-compute offsets, total duration, and per-room marks. */
 export function buildTimeline(rooms: TourRoom[] = TOUR_ROOMS): FilmTimeline {
   const segments = buildFilmSegments(rooms);
+  // Each clip is pulled CROSSFADE earlier than a hard concat would place it,
+  // because every preceding boundary overlaps its neighbour by that much.
   const offsets: number[] = [];
   let acc = 0;
-  for (const seg of segments) {
-    offsets.push(acc);
+  segments.forEach((seg, i) => {
+    offsets.push(acc - i * CROSSFADE);
     acc += seg.duration;
-  }
-  const total = acc;
+  });
+  const total = acc - (segments.length - 1) * CROSSFADE;
 
   const marks: RoomMark[] = [];
   segments.forEach((seg, i) => {

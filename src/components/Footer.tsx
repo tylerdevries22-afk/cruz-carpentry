@@ -6,9 +6,9 @@ import { SERVICE_CITIES } from "@/lib/locations";
 
 const COMPANY_LINKS = [
   { label: "About", href: "/about" },
-  { label: "The Tour", href: "/tour" },
+  { label: "The Tour", href: "/" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Our Process", href: "/#process" },
+  { label: "Our Process", href: "/classic#process" },
   { label: "Careers", href: "/careers" },
   { label: "FAQ", href: "/faq" },
   { label: "Service Areas", href: "/service-areas" },

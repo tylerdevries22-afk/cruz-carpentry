@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { PHONE, PHONE_HREF, EASE } from "@/lib/constants";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 import { MobileMenu, type NavLinkItem } from "@/components/MobileMenu";
+import { HomeToggle } from "@/components/HomeToggle";
 
 // Primary navigation. "What We Build" goes to the crawlable /services hub; the
 // rest are root-relative anchors so they work from any page (home or a service
@@ -62,14 +63,14 @@ export function Nav() {
         transition={{ duration: 0.8, ease: EASE }}
       >
         <nav
-          className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between"
+          className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-2"
           aria-label="Main navigation"
         >
           {/* Logo */}
           <Link
-            href="/#top"
+            href="/"
             aria-label="Cruz Carpentry — back to home"
-            className={`text-2xl tracking-tight transition-colors duration-300 select-none rounded-sm
+            className={`shrink-0 whitespace-nowrap text-lg sm:text-2xl tracking-tight transition-colors duration-300 select-none rounded-sm
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
               scrolled
                 ? "text-[#1C1917] focus-visible:ring-[#B45309] focus-visible:ring-offset-[#FAF7F2]"
@@ -99,6 +100,7 @@ export function Nav() {
                 </li>
               ))}
             </ul>
+            <HomeToggle tone={scrolled ? "dark" : "light"} />
             <a
               href={PHONE_HREF}
               className="bg-[#B45309] hover:bg-[#92400E] active:bg-[#92400E] text-white px-5 py-2.5 text-sm
@@ -110,12 +112,13 @@ export function Nav() {
             </a>
           </div>
 
-          {/* Mobile actions — phone + hamburger (top right) */}
-          <div className="flex md:hidden items-center gap-1">
+          {/* Mobile actions — toggle + phone + hamburger (top right) */}
+          <div className="flex md:hidden items-center gap-1.5">
+            <HomeToggle tone={scrolled ? "dark" : "light"} size="sm" />
             <a
               href={PHONE_HREF}
               aria-label={`Call ${PHONE}`}
-              className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors
+              className={`hidden min-[360px]:flex h-11 w-11 items-center justify-center rounded-full transition-colors
                           focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                 scrolled
                   ? "text-[#B45309] hover:bg-[#B45309]/10 focus-visible:ring-[#B45309] focus-visible:ring-offset-[#FAF7F2]"

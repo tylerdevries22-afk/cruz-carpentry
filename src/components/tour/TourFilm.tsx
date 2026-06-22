@@ -2,16 +2,53 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { TourRoom } from "@/lib/tour";
 import { buildTimeline } from "@/lib/tour-film";
+import { SERVICES } from "@/lib/services";
+import { ServiceDetailOverlay } from "@/components/tour/ServiceDetailOverlay";
 
 /** px of scroll per second of film — controls scrub speed / page length. */
 const PX_PER_SEC = 90;
-/** only seek when the target differs by more than this (s). */
-const SEEK_EPS = 0.02;
-/** ms of scroll-silence before the hybrid snap settles on a room. */
-const SNAP_IDLE_MS = 220;
+/** only seek when the eased target differs by more than this (s). */
+const SEEK_EPS = 0.01;
+/** ms of scroll-silence before the gentle snap settles on a room. */
+const SNAP_IDLE_MS = 360;
+/** easing time-constant (s) for converging the film time on the scroll target —
+ *  smaller = tighter, more 1:1 tracking of the scroll. */
+const EASE_TAU = 0.06;
+/** only "click into place" when already within this of a room centre (s). */
+const SNAP_MAX_DIST = 0.9;
+/** safety: forget an in-flight seek whose `seeked` event never arrived (ms). */
+const SEEK_TIMEOUT_MS = 350;
+/** seconds of extra scroll after the film ends that holds the last frame, so the
+ *  final build (room 16, the garage) dwells on screen before the page releases to
+ *  the CTA instead of whipping out of view. */
+const END_HOLD = 3;
+/** how early (s) a build's heading appears before its segment starts, and how long
+ *  (s) it lingers after the segment ends. The generous trailing hold keeps the
+ *  heading + buttons up through the finished-piece reveal so they read long enough. */
+const HEADER_LEAD = 0.4;
+const HEADER_TRAIL = 1.1;
+
+const DESKTOP_SRC = "/tour-film/master.mp4";
+const MOBILE_SRC = "/tour-film/master-mobile.mp4";
+const POSTER = "/tour-film/poster.jpg";
+
+/** room.num ↔ service.num — so each build's button opens its real detail page. */
+const SLUG_BY_NUM: Record<string, string> = Object.fromEntries(
+  SERVICES.map((s) => [s.num, s.slug]),
+);
+
+/** staggered reveal for the per-room header — replays each time a room enters. */
+const REVEAL_GROUP = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07, delayChildren: 0.04 } },
+};
+const REVEAL_ITEM = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+};
 
 export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
   const reduced = useReducedMotion() ?? false;
@@ -25,64 +62,99 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
   const snapTimer = useRef<number | null>(null);
   const snappingUntil = useRef(0);
   const seeking = useRef(false); // throttle: one in-flight seek at a time
+  const seekStartedAt = useRef(0);
 
   // These drive low-frequency UI (header copy, active orb). They are only set
   // when they actually change, so the component re-renders ~16×/film, not 60×/s.
   const [activeRoom, setActiveRoom] = useState(0); // index into marks
   const [inRoom, setInRoom] = useState(false); // currently within a room segment?
   const [atOpening, setAtOpening] = useState(true);
+  const [open, setOpen] = useState<{ slug: string; label: string } | null>(null);
 
-  const trackHeightPx = total * PX_PER_SEC;
+  // Track is the film length plus END_HOLD of "hold on the last frame" scroll.
+  const trackHeightPx = (total + END_HOLD) * PX_PER_SEC;
 
-  // Drive a single <video> from scroll position via rAF. Two things keep this
-  // buttery: (1) the master is all-intra (every frame a keyframe), so seeks are
-  // instant; (2) we throttle to ONE in-flight seek and ease toward the target,
-  // and write the progress bar straight to the DOM — no per-frame React state.
+  // Pick the lightest adequate source on the client and assign it straight to the
+  // <video> element (a DOM concern, so no React state): a smaller master on phones
+  // and data-saver connections, the full-quality one on the desktop. Done after
+  // mount so the big file never blocks first paint nor ships to a phone.
+  useEffect(() => {
+    if (reduced) return;
+    const v = videoRef.current;
+    if (!v) return;
+    const coarse = window.matchMedia("(max-width: 768px)").matches;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    v.src = coarse || conn?.saveData ? MOBILE_SRC : DESKTOP_SRC;
+  }, [reduced]);
+
+  // Drive a single <video> from scroll position via rAF. Three things keep this
+  // buttery: (1) a short keyframe interval, so seeks decode only a few frames;
+  // (2) we throttle to ONE in-flight seek and ease toward the target with a
+  // frame-rate-independent time-constant; (3) the progress bar is written straight
+  // to the DOM — no per-frame React state.
   useEffect(() => {
     if (reduced) return;
     const v = videoRef.current;
     if (!v) return;
     let running = true;
     let shown = 0; // eased video time we are converging toward
+    let last = 0; // previous rAF timestamp for dt easing (0 = uninitialised)
 
     const onSeeked = () => { seeking.current = false; };
     v.addEventListener("seeked", onSeeked);
 
-    const tick = () => {
+    const tick = (now: number) => {
       if (!running) return;
+      const dt = last ? Math.min((now - last) / 1000, 0.05) : 0.016;
+      last = now;
       const track = trackRef.current;
       if (track) {
         const rect = track.getBoundingClientRect();
         const scrolled = Math.min(Math.max(-rect.top, 0), trackHeightPx);
-        const p = trackHeightPx > 0 ? scrolled / trackHeightPx : 0;
-        const target = p * total;
+        // Seconds of scroll (px ÷ px-per-sec). Past the film's length the extra
+        // END_HOLD scroll keeps videoTarget pinned to the last frame, so the final
+        // build holds on screen instead of scrolling away into the CTA.
+        const scrollTime = scrolled / PX_PER_SEC;
+        const videoTarget = Math.min(scrollTime, total);
 
-        // Ease the displayed time toward the scroll target so fast flicks glide
-        // instead of snapping frame-to-frame.
-        shown += (target - shown) * 0.2;
-        if (Math.abs(target - shown) < 0.004) shown = target;
+        // Frame-rate-independent exponential easing — fast flicks glide and a
+        // 120 Hz display behaves the same as 60 Hz.
+        const k = 1 - Math.exp(-dt / EASE_TAU);
+        shown += (videoTarget - shown) * k;
+        if (Math.abs(videoTarget - shown) < 0.004) shown = videoTarget;
+
+        // Drop a stuck seek whose `seeked` never fired, so we never deadlock.
+        if (seeking.current && now - seekStartedAt.current > SEEK_TIMEOUT_MS) seeking.current = false;
 
         // One seek in flight at a time — prevents the seek backlog that stutters.
         if (!seeking.current && v.readyState >= 2 && Math.abs(v.currentTime - shown) > SEEK_EPS) {
           seeking.current = true;
+          seekStartedAt.current = now;
           try { v.currentTime = Math.min(shown, total - 0.05); } catch { seeking.current = false; }
         }
 
-        if (progressRef.current) progressRef.current.style.width = `${p * 100}%`;
+        // Progress = film progress (not scroll), so the bar fills exactly when the
+        // film ends and holds at 100% through END_HOLD.
+        if (progressRef.current) {
+          progressRef.current.style.width = `${(total > 0 ? Math.min(shown / total, 1) : 0) * 100}%`;
+        }
 
-        // low-frequency UI: nearest room + whether we're inside it
+        // Header/orb state is synced to the DISPLAYED frame (`shown`), not the raw
+        // scroll position — so each build's heading appears exactly when its footage
+        // is on screen, and all 16 stay in lockstep. The generous trailing margin
+        // holds the heading + buttons through the finished-piece reveal.
         let nearest = 0;
         let best = Infinity;
-        for (let k = 0; k < marks.length; k++) {
-          const d = Math.abs(marks[k].midTime - target);
-          if (d < best) { best = d; nearest = k; }
+        for (let kk = 0; kk < marks.length; kk++) {
+          const d = Math.abs(marks[kk].midTime - shown);
+          if (d < best) { best = d; nearest = kk; }
         }
         const m = marks[nearest];
-        const within = target >= m.startTime - 0.35 && target <= m.endTime + 0.35;
+        const within = shown >= m.startTime - HEADER_LEAD && shown <= m.endTime + HEADER_TRAIL;
         setActiveRoom((prev) => (prev !== nearest ? nearest : prev));
         setInRoom((prev) => (prev !== within ? within : prev));
         setAtOpening((prev) => {
-          const next = target < (marks[0]?.startTime ?? 0) - 0.3;
+          const next = shown < (marks[0]?.startTime ?? 0) - 0.3;
           return prev !== next ? next : prev;
         });
       }
@@ -102,15 +174,19 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
       const track = trackRef.current;
       if (!track) return;
       const top = window.scrollY + track.getBoundingClientRect().top;
-      snappingUntil.current = Date.now() + 900;
-      window.scrollTo({ top: top + (t / total) * trackHeightPx, behavior: "smooth" });
+      snappingUntil.current = Date.now() + 700;
+      window.scrollTo({ top: top + t * PX_PER_SEC, behavior: "smooth" });
     },
-    [total, trackHeightPx],
+    [],
   );
 
-  // Hybrid snap: after scrolling stops, settle on the nearest room centre.
+  // Gentle snap: after scrolling stops, *click into place* only when we are
+  // already essentially on a room — it never yanks the viewer across a travel
+  // connector. Skipped entirely for touch/coarse pointers, where momentum
+  // scrolling would make any snap feel like a fight.
   useEffect(() => {
     if (reduced) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
     const onScroll = () => {
       if (snapTimer.current) window.clearTimeout(snapTimer.current);
       snapTimer.current = window.setTimeout(() => {
@@ -120,14 +196,15 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
         const rect = track.getBoundingClientRect();
         const scrolled = Math.min(Math.max(-rect.top, 0), trackHeightPx);
         if (scrolled <= 0 || scrolled >= trackHeightPx) return;
-        const t = (scrolled / trackHeightPx) * total;
+        const t = Math.min(scrolled / PX_PER_SEC, total);
         let nearest = marks[0];
         let best = Infinity;
         for (const mm of marks) {
           const d = Math.abs(mm.midTime - t);
           if (d < best) { best = d; nearest = mm; }
         }
-        if (Math.abs(nearest.midTime - t) > 0.3) scrollToTime(nearest.midTime);
+        const dist = Math.abs(nearest.midTime - t);
+        if (dist > 0.06 && dist < SNAP_MAX_DIST) scrollToTime(nearest.midTime);
       }, SNAP_IDLE_MS);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -150,8 +227,8 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
           </h1>
           <video
             className="mt-8 w-full rounded-2xl border border-[#2a241c]"
-            src="/tour-film/master.mp4"
-            poster="/tour-film/poster.jpg"
+            src={DESKTOP_SRC}
+            poster={POSTER}
             controls
             playsInline
             preload="metadata"
@@ -168,69 +245,125 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
   }
 
   const room = marks[activeRoom]?.room;
+  const show = inRoom && !atOpening; // header visible within a room, hidden on travel
 
   return (
     <section aria-label="Cruz Carpentry video tour">
       <div ref={trackRef} style={{ height: `${trackHeightPx}px` }} className="relative">
-        <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+        <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-black">
           {/* single continuous film — scrubbed by scroll */}
           <video
             ref={videoRef}
-            src="/tour-film/master.mp4"
-            poster="/tour-film/poster.jpg"
+            poster={POSTER}
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)] [will-change:transform]"
+            disablePictureInPicture
+            className="tour-kenburns absolute inset-0 h-full w-full object-cover [will-change:transform]"
           />
+
+          {/* always-on cinematic scrims: top keeps the nav legible over bright
+              frames, bottom anchors the rail + copy, the inset vignette gives the
+              whole stage depth and consistency frame-to-frame */}
+          <div className="pointer-events-none absolute inset-0 z-[5]">
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/55 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/55 to-transparent" />
+            <div className="absolute inset-0 [box-shadow:inset_0_0_180px_50px_rgba(0,0,0,0.45)]" />
+          </div>
 
           {/* opening title — only over the opening segment */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-[18vh] z-10 text-center transition-opacity duration-500"
+            className="pointer-events-none absolute inset-x-0 top-[16svh] z-10 px-6 text-center transition-opacity duration-700"
             style={{ opacity: atOpening ? 1 : 0 }}
           >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#CA8A04]">
+            <p className="mb-3 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-[#CA8A04] sm:text-xs">
               Cruz Carpentry · the tour
             </p>
-            <h1 className="font-serif text-[clamp(2.2rem,5.5vw,4rem)] leading-[1.04] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.8)]">
+            <h1 className="font-serif text-[clamp(2rem,6vw,4rem)] leading-[1.04] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)]">
               A walk through the work
             </h1>
-            <p className="mt-4 text-sm uppercase tracking-[0.18em] text-white/70">
+            <p className="mt-4 text-xs uppercase tracking-[0.18em] text-white/70 sm:text-sm">
               scroll to begin
             </p>
+          </div>
+
+          {/* animated scroll cue — fades out with the opening title */}
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-[15svh] z-10 flex justify-center transition-opacity duration-700"
+            style={{ opacity: atOpening ? 1 : 0 }}
+          >
+            <span className="flex h-9 w-[22px] justify-center rounded-full border border-white/50 pt-1.5">
+              <span className="h-2 w-[2px] animate-bounce rounded-full bg-white/80" />
+            </span>
           </div>
 
           {/* auto-revealing room header + details — fades in within a room,
               out during the travel connectors */}
           {room && (
             <div
-              className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/90 via-black/45 to-transparent px-[7vw] pb-[16vh] pt-[10vh] transition-all duration-500"
-              style={{
-                opacity: inRoom && !atOpening ? 1 : 0,
-                transform: inRoom && !atOpening ? "translateY(0)" : "translateY(24px)",
-              }}
+              className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/90 via-black/45 to-transparent px-[clamp(1.25rem,7vw,5rem)] pb-[clamp(5.5rem,16svh,9rem)] pt-[10vh] transition-opacity duration-500 ease-out"
+              style={{ opacity: show ? 1 : 0 }}
             >
-              <div className="text-[0.8rem] uppercase tracking-[0.24em] text-[#CA8A04]">
-                {room.num} · {room.zone}
-              </div>
-              <h2 className="mt-2 font-serif text-3xl text-[#efe7da] sm:text-5xl drop-shadow-[0_2px_14px_rgba(0,0,0,0.8)]">
-                {room.title}
-              </h2>
-              <p className="mt-2 max-w-[42ch] leading-relaxed text-[#cabfae]">
-                {room.caption}
-              </p>
-              <Link
-                href="/estimate"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#B45309] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              <motion.div
+                key={activeRoom}
+                initial="hidden"
+                animate={show ? "show" : "hidden"}
+                variants={REVEAL_GROUP}
               >
-                Request an estimate &rarr;
-              </Link>
+                <motion.div
+                  variants={REVEAL_ITEM}
+                  className="text-[0.72rem] uppercase tracking-[0.24em] text-[#CA8A04] sm:text-[0.8rem]"
+                >
+                  {room.num} · {room.zone}
+                </motion.div>
+                <motion.h2
+                  variants={REVEAL_ITEM}
+                  className="mt-2 font-serif text-[clamp(1.65rem,5.2vw,3rem)] leading-[1.08] text-[#efe7da] drop-shadow-[0_2px_14px_rgba(0,0,0,0.85)]"
+                >
+                  {room.title}
+                </motion.h2>
+                <motion.p
+                  variants={REVEAL_ITEM}
+                  className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[#cabfae] sm:text-base"
+                >
+                  {room.caption}
+                </motion.p>
+                <motion.div variants={REVEAL_ITEM} className="mt-5 flex flex-wrap items-center gap-3 sm:mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const slug = SLUG_BY_NUM[room.num];
+                      if (slug) setOpen({ slug, label: `${room.num} · ${room.title}` });
+                    }}
+                    className="inline-flex items-center gap-2 rounded-full bg-[#B45309] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#92400E] focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:px-7 sm:py-3.5 sm:text-base"
+                  >
+                    Explore this build &rarr;
+                  </button>
+                  <Link
+                    href="/estimate"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/35 px-5 py-3 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white sm:text-base"
+                  >
+                    Request an estimate
+                  </Link>
+                </motion.div>
+              </motion.div>
             </div>
           )}
 
           {/* orb timeline rail */}
-          <div className="absolute inset-x-0 bottom-0 z-20 px-5 pb-5 pt-10">
-            <div className="relative mx-auto h-9 max-w-5xl">
+          <div className="absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-10 sm:px-5 sm:pb-5">
+            {/* current build label — always visible (hover tooltips don't exist on touch) */}
+            {room && (
+              <div
+                className="mx-auto mb-3 max-w-5xl px-1 transition-opacity duration-300"
+                style={{ opacity: atOpening ? 0 : 1 }}
+              >
+                <p className="truncate text-center text-[0.7rem] uppercase tracking-[0.2em] text-white/75 sm:text-left sm:text-xs">
+                  <span className="text-[#CA8A04]">{room.num}</span> / {marks.length} · {room.title}
+                </p>
+              </div>
+            )}
+            <div className="relative mx-auto h-7 max-w-5xl sm:h-9">
               <div className="absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-white/20" />
               <div
                 ref={progressRef}
@@ -245,7 +378,7 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
                     type="button"
                     onClick={() => scrollToTime(m.midTime)}
                     aria-label={`Jump to ${m.room.title}`}
-                    className="group absolute top-1/2 -translate-x-1/2 -translate-y-1/2 p-1.5 focus:outline-none"
+                    className="group absolute top-1/2 -translate-x-1/2 -translate-y-1/2 p-2 focus:outline-none"
                     style={{ left: `${m.fraction * 100}%` }}
                   >
                     {isActive && (
@@ -254,11 +387,11 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
                     <span
                       className={`relative block rounded-full ring-2 ring-black/30 transition-all ${
                         isActive
-                          ? "h-3.5 w-3.5 bg-[#CA8A04] shadow-[0_0_12px_3px_rgba(202,138,4,0.8)]"
-                          : "h-2.5 w-2.5 bg-white/55 group-hover:bg-[#CA8A04]"
+                          ? "h-3 w-3 bg-[#CA8A04] shadow-[0_0_12px_3px_rgba(202,138,4,0.8)] sm:h-3.5 sm:w-3.5"
+                          : "h-2 w-2 bg-white/55 group-hover:bg-[#CA8A04] sm:h-2.5 sm:w-2.5"
                       }`}
                     />
-                    <span className="pointer-events-none absolute bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#3a3024] bg-[#14100b]/95 px-2.5 py-1 text-[0.7rem] text-[#efe7da] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                    <span className="pointer-events-none absolute bottom-8 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-[#3a3024] bg-[#14100b]/95 px-2.5 py-1 text-[0.7rem] text-[#efe7da] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
                       {m.room.num} · {m.room.title}
                     </span>
                   </button>
@@ -268,6 +401,12 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
           </div>
         </div>
       </div>
+
+      <ServiceDetailOverlay
+        slug={open?.slug ?? null}
+        label={open?.label}
+        onClose={() => setOpen(null)}
+      />
     </section>
   );
 }

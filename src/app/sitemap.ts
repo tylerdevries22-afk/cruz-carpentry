@@ -7,9 +7,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const services = await getResolvedServicesOrdered();
 
   const pages: { path: string; priority: number }[] = [
+    // The tour is the homepage everyone lands on (incl. search), so `/` is the
+    // priority-1 indexed home. The classic view is a secondary, toggle-reachable
+    // page at a lower priority.
     { path: "", priority: 1 },
+    { path: "/classic", priority: 0.6 },
     { path: "/services", priority: 0.9 },
-    { path: "/tour", priority: 0.8 },
     { path: "/estimate", priority: 0.9 },
     { path: "/gallery", priority: 0.8 },
     { path: "/about", priority: 0.7 },

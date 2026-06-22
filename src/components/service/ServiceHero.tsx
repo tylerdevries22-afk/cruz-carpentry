@@ -21,7 +21,7 @@ export function ServiceHero({ service }: { service: Service }) {
         <nav aria-label="Breadcrumb">
           <ol className="flex items-center gap-2 text-xs tracking-wide text-[#8A7F73]">
             <li>
-              <Link href="/#top" className="rounded-sm transition-colors hover:text-[#B45309] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309]">
+              <Link href="/" className="rounded-sm transition-colors hover:text-[#B45309] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B45309]">
                 Home
               </Link>
             </li>

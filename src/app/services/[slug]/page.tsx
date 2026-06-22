@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
-import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
-import { EstimateForm } from "@/components/EstimateForm";
-import { Gallery } from "@/components/gallery/Gallery";
-import { ServiceHero } from "@/components/service/ServiceHero";
-import { ServiceIntro } from "@/components/service/ServiceIntro";
-import { ServiceProcess } from "@/components/service/ServiceProcess";
-import { ServiceMaterials } from "@/components/service/ServiceMaterials";
-import { ServiceDetails } from "@/components/service/ServiceDetails";
-import { ServiceFAQ } from "@/components/service/ServiceFAQ";
-import { RelatedServices } from "@/components/service/RelatedServices";
-import { GALLERY_PHOTOS } from "@/components/gallery/photos";
+import { ServiceDetailSections } from "@/components/service/ServiceDetailSections";
 import { JsonLd } from "@/components/JsonLd";
 import { SERVICES } from "@/lib/services";
 import { getResolvedServiceBySlug } from "@/lib/content/source";
@@ -57,11 +47,6 @@ export default async function ServicePage({
   const { slug } = await params;
   const service = await getResolvedServiceBySlug(slug);
   if (!service) notFound();
-
-  // Real Cruz project photos for this category (1-based cruz-NN → manifest).
-  const photos = service.galleryIndices
-    .map((n) => GALLERY_PHOTOS[n - 1])
-    .filter(Boolean);
 
   const url = `${SITE_URL}/services/${service.slug}`;
   const jsonLd = {
@@ -111,30 +96,7 @@ export default async function ServicePage({
       <JsonLd data={jsonLd} />
       <Nav />
       <main id="main" tabIndex={-1}>
-        <ServiceHero service={service} />
-        <ServiceIntro service={service} />
-        <ServiceProcess />
-        <ServiceMaterials service={service} />
-        <ServiceDetails service={service} />
-        {photos.length > 0 && (
-          <Gallery
-            photos={photos}
-            eyebrow="Selected Work"
-            heading={
-              <>
-                {service.shortTitle},
-                <br />
-                <em className="italic">up close</em>
-              </>
-            }
-            subheading="Real projects across the Front Range · select to enlarge"
-            id="work"
-          />
-        )}
-        <ServiceFAQ service={service} />
-        <RelatedServices current={service} />
-        <EstimateForm defaultProjectType={service.projectType} />
-        <CTA />
+        <ServiceDetailSections service={service} />
       </main>
       <Footer />
     </>

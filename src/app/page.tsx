@@ -1,50 +1,28 @@
 import { Nav } from "@/components/Nav";
-import { Hero } from "@/components/Hero";
-import { LandingPage } from "@/components/landing/LandingPage";
-import { Services } from "@/components/Services";
-import { ProofBand } from "@/components/ProofBand";
-import { FeaturedWork } from "@/components/FeaturedWork";
-import { EstimateForm } from "@/components/EstimateForm";
-import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
-import { loadContent } from "@/lib/content/source";
-import { toCardService } from "@/lib/services";
-import { buildBusinessNode } from "@/lib/jsonld";
+import { CTA } from "@/components/CTA";
+import { TourFilm } from "@/components/tour/TourFilm";
+import { TOUR_ROOMS } from "@/lib/tour";
 import { JsonLd } from "@/components/JsonLd";
+import { buildBusinessNode } from "@/lib/jsonld";
 
-export default async function Home() {
-  const { services: resolved, copy } = await loadContent();
-  const services = [...resolved].sort((a, b) => a.num.localeCompare(b.num));
-  const serviceNames = services.map((service) => service.title);
+// The cinematic tour is the homepage EVERYONE lands on, including search traffic:
+// `/` is self-canonical (the root-layout default) and sits at priority 1 in the
+// sitemap, so it's the indexed homepage. The content-rich classic view lives at
+// /classic and is reached via the nav toggle. LocalBusiness structured data is
+// kept here so the homepage still carries its core schema.
+const jsonLd = {
+  "@context": "https://schema.org",
+  ...buildBusinessNode(),
+};
 
-  // LocalBusiness structured data for local SEO / rich results, extended with the
-  // full service catalog. (Address geo + aggregateRating intentionally omitted in
-  // buildBusinessNode until the owner supplies real data.)
-  const jsonLd = {
-    "@context": "https://schema.org",
-    ...buildBusinessNode(),
-    knowsAbout: serviceNames,
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Custom Carpentry Services",
-      itemListElement: serviceNames.map((name) => ({
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name },
-      })),
-    },
-  };
-
+export default function HomePage() {
   return (
     <>
       <JsonLd data={jsonLd} />
       <Nav />
-      <main id="main" tabIndex={-1}>
-        <Hero content={copy.home.hero} />
-        <LandingPage />
-        <ProofBand />
-        <Services services={services.map(toCardService)} header={copy.home.services} />
-        <FeaturedWork content={copy.home.featured} />
-        <EstimateForm />
+      <main id="main" tabIndex={-1} className="bg-[#16130f]">
+        <TourFilm rooms={TOUR_ROOMS} />
         <CTA />
       </main>
       <Footer />

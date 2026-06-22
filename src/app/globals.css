@@ -58,6 +58,15 @@ h1, h2, h3, h4, h5, h6 {
 .tour-ping { animation: tourPing 2.4s cubic-bezier(0, 0, 0.2, 1) infinite; }
 .tour-ping-2 { animation-delay: 1.2s; }
 
+/* Subtle Ken Burns drift on the /tour film — keeps held moments alive without
+   fighting the footage. translateZ(0) keeps it on the GPU. Disabled under the
+   reduced-motion rule below. */
+@keyframes tourKenburns {
+  from { transform: translateZ(0) scale(1.001); }
+  to { transform: translateZ(0) scale(1.07); }
+}
+.tour-kenburns { animation: tourKenburns 22s ease-in-out infinite alternate; }
+
 @media (prefers-reduced-motion: reduce) {
   /* Disable the global smooth-scroll for anchor jumps too — smooth scrolling is
      a vestibular trigger, and the rule below only covers animation/transition. */
