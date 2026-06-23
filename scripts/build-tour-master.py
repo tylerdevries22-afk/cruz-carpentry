@@ -15,6 +15,7 @@ Outputs (small GOP ≈ instant scrub seeks at a fraction of all-intra size):
 Re-run after regenerating any clip (e.g. the door scenes):
   python3 scripts/build-tour-master.py
 """
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -76,15 +77,38 @@ subprocess.run(
     check=True,
 )
 
-print(f"Encoding {mobile.name} (540p)…")
+# Mobile master: a 9:16 portrait "blurred-fill" cut so the film FILLS a phone
+# screen instead of the 16:9 master being cropped to a ~26%-wide centre sliver.
+# The full 16:9 frame sits sharp in a centred band; a gaussian-blurred, slightly
+# darkened copy of the same frame fills the top/bottom (its colours match the band
+# edges, so the seam reads as a soft cinematic vignette — like the stage scrims).
+# Single video (no iOS multi-video limit), 0 AI credits. keyint=5 → near-instant
+# scrub seeks once the file is fetched as a blob; 24fps + 2-pass keeps it ~11MB.
+BLURRED_FILL = (
+    "split[a][b];"
+    "[a]scale=608:1080:force_original_aspect_ratio=increase,crop=608:1080,"
+    "gblur=sigma=20,eq=brightness=-0.12:saturation=1.06[bg];"
+    "[b]scale=608:-2[fg];"
+    "[bg][fg]overlay=(W-w)/2:(H-h)/2,fps=24,format=yuv420p[out]"
+)
+mobile_x264 = ["-x264-params", "keyint=5:min-keyint=5:scenecut=0"]
+passlog = str(mobile.with_suffix(".2pass"))
+print(f"Encoding {mobile.name} (9:16 blurred-fill, 2-pass, lean for mobile scrubbing)…")
 subprocess.run(
-    ["ffmpeg", "-y", "-i", str(master), "-an", "-vf", "scale=960:540:flags=lanczos",
-     "-c:v", "libx264", "-preset", "slow", "-crf", "23",
-     "-x264-params", "keyint=5:min-keyint=5:scenecut=0",
-     "-pix_fmt", "yuv420p", "-profile:v", "high", "-movflags", "+faststart",
-     str(mobile)],
+    ["ffmpeg", "-y", "-i", str(master), "-filter_complex", BLURRED_FILL, "-map", "[out]",
+     "-an", "-c:v", "libx264", "-preset", "medium", "-b:v", "720k", "-pass", "1",
+     "-passlogfile", passlog, *mobile_x264, "-pix_fmt", "yuv420p", "-f", "mp4", os.devnull],
     check=True,
 )
+subprocess.run(
+    ["ffmpeg", "-y", "-i", str(master), "-filter_complex", BLURRED_FILL, "-map", "[out]",
+     "-an", "-c:v", "libx264", "-preset", "medium", "-b:v", "720k", "-pass", "2",
+     "-passlogfile", passlog, *mobile_x264, "-pix_fmt", "yuv420p", "-profile:v", "high",
+     "-movflags", "+faststart", str(mobile)],
+    check=True,
+)
+for _stale in Path(passlog).parent.glob(Path(passlog).name + "*"):
+    _stale.unlink(missing_ok=True)
 
 print(f"Regenerating {poster.name}…")
 subprocess.run(

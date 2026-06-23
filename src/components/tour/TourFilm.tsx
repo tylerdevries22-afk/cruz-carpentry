@@ -72,21 +72,121 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
   const [inRoom, setInRoom] = useState(false); // currently within a room segment?
   const [atOpening, setAtOpening] = useState(true);
   const [open, setOpen] = useState<{ slug: string; label: string } | null>(null);
+  const [mediaReady, setMediaReady] = useState(false); // false until the film can scrub
+  const [loadPct, setLoadPct] = useState(0); // mobile blob download progress (0–1)
+  const [scrubBlocked, setScrubBlocked] = useState(false); // scrubbing couldn't init (e.g. iOS Low Power Mode) → tap-to-play fallback
+  const usesMobileSrcRef = useRef(false); // chose the lean mobile master (read in the fallback render)
 
   // Track is the film length plus END_HOLD of "hold on the last frame" scroll.
   const trackHeightPx = (total + END_HOLD) * PX_PER_SEC;
 
-  // Pick the lightest adequate source on the client and assign it straight to the
-  // <video> element (a DOM concern, so no React state): a smaller master on phones
-  // and data-saver connections, the full-quality one on the desktop. Done after
-  // mount so the big file never blocks first paint nor ships to a phone.
+  // Source strategy. Desktop streams the full-quality master directly — it buffers
+  // fast on broadband and seeks against the byte-range as it goes. Phones (and
+  // data-saver) instead fetch the lean ~10MB master as a BLOB and play from an
+  // object URL: the whole file is local before scrubbing starts, so every seek is
+  // instant with no network stall, and it sidesteps iOS Safari ignoring `preload`
+  // until the element is activated. If the fetch fails we fall back to streaming
+  // the same file directly. Done after mount so the big file never blocks first
+  // paint nor ships to a phone.
   useEffect(() => {
     if (reduced) return;
     const v = videoRef.current;
     if (!v) return;
     const coarse = window.matchMedia("(max-width: 768px)").matches;
     const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    v.src = coarse || conn?.saveData ? MOBILE_SRC : DESKTOP_SRC;
+    const useMobile = coarse || !!conn?.saveData;
+    usesMobileSrcRef.current = useMobile;
+    if (!useMobile) {
+      v.src = DESKTOP_SRC;
+      return;
+    }
+    let objUrl: string | null = null;
+    let aborted = false;
+    const ctrl = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(MOBILE_SRC, { signal: ctrl.signal });
+        if (!res.ok || !res.body) throw new Error("fetch failed");
+        const len = Number(res.headers.get("Content-Length")) || 0;
+        const reader = res.body.getReader();
+        const chunks: BlobPart[] = [];
+        let received = 0;
+        let lastPct = 0;
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (value) {
+            chunks.push(value);
+            received += value.length;
+            if (len) {
+              const pct = received / len;
+              if (pct - lastPct >= 0.02) {
+                lastPct = pct;
+                setLoadPct(pct);
+              }
+            }
+          }
+        }
+        if (aborted) return;
+        setLoadPct(1);
+        objUrl = URL.createObjectURL(new Blob(chunks, { type: "video/mp4" }));
+        v.src = objUrl;
+      } catch {
+        if (!aborted) v.src = MOBILE_SRC; // stream directly if the blob fetch fails
+      }
+    })();
+    return () => {
+      aborted = true;
+      ctrl.abort();
+      if (objUrl) URL.revokeObjectURL(objUrl);
+    };
+  }, [reduced]);
+
+  // iOS/Safari refuses to render `currentTime` seeks (and largely ignores
+  // `preload`) until the <video> has been activated by a play() call — which is
+  // why a scroll-scrubbed film sits frozen on the poster on a phone. Activate it
+  // muted (permitted inline) on `canplay`, and again on the first touch/pointer
+  // gesture as a fallback for stricter setups (Low Power Mode), then pause so the
+  // scroll loop owns playback. Idempotent via the `unlocked` flag.
+  useEffect(() => {
+    if (reduced) return;
+    const v = videoRef.current;
+    if (!v) return;
+    let unlocked = false;
+    const unlock = () => {
+      if (unlocked) return;
+      const p = v.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          v.pause();
+          unlocked = true;
+        }).catch(() => {
+          /* autoplay blocked — the gesture fallback will retry */
+        });
+      } else {
+        try {
+          v.pause();
+        } catch {
+          /* no-op */
+        }
+        unlocked = true;
+      }
+    };
+    // Clear the loader as soon as the film has frames — driven by the media
+    // events, NOT the rAF loop, so it never hangs if rAF is slow to start.
+    const onReady = () => setMediaReady(true);
+    v.addEventListener("canplay", unlock);
+    v.addEventListener("loadeddata", onReady);
+    v.addEventListener("canplay", onReady);
+    window.addEventListener("touchstart", unlock, { passive: true });
+    window.addEventListener("pointerdown", unlock, { passive: true });
+    return () => {
+      v.removeEventListener("canplay", unlock);
+      v.removeEventListener("loadeddata", onReady);
+      v.removeEventListener("canplay", onReady);
+      window.removeEventListener("touchstart", unlock);
+      window.removeEventListener("pointerdown", unlock);
+    };
   }, [reduced]);
 
   // Drive a single <video> from scroll position via rAF. Three things keep this
@@ -95,15 +195,27 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
   // frame-rate-independent time-constant; (3) the progress bar is written straight
   // to the DOM — no per-frame React state.
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || scrubBlocked) return;
     const v = videoRef.current;
     if (!v) return;
     let running = true;
     let shown = 0; // eased video time we are converging toward
     let last = 0; // previous rAF timestamp for dt easing (0 = uninitialised)
 
+    // `requestVideoFrameCallback` fires when a seeked frame is actually painted —
+    // a more accurate "seek done" signal than the `seeked` event. Use it when
+    // present; the `seeked` listener + timeout below remain the fallback.
+    const vrf = v as HTMLVideoElement & {
+      requestVideoFrameCallback?: (cb: () => void) => number;
+    };
     const onSeeked = () => { seeking.current = false; };
     v.addEventListener("seeked", onSeeked);
+
+    // Watchdog: if the film has data and the viewer has scrolled into it but the
+    // frame never advances (e.g. iOS Low Power Mode blocking playback init), give
+    // up on scrubbing and fall back to a tap-to-play video.
+    let scrubProven = false;
+    let stuckSince = 0;
 
     const tick = (now: number) => {
       if (!running) return;
@@ -132,7 +244,28 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
         if (!seeking.current && v.readyState >= 2 && Math.abs(v.currentTime - shown) > SEEK_EPS) {
           seeking.current = true;
           seekStartedAt.current = now;
-          try { v.currentTime = Math.min(shown, total - 0.05); } catch { seeking.current = false; }
+          try {
+            v.currentTime = Math.min(shown, total - 0.05);
+            vrf.requestVideoFrameCallback?.(() => { seeking.current = false; });
+          } catch { seeking.current = false; }
+        }
+
+        // Hide the loader the moment the film has frames to scrub. Setting the
+        // same value is a no-op once ready (React bails on equal state).
+        if (v.readyState >= 2) setMediaReady(true);
+
+        // Watchdog: once the viewer has scrolled past ~1s of film, the frame must
+        // start advancing. If it doesn't within 3s despite having data, scrubbing
+        // is blocked (Low Power Mode etc.) → drop to the tap-to-play fallback.
+        if (!scrubProven) {
+          if (v.currentTime > 0.25) {
+            scrubProven = true;
+          } else if (videoTarget > 1 && v.readyState >= 2) {
+            if (!stuckSince) stuckSince = now;
+            else if (now - stuckSince > 3000) setScrubBlocked(true);
+          } else {
+            stuckSince = 0;
+          }
         }
 
         // Progress = film progress (not scroll), so the bar fills exactly when the
@@ -177,7 +310,7 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       v.removeEventListener("seeked", onSeeked);
     };
-  }, [reduced, trackHeightPx, total, marks]);
+  }, [reduced, scrubBlocked, trackHeightPx, total, marks]);
 
   // Smoothly scroll the page so the film reaches a given global time.
   const scrollToTime = useCallback(
@@ -225,8 +358,12 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
     };
   }, [reduced, marks, total, trackHeightPx, scrollToTime]);
 
-  // ---- Reduced motion: play the master film with controls ----
-  if (reduced) {
+  // ---- Reduced motion OR scrubbing blocked: play the film with controls ----
+  // Low Power Mode (and some locked-down setups) can stop iOS from initialising a
+  // scroll-scrubbed video; rather than leave a frozen poster, the watchdog drops
+  // here so the visitor gets a normal tap-to-play walkthrough instead.
+  if (reduced || scrubBlocked) {
+    const fallbackSrc = usesMobileSrcRef.current ? MOBILE_SRC : DESKTOP_SRC;
     return (
       <section className="px-6 py-[12vh]">
         <div className="mx-auto max-w-4xl text-center">
@@ -236,9 +373,14 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
           <h1 className="font-serif text-[clamp(2.2rem,5vw,3.4rem)] leading-[1.05] text-[#efe7da]">
             A walk through the work
           </h1>
+          <p className="mt-3 text-sm text-[#b9ad9a]">
+            {scrubBlocked
+              ? "Tap play to watch the full walkthrough."
+              : "The full walkthrough, at your own pace."}
+          </p>
           <video
             className="mt-8 w-full rounded-2xl border border-[#2a241c]"
-            src={DESKTOP_SRC}
+            src={fallbackSrc}
             poster={POSTER}
             controls
             playsInline
@@ -272,6 +414,18 @@ export function TourFilm({ rooms }: { rooms: TourRoom[] }) {
             disablePictureInPicture
             className="tour-kenburns absolute inset-0 h-full w-full object-cover [will-change:transform]"
           />
+
+          {/* Loader over the poster until the film can scrub — most visible on a
+              phone while the lean master downloads as a blob. Sits above the
+              scrims/title (z-[25]) but below the nav so the brand stays put. */}
+          {!mediaReady && (
+            <div className="absolute inset-0 z-[25] flex flex-col items-center justify-center gap-4 bg-black/45">
+              <span className="h-8 w-8 animate-spin rounded-full border-2 border-white/25 border-t-[#CA8A04]" />
+              <p className="text-[0.7rem] uppercase tracking-[0.22em] text-white/70">
+                {loadPct > 0 ? `Loading the tour · ${Math.round(loadPct * 100)}%` : "Loading the tour"}
+              </p>
+            </div>
+          )}
 
           {/* always-on cinematic scrims: top keeps the nav legible over bright
               frames, bottom anchors the rail + copy, the inset vignette gives the
